@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirm Email · NovaFi</title>
+    <meta name="referrer" content="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ----- Shared Auth Styles (matching login/signup) ----- */
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-glass: rgba(255,255,255,0.6);
+            --bg-glass-hover: rgba(255,255,255,0.8);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: rgba(124,58,237,0.12);
+            --shadow: 0 4px 24px rgba(0,0,0,0.06);
+            --shadow-hover: 0 8px 40px rgba(0,0,0,0.10);
+            --purple: #7C3AED;
+            --purple-light: #8B5CF6;
+            --purple-dark: #5B21B6;
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-glass: rgba(30,41,59,0.6);
+            --bg-glass-hover: rgba(30,41,59,0.8);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: rgba(124,58,237,0.2);
+            --shadow: 0 4px 24px rgba(0,0,0,0.3);
+            --shadow-hover: 0 8px 40px rgba(0,0,0,0.4);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .glass {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .glass:hover {
+            background: var(--bg-glass-hover);
+            box-shadow: var(--shadow-hover);
+        }
+        .confirm-card {
+            max-width: 440px;
+            width: 100%;
+            padding: 48px 36px;
+            text-align: center;
+        }
+        .confirm-card .logo {
+            display: inline-block;
+            margin-bottom: 24px;
+        }
+        .confirm-card .logo img {
+            height: 44px;
+            width: auto;
+        }
+        .confirm-card h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .confirm-card .sub {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+        }
+        .confirm-card .icon-circle {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(124,58,237,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.4rem;
+            color: var(--purple);
+        }
+        .confirm-card .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            box-shadow: 0 4px 16px rgba(124,58,237,0.25);
+        }
+        .confirm-card .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(124,58,237,0.35);
+        }
+        .resend-link {
+            display: block;
+            margin-top: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .resend-link a {
+            color: var(--purple);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .resend-link a:hover {
+            text-decoration: underline;
+            color: var(--purple-light);
+        }
+        .message-box {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .message-box.success {
+            display: block;
+            background: rgba(16,185,129,0.08);
+            border: 1px solid rgba(16,185,129,0.2);
+            color: #10b981;
+        }
+        .message-box.error {
+            display: block;
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.2);
+            color: #ef4444;
+        }
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="confirm-card glass">
+        <!-- Logo -->
+        <a href="index.html" class="logo">
+            <img src="logo-placeholder.png" alt="NovaFi" />
+        </a>
+
+        <!-- Icon -->
+        <div class="icon-circle">
+            <i class="fas fa-envelope"></i>
+        </div>
+
+        <h1>Check Your Email</h1>
+        <p class="sub">
+            We've sent a confirmation link to <strong id="emailDisplay">your email</strong>.<br />
+            Please click the link to verify your account.
+        </p>
+
+        <button class="btn-primary" id="resendBtn">
+            <i class="fas fa-redo"></i> Resend Email
+        </button>
+
+        <div id="messageBox" class="message-box"></div>
+
+        <div class="resend-link">
+            Already confirmed? <a href="login.html">Log in</a>
+        </div>
+    </div>
+
+    <!-- Supabase + Script -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+        (function() {
+            'use strict';
+
+            // --- Supabase config (replace with your values) ---
+            const SUPABASE_URL = 'https://your-project-id.supabase.co';
+            const SUPABASE_ANON_KEY = 'your-anon-key';
+
+            if (typeof supabase === 'undefined') {
+                console.warn('Supabase library not loaded.');
+                return;
+            }
+            const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            // --- Get the email from sessionStorage (set during signup) ---
+            const email = sessionStorage.getItem('signup_email') || 'your email';
+            document.getElementById('emailDisplay').textContent = email;
+
+            // --- Resend confirmation email ---
+            const resendBtn = document.getElementById('resendBtn');
+            const messageBox = document.getElementById('messageBox');
+
+            async function resendConfirmation() {
+                if (!email) {
+                    showMessage('No email address found. Please sign up again.', 'error');
+                    return;
+                }
+
+                resendBtn.disabled = true;
+                resendBtn.innerHTML = '<span class="spinner"></span> Sending…';
+
+                try {
+                    // Supabase's resend endpoint requires the user to be signed in or we need to call the sign-up again.
+                    // The simplest way: call signUp again with the same email and password? 
+                    // That would create a new user. Instead, we'll use the admin API via Edge Function or we can just
+                    // use the built-in "resend" feature by calling `supabase.auth.resend()` — but that requires the user to be signed out.
+                    // Actually, we can use the `resend` method on the auth object:
+                    const { error } = await supabaseClient.auth.resend({
+                        type: 'signup',
+                        email: email,
+                        options: {
+                            emailRedirectTo: window.location.origin + '/login.html',
+                        }
+                    });
+
+                    if (error) throw error;
+
+                    showMessage('✅ A new confirmation link has been sent to your email.', 'success');
+                } catch (err) {
+                    console.error('Resend error:', err);
+                    showMessage('Unable to resend. Please try again later.', 'error');
+                } finally {
+                    resendBtn.disabled = false;
+                    resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend Email';
+                }
+            }
+
+            function showMessage(text, type) {
+                messageBox.textContent = text;
+                messageBox.className = 'message-box ' + type;
+            }
+
+            resendBtn.addEventListener('click', resendConfirmation);
+
+            // Also check if user already confirmed (maybe they clicked the link and came back)
+            // If they already have a session, redirect to dashboard.
+            supabaseClient.auth.getSession().then(({ data }) => {
+                if (data.session) {
+                    window.location.href = 'home.html';
+                }
+            });
+
+            // If the user comes from the confirmation link, they will have a session.
+            // The login page will handle that.
+
+            console.log('📧 Confirmation page ready');
+        })();
+    </script>
+
+</body>
+</html>

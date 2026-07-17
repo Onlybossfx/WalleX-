@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up · WalleX</title>
+    <meta name="referrer" content="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px 40px;
+            background: var(--black);
+        }
+        .auth-card {
+            max-width: 420px;
+            width: 100%;
+            padding: 48px 36px;
+            text-align: center;
+        }
+        .auth-card .logo {
+            display: inline-block;
+            margin-bottom: 24px;
+        }
+        .auth-card .logo img {
+            height: 44px;
+            width: auto;
+        }
+        .auth-card h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .auth-card .sub {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 28px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(124, 58, 237, 0.15);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-size: 1rem;
+            transition: border 0.3s, box-shadow 0.3s;
+            outline: none;
+        }
+        .form-group input:focus {
+            border-color: var(--purple-light);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+        .form-group input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .pw-checklist {
+            list-style: none;
+            margin-top: 8px;
+            padding-left: 4px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-align: left;
+        }
+        .pw-checklist li {
+            padding: 3px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .pw-checklist li i {
+            width: 16px;
+            font-size: 0.75rem;
+            transition: color 0.2s;
+        }
+        .pw-checklist li.valid {
+            color: #34D399;
+        }
+        .pw-checklist li.invalid {
+            color: #64748B;
+        }
+        .auth-card .btn-primary {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .auth-card .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .auth-link {
+            display: block;
+            margin-top: 20px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .auth-link a {
+            color: var(--purple-light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .auth-link a:hover {
+            text-decoration: underline;
+            color: var(--icy);
+        }
+        .error-msg {
+            color: #F87171;
+            font-size: 0.9rem;
+            margin-top: 14px;
+            min-height: 24px;
+            display: none;
+        }
+        .error-msg.show {
+            display: block;
+        }
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 32px 20px;
+            }
+            .auth-card h2 {
+                font-size: 1.6rem;
+            }
+            .pw-checklist {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="auth-page">
+        <div class="auth-card glass">
+            <a href="index.html" class="logo">
+                <img src="logo-placeholder.png" alt="WalleX" />
+            </a>
+            <h2>Create Account</h2>
+            <p class="sub">Join the future of Web3 investing</p>
+
+            <form id="signupForm" novalidate autocomplete="off">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" placeholder="John Doe" required autocomplete="name" />
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email Address</label>
+                    <input type="email" id="signupEmail" placeholder="you@example.com" required autocomplete="email" />
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" placeholder="••••••••" required autocomplete="new-password" />
+                    <ul class="pw-checklist" id="pwChecklist">
+                        <li id="pwLen"><i class="fas fa-circle"></i> At least 8 characters</li>
+                        <li id="pwUpper"><i class="fas fa-circle"></i> One uppercase letter</li>
+                        <li id="pwLower"><i class="fas fa-circle"></i> One lowercase letter</li>
+                        <li id="pwNum"><i class="fas fa-circle"></i> One number</li>
+                        <li id="pwSpec"><i class="fas fa-circle"></i> One special character (!@#$%^&*)</li>
+                    </ul>
+                </div>
+                <div class="form-group">
+                    <label for="signupConfirm">Confirm Password</label>
+                    <input type="password" id="signupConfirm" placeholder="••••••••" required autocomplete="new-password" />
+                </div>
+                <button type="submit" class="btn-primary" id="signupBtn">
+                    <span class="btn-text">Sign Up</span>
+                    <i class="fas fa-spinner fa-spin" style="display: none;" id="signupSpinner"></i>
+                </button>
+                <div id="signupError" class="error-msg"></div>
+            </form>
+
+            <div class="auth-link">
+                Already have an account? <a href="login.html">Log in</a>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        (function() {
+            'use strict';
+
+            const form = document.getElementById('signupForm');
+            const nameInput = document.getElementById('signupName');
+            const emailInput = document.getElementById('signupEmail');
+            const passInput = document.getElementById('signupPassword');
+            const confirmInput = document.getElementById('signupConfirm');
+            const errorEl = document.getElementById('signupError');
+            const btn = document.getElementById('signupBtn');
+            const btnText = btn.querySelector('.btn-text');
+            const spinner = document.getElementById('signupSpinner');
+
+            const pwLen = document.getElementById('pwLen');
+            const pwUpper = document.getElementById('pwUpper');
+            const pwLower = document.getElementById('pwLower');
+            const pwNum = document.getElementById('pwNum');
+            const pwSpec = document.getElementById('pwSpec');
+
+            let isSubmitting = false;
+
+            // ---- Password Strength ----
+            function validatePassword(password) {
+                return {
+                    len: password.length >= 8,
+                    upper: /[A-Z]/.test(password),
+                    lower: /[a-z]/.test(password),
+                    num: /[0-9]/.test(password),
+                    spec: /[!@#$%^&*]/.test(password),
+                };
+            }
+
+            function updateChecklist(password) {
+                const checks = validatePassword(password);
+                const map = { len: pwLen, upper: pwUpper, lower: pwLower, num: pwNum, spec: pwSpec };
+                for (const [key, el] of Object.entries(map)) {
+                    const valid = checks[key];
+                    el.className = valid ? 'valid' : 'invalid';
+                    el.querySelector('i').className = valid ? 'fas fa-check-circle' : 'fas fa-circle';
+                }
+            }
+
+            passInput.addEventListener('input', function() {
+                updateChecklist(this.value);
+                if (confirmInput.value && this.value !== confirmInput.value) {
+                    errorEl.textContent = 'Passwords do not match.';
+                    errorEl.classList.add('show');
+                } else {
+                    errorEl.classList.remove('show');
+                }
+            });
+
+            confirmInput.addEventListener('input', function() {
+                if (passInput.value && this.value !== passInput.value) {
+                    errorEl.textContent = 'Passwords do not match.';
+                    errorEl.classList.add('show');
+                } else {
+                    errorEl.classList.remove('show');
+                }
+            });
+
+            // ---- Form Submit ----
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                if (isSubmitting) return;
+
+                const name = nameInput.value.trim();
+                const email = emailInput.value.trim();
+                const password = passInput.value.trim();
+                const confirm = confirmInput.value.trim();
+
+                errorEl.classList.remove('show');
+
+                if (!name || !email || !password || !confirm) {
+                    errorEl.textContent = 'Please fill in all fields.';
+                    errorEl.classList.add('show');
+                    return;
+                }
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    errorEl.textContent = 'Please enter a valid email address.';
+                    errorEl.classList.add('show');
+                    return;
+                }
+                const checks = validatePassword(password);
+                if (!Object.values(checks).every(v => v === true)) {
+                    errorEl.textContent = 'Password does not meet requirements.';
+                    errorEl.classList.add('show');
+                    return;
+                }
+                if (password !== confirm) {
+                    errorEl.textContent = 'Passwords do not match.';
+                    errorEl.classList.add('show');
+                    return;
+                }
+
+                isSubmitting = true;
+                btn.disabled = true;
+                btnText.textContent = 'Creating account…';
+                spinner.style.display = 'inline-block';
+
+                try {
+                    const result = await window.supabaseClient.signUp(email, password, name);
+
+                    if (!result.success) {
+                        errorEl.textContent = 'Unable to create account.';
+                        errorEl.classList.add('show');
+                        return;
+                    }
+
+                    // Send OTP for email verification
+                    await window.supabaseClient.sendOtp(email, 'signup');
+                    sessionStorage.setItem('otp_email', email);
+                    sessionStorage.setItem('signup_name', name);
+
+                    // Redirect to OTP page
+                    window.location.href = 'otp.html?action=signup';
+
+                } catch (err) {
+                    errorEl.textContent = 'Unable to create account.';
+                    errorEl.classList.add('show');
+                } finally {
+                    isSubmitting = false;
+                    btn.disabled = false;
+                    btnText.textContent = 'Sign Up';
+                    spinner.style.display = 'none';
+                }
+            });
+
+            // Clear error on typing
+            [nameInput, emailInput, passInput, confirmInput].forEach(inp => {
+                inp.addEventListener('input', () => {
+                    errorEl.classList.remove('show');
+                });
+            });
+
+        })();
+    </script>
+</body>
+</html>

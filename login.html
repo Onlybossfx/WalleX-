@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login · Wallex</title>
+    <meta name="referrer" content="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        /* Same auth styles as before */
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px 40px;
+            background: var(--black);
+        }
+        .auth-card {
+            max-width: 420px;
+            width: 100%;
+            padding: 48px 36px;
+            text-align: center;
+        }
+        .auth-card .logo {
+            display: inline-block;
+            margin-bottom: 24px;
+        }
+        .auth-card .logo img {
+            height: 44px;
+            width: auto;
+        }
+        .auth-card h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .auth-card .sub {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 28px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(124, 58, 237, 0.15);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-size: 1rem;
+            transition: border 0.3s, box-shadow 0.3s;
+            outline: none;
+        }
+        .form-group input:focus {
+            border-color: var(--purple-light);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+        .form-group input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .auth-card .btn-primary {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .auth-card .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .auth-link {
+            display: block;
+            margin-top: 20px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .auth-link a {
+            color: var(--purple-light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .auth-link a:hover {
+            text-decoration: underline;
+            color: var(--icy);
+        }
+        .error-msg {
+            color: #F87171;
+            font-size: 0.9rem;
+            margin-top: 14px;
+            min-height: 24px;
+            display: none;
+        }
+        .error-msg.show {
+            display: block;
+        }
+        .fa-spinner {
+            font-size: 1.1rem;
+        }
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 32px 20px;
+            }
+            .auth-card h2 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="auth-page">
+        <div class="auth-card glass">
+            <a href="index.html" class="logo">
+                <img src="logo-placeholder.png" alt="Wallex" />
+            </a>
+            <h2>Welcome Back</h2>
+            <p class="sub">Log in to your account</p>
+
+            <form id="loginForm" novalidate autocomplete="off">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="you@example.com" required autocomplete="username" />
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password" />
+                </div>
+                <button type="submit" class="btn-primary" id="loginBtn">
+                    <span class="btn-text">Log In</span>
+                    <i class="fas fa-spinner fa-spin" style="display: none;" id="loginSpinner"></i>
+                </button>
+                <div id="loginError" class="error-msg"></div>
+            </form>
+
+            <div class="auth-link">
+                Don't have an account? <a href="signup.html">Sign up</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Supabase + Auth Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        (function() {
+            'use strict';
+
+            const form = document.getElementById('loginForm');
+            const emailInput = document.getElementById('loginEmail');
+            const passInput = document.getElementById('loginPassword');
+            const errorEl = document.getElementById('loginError');
+            const btn = document.getElementById('loginBtn');
+            const btnText = btn.querySelector('.btn-text');
+            const spinner = document.getElementById('loginSpinner');
+
+            let isSubmitting = false;
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                if (isSubmitting) return;
+
+                const email = emailInput.value.trim();
+                const password = passInput.value.trim();
+
+                if (!email || !password) {
+                    errorEl.textContent = 'Please fill in all fields.';
+                    errorEl.classList.add('show');
+                    return;
+                }
+
+                errorEl.classList.remove('show');
+                isSubmitting = true;
+                btn.disabled = true;
+                btnText.textContent = 'Logging in…';
+                spinner.style.display = 'inline-block';
+
+                try {
+                    const result = await window.supabaseClient.signIn(email, password);
+
+                    if (!result.success) {
+                        errorEl.textContent = result.message;
+                        errorEl.classList.add('show');
+                        return;
+                    }
+
+                    // Store user info
+                    window.supabaseClient.storeSession(result.user);
+
+                    // Check if user has 2FA enabled
+                    const { data: profile } = await window.supabaseClient.supabase
+                        .from('profiles')
+                        .select('two_factor_enabled')
+                        .eq('id', result.user.id)
+                        .single();
+
+                    if (profile?.two_factor_enabled) {
+                        // Send OTP and redirect to OTP page
+                        await window.supabaseClient.sendOtp(email, 'login');
+                        sessionStorage.setItem('otp_email', email);
+                        window.location.href = 'otp.html?action=login';
+                    } else {
+                        // Redirect to dashboard
+                        window.location.href = 'dashboard.html';
+                    }
+
+                } catch (err) {
+                    errorEl.textContent = 'Incorrect details.';
+                    errorEl.classList.add('show');
+                } finally {
+                    isSubmitting = false;
+                    btn.disabled = false;
+                    btnText.textContent = 'Log In';
+                    spinner.style.display = 'none';
+                }
+            });
+
+            // Clear error on typing
+            [emailInput, passInput].forEach(input => {
+                input.addEventListener('input', function() {
+                    errorEl.classList.remove('show');
+                    errorEl.textContent = '';
+                });
+            });
+
+        })();
+    </script>
+</body>
+</html>
