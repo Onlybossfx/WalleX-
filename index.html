@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WalleX — Gateway to the future of web3</title>
+    <meta name="description" content="Earn daily yields with institutional-grade security." />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <!-- Font Awesome 6 (Free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <!-- ====== NAVBAR ====== -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="#" class="logo">
+                <img src="logo-placeholder.png" alt="WalleX Logo" />
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#plans">Plans</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li>
+                    <a href="#" class="nav-support">
+                        <i class="fas fa-headset"></i> Support
+                    </a>
+                </li>
+            </ul>
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ====== HERO ====== -->
+    <section class="hero">
+        <canvas id="canvas-bg"></canvas>
+        <div class="container hero-content">
+            <h1>Where Capital Meets <span class="highlight">the Future of Web3</span></h1>
+            <p>Earn daily yields with institutional-grade security, audited smart contracts, and AI-optimized portfolios.</p>
+            <div class="hero-buttons">
+                <a href="signup.html" class="btn-primary pulse-glow"><i class="fas fa-rocket"></i> Start Investing</a>
+                <a href="#features" class="btn-secondary"><i class="fas fa-info-circle"></i> Learn More</a>
+            </div>
+            <div class="trust-badges">
+                <span class="badge"><i class="fas fa-shield-alt"></i> Audited by CertiK</span>
+                <span class="badge"><i class="fas fa-file-contract"></i> Transparent</span>
+                <span class="badge"><i class="fas fa-lock"></i> Non-Custodial</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== LIVE PRICE TICKER ====== -->
+    <section class="ticker-section">
+        <div class="ticker-wrap">
+            <div class="ticker-inner" id="tickerInner"></div>
+        </div>
+    </section>
+
+    <!-- ====== WHY CHOOSE US (with REAL IMAGES) ====== -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title fade-up">Built for the Future of Finance</h2>
+            <p class="section-sub fade-up">Secure, transparent, and designed for institutional-grade performance.</p>
+            <div class="features-grid">
+                <!-- 1. AI-Powered -->
+                <div class="feature-card glass fade-up">
+                    <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=400&fit=crop&crop=center" alt="AI Technology" />
+                    <div class="content">
+                        <h3>AI-Powered Trading</h3>
+                        <p>Our proprietary algorithms optimize returns while actively managing risk across multiple strategies.</p>
+                    </div>
+                </div>
+                <!-- 2. Audited Contracts -->
+                <div class="feature-card glass fade-up">
+                    <img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?w=800&h=400&fit=crop&crop=center" alt="Blockchain Security" />
+                    <div class="content">
+                        <h3>Audited Smart Contracts</h3>
+                        <p>Fully transparent, open-source, and independently audited by top-tier security firms.</p>
+                    </div>
+                </div>
+                <!-- 3. Daily Payouts -->
+                <div class="feature-card glass fade-up">
+                    <img src="https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=800&h=400&fit=crop&crop=center" alt="Daily Earnings" />
+                    <div class="content">
+                        <h3>Daily Payouts</h3>
+                        <p>Earn passive income with automated daily rewards deposited directly to your wallet.</p>
+                    </div>
+                </div>
+                <!-- 4. Referral Program -->
+                <div class="feature-card glass fade-up">
+                    <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&h=400&fit=crop&crop=center" alt="Referral Network" />
+                    <div class="content">
+                        <h3>Referral Program</h3>
+                        <p>Share the platform and earn rewards — build your network while you build your portfolio.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== INVESTMENT PLANS ====== -->
+    <section class="plans" id="plans">
+        <div class="container">
+            <h2 class="section-title fade-up">Premium Investment Tiers</h2>
+            <p class="section-sub fade-up">Select a plan that aligns with your goals and start earning today.</p>
+            <div class="plans-grid">
+                <!-- Starter -->
+                <div class="plan-card glass fade-up">
+                    <div class="plan-name">Starter</div>
+                    <div class="plan-apy">8% <small>APY</small></div>
+                    <div class="plan-range">$100 – $1,000</div>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Daily Payouts</li>
+                        <li><i class="fas fa-check-circle"></i> Instant Withdrawal</li>
+                        <li><i class="fas fa-check-circle"></i> Standard Support</li>
+                    </ul>
+                    <a href="#" class="btn-primary">Select Plan</a>
+                </div>
+
+                <!-- Pro (Popular) -->
+                <div class="plan-card glass popular fade-up">
+                    <div class="plan-name">Pro</div>
+                    <div class="plan-apy">14% <small>APY</small></div>
+                    <div class="plan-range">$1,000 – $10,000</div>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Daily Payouts</li>
+                        <li><i class="fas fa-check-circle"></i> Instant Withdrawal</li>
+                        <li><i class="fas fa-check-circle"></i> Priority Support</li>
+                        <li><i class="fas fa-check-circle"></i> Bonus Rewards</li>
+                    </ul>
+                    <a href="#" class="btn-primary">Select Plan</a>
+                </div>
+
+                <!-- Elite -->
+                <div class="plan-card glass fade-up">
+                    <div class="plan-name">Elite</div>
+                    <div class="plan-apy">18% <small>APY</small></div>
+                    <div class="plan-range">$10,000+</div>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Daily Payouts</li>
+                        <li><i class="fas fa-check-circle"></i> Instant Withdrawal</li>
+                        <li><i class="fas fa-check-circle"></i> VIP Concierge</li>
+                        <li><i class="fas fa-check-circle"></i> Custom Strategies</li>
+                    </ul>
+                    <a href="#" class="btn-primary">Select Plan</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== FAQ ====== -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <h2 class="section-title fade-up">Frequently Asked Questions</h2>
+            <p class="section-sub fade-up">Everything you need to know before you start.</p>
+            <div class="faq-grid">
+                <div class="faq-item glass fade-up">
+                    <div class="faq-question">
+                        <span>What is NovaFi?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">NovaFi is a next-generation Web3 investment platform that uses AI-driven strategies to generate daily yields on your crypto assets.</div>
+                </div>
+                <div class="faq-item glass fade-up">
+                    <div class="faq-question">
+                        <span>How do I get started?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">Simply choose an investment plan, make your deposit, and start earning daily yields immediately.</div>
+                </div>
+                <div class="faq-item glass fade-up">
+                    <div class="faq-question">
+                        <span>Are my funds secure?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">Yes. Our smart contracts are audited, non-custodial, and all transactions are transparent on-chain.</div>
+                </div>
+                <div class="faq-item glass fade-up">
+                    <div class="faq-question">
+                        <span>How often are payouts?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">Payouts are distributed daily, automatically, directly to your connected wallet.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-brand">
+                <div class="logo">
+                    <img src="logo-placeholder.png" alt="NovaFi Logo" />
+                </div>
+                <p>Building the future of decentralized finance — transparent, secure, and built for everyone.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-discord"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>Product</h4>
+                <a href="#plans">Plans</a>
+                <a href="#features">Features</a>
+                <a href="#">Documentation</a>
+            </div>
+            <div class="footer-links">
+                <h4>Company</h4>
+                <a href="#">About</a>
+                <a href="#">Careers</a>
+                <a href="#">Blog</a>
+            </div>
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <a href="#">Terms of Service</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Cookie Policy</a>
+            </div>
+            <div class="footer-newsletter">
+                <h4>Stay Updated</h4>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">Get the latest news and updates.</p>
+                <div class="input-group">
+                    <input type="email" placeholder="Enter your email" />
+                    <button class="btn-primary">Subscribe</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom container">
+            &copy; 2026 WalleX. All rights reserved. Built on Ethereum.
+        </div>
+    </footer>
+
+    <!-- ====== EXTERNAL JAVASCRIPT ====== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
