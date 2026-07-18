@@ -440,7 +440,6 @@
     <!-- ===== DASHBOARD ===== -->
     <div class="dashboard" id="depositMain">
 
-        <!-- Sidebar -->
         <aside class="dashboard-sidebar" id="sidebar">
             <div class="sidebar-item"><i class="fas fa-th-large"></i> Overview</div>
             <div class="sidebar-item"><i class="fas fa-user"></i> Account Settings</div>
@@ -493,7 +492,7 @@
                             <label for="depositAmount">Amount (USD)</label>
                             <input type="number" id="depositAmount" placeholder="Enter amount..." min="0.01" step="0.01" />
                             <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">
-                                You'll be redirected to NOWPayments to complete the payment.
+                                You'll be redirected to Paymento to complete the payment.
                             </div>
                         </div>
                         <button class="btn-primary" id="depositBtn" style="width:100%;justify-content:center;">
@@ -696,7 +695,7 @@
             }
 
             // ============================================================
-            //  2. DEPOSIT LOGIC (NOWPayments Integration)
+            //  2. DEPOSIT LOGIC (Paymento Integration)
             // ============================================================
 
             let currentUser = null;
@@ -768,7 +767,7 @@
                 historyList.innerHTML = history.map(item => {
                     const statusClass = item.status || 'completed';
                     const date = new Date(item.created_at).toLocaleDateString();
-                    const method = item.method || 'NOWPayments';
+                    const method = item.method || 'Paymento';
                     return `
                         <div class="history-item">
                             <div class="left">
@@ -798,16 +797,14 @@
                 pollingInterval = setInterval(async () => {
                     attempts++;
                     const history = await fetchDepositHistory(userId);
-                    // Find a completed deposit of the expected amount since the last poll
                     const recentCompleted = history.find(tx =>
                         tx.amount === expectedAmount &&
                         tx.status === 'completed' &&
-                        new Date(tx.created_at) > new Date(Date.now() - 5 * 60 * 1000) // within last 5 minutes
+                        new Date(tx.created_at) > new Date(Date.now() - 5 * 60 * 1000)
                     );
                     if (recentCompleted) {
                         clearInterval(pollingInterval);
                         pollingInterval = null;
-                        // Update balance and history
                         const newBalance = await fetchBalance(userId);
                         userBalance = newBalance;
                         depositHistory = history;
@@ -818,7 +815,7 @@
                         pollingInterval = null;
                         showToast('⏳ Payment still pending. Please check your transaction history later.', 'info');
                     }
-                }, 4000); // Check every 4 seconds
+                }, 4000);
             }
 
             // --- Handle Deposit ---
@@ -838,8 +835,7 @@
                 depositBtn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;"></span> Creating order...';
 
                 try {
-                    // 1. Call the Edge Function to create a NOWPayments order
-                    const { data, error } = await window.supabaseClient.supabase.functions.invoke('swift-endpoint', {
+                    const { data, error } = await window.supabaseClient.supabase.functions.invoke('create-deposit', {
                         body: {
                             userId: currentUser.id,
                             amount: amount,
@@ -850,10 +846,7 @@
                     if (error) throw new Error(error.message || 'Failed to create payment order');
                     if (!data.paymentUrl) throw new Error('No payment URL returned');
 
-                    // 2. Start polling for the transaction status
                     startPolling(currentUser.id, amount);
-
-                    // 3. Redirect to NOWPayments checkout
                     window.location.href = data.paymentUrl;
 
                 } catch (err) {
@@ -870,11 +863,9 @@
                 const status = urlParams.get('status');
                 if (status === 'success') {
                     showToast('✅ Payment initiated! Waiting for confirmation…', 'info');
-                    // Start polling for any recent deposit
                     if (currentUser) {
-                        startPolling(currentUser.id, 0, 15); // poll for any amount
+                        startPolling(currentUser.id, 0, 15);
                     }
-                    // Remove status param from URL to avoid repeated triggers
                     window.history.replaceState({}, document.title, window.location.pathname);
                 } else if (status === 'cancel') {
                     showToast('Payment cancelled.', 'info');
@@ -893,7 +884,6 @@
 
                 currentUser = user;
 
-                // Set avatar
                 const name = user.user_metadata?.name || user.email || 'User';
                 const avatarEl = document.getElementById('avatarInitials');
                 if (avatarEl) {
@@ -901,7 +891,6 @@
                     avatarEl.textContent = initials || 'U';
                 }
 
-                // Load data
                 const balance = await fetchBalance(user.id);
                 userBalance = balance;
                 const history = await fetchDepositHistory(user.id);
@@ -960,10 +949,9 @@
                     }
                 });
 
-                // ---- Check return status ----
                 checkReturnStatus();
 
-                console.log('✅ Deposit page initialized with NOWPayments integration');
+                console.log('✅ Deposit page initialized with Paymento integration');
             }
 
             // ============================================================
