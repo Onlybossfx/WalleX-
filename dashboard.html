@@ -254,7 +254,7 @@
         .coin-feed .feed-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
         .coin-feed .feed-header h3 { font-size:1rem; font-weight:600; }
         .coin-feed .feed-header .badge { font-size:0.7rem; color:var(--text-secondary); background:var(--bg-glass); padding:4px 12px; border-radius:20px; border:1px solid var(--border-subtle); }
-        .coin-table-wrap { max-height:280px; overflow-y:auto; }
+        .coin-table-wrap { max-height:fit-content; overflow-y:auto; }
         .coin-table-wrap::-webkit-scrollbar { width:4px; }
         .coin-table-wrap::-webkit-scrollbar-thumb { background:var(--purple); border-radius:10px; }
         .coin-table { width:100%; border-collapse:collapse; font-size:0.85rem; }
@@ -304,7 +304,7 @@
     <nav class="navbar" id="navbar">
         <div class="container">
             <a href="dashboard.html" class="logo">
-                <img src="logo-placeholder.png" alt="WalleX" />
+                <img src="logo.png" alt="WalleX" />
             </a>
 
             <ul class="nav-links" id="navLinks">
@@ -450,8 +450,8 @@
     <div class="bottom-nav">
         <a href="dashboard.html" class="active"><i class="fas fa-home"></i><span>Home</span></a>
         <a href="#"><i class="fas fa-chart-line"></i><span>Trading</span></a>
-        <a href="#"><i class="fas fa-coins"></i><span>Staking</span></a>
-        <a href="#"><i class="fas fa-wallet"></i><span>Investment</span></a>
+        <a href="staking.html"><i class="fas fa-coins"></i><span>Staking</span></a>
+        <a href="investment.html"><i class="fas fa-wallet"></i><span>Investment</span></a>
     </div>
 
     <!-- ================================================================
