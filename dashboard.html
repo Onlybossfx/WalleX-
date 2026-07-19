@@ -181,7 +181,6 @@
             border:none; background:none; width:100%; text-align:left;
         }
         .avatar-dropdown .dropdown-item:hover { background:rgba(124,58,237,0.06); color:var(--purple); }
-        .avatar-dropdown .dropdown-item i { width:18px; text-align:center; }
         .avatar-dropdown .dropdown-divider { height:1px; background:var(--border-subtle); margin:4px 12px; }
 
         .hamburger {
@@ -309,9 +308,9 @@
 
             <ul class="nav-links" id="navLinks">
                 <li><a href="dashboard.html" class="active"><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="#"><i class="fas fa-chart-line"></i> Trading</a></li>
-                <li><a href="#"><i class="fas fa-coins"></i> Staking</a></li>
-                <li><a href="#"><i class="fas fa-wallet"></i> Investment</a></li>
+                <li><a href="trading.html"><i class="fas fa-chart-line"></i> Trading</a></li>
+                <li><a href="staking.html"><i class="fas fa-coins"></i> Staking</a></li>
+                <li><a href="investment.html"><i class="fas fa-wallet"></i> Investment</a></li>
             </ul>
 
             <div class="nav-right">
@@ -341,6 +340,9 @@
             <div class="sidebar-item"><i class="fas fa-user"></i> Account Settings</div>
             <div class="sidebar-item"><i class="fas fa-credit-card"></i> Fund</div>
             <div class="sidebar-item"><i class="fas fa-history"></i> Transactions</div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-item"><i class="fas fa-coins"></i> Staking</div>
+            <div class="sidebar-item"><i class="fas fa-wallet"></i> Investment</div>
             <div class="sidebar-divider"></div>
             <div class="sidebar-item"><i class="fas fa-shield-alt"></i> Security</div>
             <div class="sidebar-item"><i class="fas fa-headset"></i> Support</div>
@@ -694,7 +696,6 @@
                 if (!user) return;
 
                 const name = user.user_metadata?.name || user.email || 'User';
-                // Update user name and avatar with null checks
                 const userNameEl = document.getElementById('userName');
                 if (userNameEl) userNameEl.textContent = name;
 
@@ -783,13 +784,13 @@
 
                 // --- Deposit / Withdraw ---
                 document.getElementById('depositBtn').addEventListener('click', function() {
-                    alert('Deposit modal would open here.');
+                    window.location.href = 'deposit.html';
                 });
                 document.getElementById('withdrawBtn').addEventListener('click', function() {
                     alert('Withdraw modal would open here.');
                 });
 
-                  // --- Theme toggle (fixed with reliable selectors) ---
+                // --- Theme toggle ---
                 const themeIcon = document.getElementById('themeIconSidebar');
                 const themeLabel = document.getElementById('themeLabelSidebar');
                 const savedTheme = localStorage.getItem('theme') || 'light';
@@ -897,7 +898,6 @@
                         renderCoinTable(data);
                     } catch (err) {
                         console.error('Coin fetch error:', err);
-                        // Show fallback message in table
                         const tbody = document.getElementById('coinTableBody');
                         if (tbody) {
                             tbody.innerHTML =
@@ -975,11 +975,9 @@
 
                 let labels, data;
                 if (historyData && historyData.length > 0) {
-                    // Use real data from Supabase
                     labels = historyData.map(h => h.date);
                     data = historyData.map(h => h.value);
                 } else {
-                    // Fallback: generate mock data
                     labels = [];
                     data = [];
                     let base = 25000;
