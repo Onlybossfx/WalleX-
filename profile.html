@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile · WalleX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ===== THEME ===== */
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-glass: rgba(255,255,255,0.7);
+            --bg-glass-hover: rgba(255,255,255,0.9);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: rgba(124,58,237,0.15);
+            --border-subtle: rgba(0,0,0,0.06);
+            --shadow: 0 4px 24px rgba(0,0,0,0.05);
+            --shadow-hover: 0 8px 40px rgba(0,0,0,0.09);
+            --purple: #7C3AED;
+            --purple-light: #8B5CF6;
+            --purple-dark: #5B21B6;
+            --green: #10b981;
+            --red: #ef4444;
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        [data-theme="dark"] {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-glass: rgba(20,20,20,0.75);
+            --bg-glass-hover: rgba(30,30,30,0.85);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: rgba(124,58,237,0.25);
+            --border-subtle: rgba(255,255,255,0.06);
+            --shadow: 0 4px 24px rgba(0,0,0,0.5);
+            --shadow-hover: 0 8px 40px rgba(0,0,0,0.7);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background 0.3s, color 0.3s;
+            overflow-x:hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background:var(--purple); border-radius:10px; }
+
+        .container { max-width:1200px; margin:0 auto; padding:0 24px; }
+
+        .glass {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .glass:hover {
+            background: var(--bg-glass-hover);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+            color: #fff; font-weight: 600; font-size: 0.95rem;
+            border: none; border-radius: 50px; cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 16px rgba(124,58,237,0.25);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124,58,237,0.35); }
+        .btn-primary:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+        .btn-secondary {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 28px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-weight: 600; font-size: 0.95rem;
+            border-radius: 50px; cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        .btn-secondary:hover { background: var(--bg-glass-hover); border-color: var(--purple); transform: translateY(-2px); }
+
+        .logo img { height:36px; width:auto; display:block; }
+
+        /* ===== NAVBAR (same as dashboard) ===== */
+        .navbar {
+            position: fixed; top:0; left:0; right:0; z-index:1000;
+            padding:12px 0;
+            background: var(--bg-glass);
+            backdrop-filter: blur(30px);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .navbar .container { display:flex; justify-content:space-between; align-items:center; }
+        .nav-links { display:flex; gap:28px; align-items:center; list-style:none; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight:500; font-size:0.9rem; display:flex; align-items:center; gap:6px; }
+        .nav-links a:hover, .nav-links a.active { color:var(--purple); }
+        @media (max-width:992px) { .nav-links { display:none !important; } }
+
+        .user-avatar-wrap { position:relative; cursor:pointer; }
+        .user-avatar { width:40px; height:40px; border-radius:50%; background: linear-gradient(135deg, var(--purple), var(--purple-light)); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1rem; color:#fff; transition:var(--transition); border:2px solid transparent; user-select:none; }
+        .user-avatar:hover { border-color:var(--purple-light); transform:scale(1.05); }
+        .avatar-dropdown { position:absolute; top:52px; right:0; min-width:200px; background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius); box-shadow:var(--shadow-hover); padding:8px 0; opacity:0; visibility:hidden; transform:translateY(-8px); transition:var(--transition); z-index:999; }
+        .avatar-dropdown.open { opacity:1; visibility:visible; transform:translateY(0); }
+        .avatar-dropdown .dropdown-item { display:flex; align-items:center; gap:12px; padding:10px 18px; color:var(--text-secondary); font-size:0.9rem; transition:var(--transition); cursor:pointer; border:none; background:none; width:100%; text-align:left; }
+        .avatar-dropdown .dropdown-item:hover { background:rgba(124,58,237,0.06); color:var(--purple); }
+        .avatar-dropdown .dropdown-divider { height:1px; background:var(--border-subtle); margin:4px 12px; }
+
+        .hamburger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px; margin-left:12px; }
+        .hamburger span { display:block; width:26px; height:2px; background:var(--text-primary); border-radius:4px; transition:var(--transition); }
+        @media (max-width:992px) { .hamburger { display:flex; } }
+
+        .nav-right { display:flex; align-items:center; gap:12px; }
+
+        /* ===== SIDEBAR ===== */
+        .dashboard { display:flex; min-height:100vh; padding-top:66px; background:var(--bg-primary); transition:var(--transition); }
+        .dashboard-sidebar {
+            width:220px; flex-shrink:0; padding:20px 12px;
+            background:var(--bg-glass); backdrop-filter:blur(20px);
+            border-right:1px solid var(--border-subtle);
+            height:calc(100vh - 66px); position:sticky; top:66px; overflow-y:auto;
+            display:flex; flex-direction:column; gap:2px;
+        }
+        .sidebar-item { display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:10px; color:var(--text-secondary); font-weight:500; font-size:0.9rem; transition:var(--transition); cursor:pointer; border:none; background:none; width:100%; text-align:left; }
+        .sidebar-item:hover { background:rgba(124,58,237,0.08); color:var(--purple); }
+        .sidebar-item.active { background:rgba(124,58,237,0.1); color:var(--purple); border:1px solid rgba(124,58,237,0.15); }
+        .sidebar-item i { width:18px; text-align:center; }
+        .sidebar-divider { height:1px; background:var(--border-subtle); margin:8px 0; }
+        .sidebar-bottom { margin-top:auto; display:flex; flex-direction:column; gap:2px; }
+
+        .sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.3); z-index:98; }
+        .sidebar-overlay.open { display:block; }
+
+        @media (max-width:992px) {
+            .dashboard-sidebar { display:none; position:fixed; top:66px; left:0; bottom:0; width:280px; background:var(--bg-secondary); backdrop-filter:blur(30px); border-right:1px solid var(--border-subtle); z-index:99; padding:20px 16px; overflow-y:auto; }
+            .dashboard-sidebar.open { display:flex; }
+        }
+
+        .dashboard-main { flex:1; padding:24px 32px 100px; overflow-y:auto; }
+        .page-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:28px; }
+        .page-header h1 { font-size:1.6rem; font-weight:700; }
+        .page-header .sub { color:var(--text-secondary); font-size:0.9rem; }
+
+        /* ===== PROFILE LAYOUT ===== */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+        }
+
+        /* Left Panel – Avatar + Stats */
+        .profile-left {
+            padding: 24px;
+            text-align: center;
+        }
+        .profile-left .avatar-wrap {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+        .profile-left .avatar-wrap .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), var(--purple-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+            color: #fff;
+            border: 4px solid var(--border-subtle);
+            box-shadow: 0 8px 32px rgba(124,58,237,0.2);
+            object-fit: cover;
+            cursor: pointer;
+        }
+        .profile-left .avatar-wrap .avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .profile-left .avatar-wrap .avatar-upload {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--purple);
+            color: #fff;
+            border: 2px solid var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .profile-left .avatar-wrap .avatar-upload:hover {
+            transform: scale(1.1);
+        }
+        .profile-left .user-name { font-size: 1.4rem; font-weight:700; margin-top: 8px; }
+        .profile-left .user-email { color: var(--text-secondary); font-size:0.95rem; }
+        .profile-left .user-since { color: var(--text-muted); font-size:0.8rem; margin-top:4px; }
+
+        .profile-left .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        .profile-left .stats-grid .stat-item {
+            background: var(--bg-glass);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-subtle);
+        }
+        .profile-left .stats-grid .stat-item .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+        .profile-left .stats-grid .stat-item .value {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-top: 2px;
+        }
+        .profile-left .stats-grid .stat-item .value.verified { color: var(--green); }
+        .profile-left .stats-grid .stat-item .value.unverified { color: var(--red); }
+
+        /* Right Panel – Form */
+        .profile-right {
+            padding: 28px 24px;
+        }
+        .profile-right .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .profile-right .form-grid .full-width { grid-column: 1 / -1; }
+        .profile-right .form-group { margin-bottom: 8px; }
+        .profile-right .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+            color: var(--text-secondary);
+        }
+        .profile-right .form-group input,
+        .profile-right .form-group select,
+        .profile-right .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            outline: none;
+            font-family: inherit;
+        }
+        .profile-right .form-group input:focus,
+        .profile-right .form-group select:focus,
+        .profile-right .form-group textarea:focus { border-color: var(--purple); }
+        .profile-right .form-group textarea { resize: vertical; min-height: 60px; }
+
+        .profile-right .social-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .profile-right .social-input-group .social-icon {
+            width: 36px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        .profile-right .social-input-group input { flex: 1; }
+
+        .profile-right .form-actions { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+
+        .toast {
+            position: fixed; bottom: 80px; left: 50%; transform:translateX(-50%);
+            padding: 12px 24px; border-radius: 12px;
+            background: var(--bg-secondary); border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-hover); z-index: 3000;
+            font-size:0.9rem; font-weight:500; display:none; max-width:90%; text-align:center;
+        }
+        .toast.show { display:block; animation:fadeInUp 0.3s ease; }
+        .toast.success { border-color:var(--green); color:var(--green); }
+        .toast.error { border-color:var(--red); color:var(--red); }
+        .toast.info { border-color:var(--purple); color:var(--purple); }
+        @keyframes fadeInUp { from { opacity:0; transform:translateX(-50%) translateY(10px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
+
+        .bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--bg-glass); backdrop-filter:blur(20px); border-top:1px solid var(--border-subtle); padding:6px 0 env(safe-area-inset-bottom); z-index:100; justify-content:space-around; transition:var(--transition); }
+        .bottom-nav a { display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--text-secondary); text-decoration:none; font-size:0.6rem; padding:6px 12px; transition:var(--transition); }
+        .bottom-nav a i { font-size:1.2rem; }
+        .bottom-nav a.active { color:var(--purple); }
+        .bottom-nav a:hover { color:var(--purple); }
+
+        @media (max-width:992px) {
+            .bottom-nav { display:flex; }
+            .dashboard-main { padding:16px 16px 90px; }
+            .profile-grid { grid-template-columns:1fr; }
+            .profile-left { min-height:auto; padding:20px; }
+            .profile-right .form-grid { grid-template-columns:1fr; }
+        }
+        @media (max-width:480px) {
+            .profile-left .stats-grid { grid-template-columns:1fr; }
+            .profile-right { padding:16px; }
+        }
+
+        .auth-loading { display:flex; align-items:center; justify-content:center; min-height:60vh; flex-direction:column; gap:16px; }
+        .auth-loading .spinner { width:40px; height:40px; border:3px solid var(--border-subtle); border-top-color:var(--purple); border-radius:50%; animation:spin 0.8s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .auth-loading p { color:var(--text-secondary); font-size:0.95rem; }
+
+        /* File input hidden */
+        #avatarInput { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="dashboard.html" class="logo"><img src="logo.png" alt="WalleX" /></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="trading.html"><i class="fas fa-chart-line"></i> Trading</a></li>
+                <li><a href="staking.html"><i class="fas fa-coins"></i> Staking</a></li>
+                <li><a href="investment.html"><i class="fas fa-wallet"></i> Investment</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="user-avatar-wrap" id="avatarWrap">
+                    <div class="user-avatar" id="userAvatar"><span id="avatarInitials">U</span></div>
+                    <div class="avatar-dropdown" id="avatarDropdown">
+                        <a href="profile.html" class="dropdown-item"><i class="fas fa-user"></i> Profile</a>
+                        <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item" id="logoutAvatar"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    </div>
+                </div>
+                <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== SIDEBAR OVERLAY ===== -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="dashboard">
+
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-item active"><i class="fas fa-user"></i> Profile</div>
+            <div class="sidebar-item"><i class="fas fa-cog"></i> Settings</div>
+            <div class="sidebar-item"><i class="fas fa-credit-card"></i> Fund</div>
+            <div class="sidebar-item"><i class="fas fa-history"></i> Transactions</div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-item"><i class="fas fa-coins"></i> Staking</div>
+            <div class="sidebar-item"><i class="fas fa-wallet"></i> Investment</div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-item"><i class="fas fa-shield-alt"></i> Security</div>
+            <div class="sidebar-item"><i class="fas fa-headset"></i> Support</div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-bottom">
+                <div class="sidebar-item" id="themeToggleSidebar"><i class="fas fa-adjust"></i> Dark Mode</div>
+                <div class="sidebar-item" id="logoutSidebar"><i class="fas fa-sign-out-alt"></i> Logout</div>
+            </div>
+        </aside>
+
+        <main class="dashboard-main" id="profileContent">
+            <div id="authLoading" class="auth-loading">
+                <div class="spinner"></div>
+                <p>Loading your profile…</p>
+            </div>
+
+            <div id="profileContentInner" style="display:none;">
+                <div class="page-header">
+                    <div>
+                        <h1>👤 Profile</h1>
+                        <div class="sub">Manage your personal information</div>
+                    </div>
+                </div>
+
+                <div class="profile-grid">
+                    <!-- Left: Avatar + Stats -->
+                    <div class="profile-left glass">
+                        <div class="avatar-wrap">
+                            <div class="avatar" id="profileAvatar">U</div>
+                            <label class="avatar-upload" for="avatarInput">
+                                <i class="fas fa-camera"></i>
+                            </label>
+                            <input type="file" id="avatarInput" accept="image/*" />
+                        </div>
+                        <div class="user-name" id="profileName">User</div>
+                        <div class="user-email" id="profileEmail">user@example.com</div>
+                        <div class="user-since" id="profileSince">Member since: --</div>
+
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="label">Email Verified</div>
+                                <div class="value" id="emailVerified">--</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="label">2FA</div>
+                                <div class="value" id="twofaStatus">--</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="label">Last Login</div>
+                                <div class="value" id="lastLogin">--</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="label">Member Since</div>
+                                <div class="value" id="memberSince">--</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Edit Form -->
+                    <div class="profile-right glass">
+                        <form id="profileForm" novalidate>
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label for="displayName">Display Name</label>
+                                    <input type="text" id="displayName" placeholder="Your display name" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="fullName">Full Name</label>
+                                    <input type="text" id="fullName" placeholder="John Doe" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="phoneNumber">Phone Number</label>
+                                    <input type="tel" id="phoneNumber" placeholder="+1 234 567 890" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="country">Country</label>
+                                    <select id="country">
+                                        <option value="">Select country</option>
+                                        <option value="US">United States</option>
+                                        <option value="UK">United Kingdom</option>
+                                        <option value="NG">Nigeria</option>
+                                        <option value="DE">Germany</option>
+                                        <option value="FR">France</option>
+                                        <option value="AU">Australia</option>
+                                        <option value="CA">Canada</option>
+                                        <option value="IN">India</option>
+                                        <option value="SG">Singapore</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="timezone">Timezone</label>
+                                    <select id="timezone">
+                                        <option value="UTC">UTC</option>
+                                        <option value="America/New_York">Eastern Time (ET)</option>
+                                        <option value="America/Chicago">Central Time (CT)</option>
+                                        <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                                        <option value="Europe/London">GMT/BST</option>
+                                        <option value="Europe/Berlin">CET</option>
+                                        <option value="Asia/Dubai">GST</option>
+                                        <option value="Asia/Singapore">SGT</option>
+                                        <option value="Africa/Lagos">WAT</option>
+                                    </select>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="bio">Bio / About</label>
+                                    <textarea id="bio" rows="2" placeholder="Tell us a bit about yourself"></textarea>
+                                </div>
+                                <!-- Social Links -->
+                                <div class="form-group full-width">
+                                    <label>Social Links</label>
+                                    <div class="social-input-group">
+                                        <span class="social-icon"><i class="fab fa-twitter"></i></span>
+                                        <input type="text" id="twitterLink" placeholder="https://twitter.com/username" />
+                                    </div>
+                                    <div class="social-input-group" style="margin-top:8px;">
+                                        <span class="social-icon"><i class="fab fa-github"></i></span>
+                                        <input type="text" id="githubLink" placeholder="https://github.com/username" />
+                                    </div>
+                                    <div class="social-input-group" style="margin-top:8px;">
+                                        <span class="social-icon"><i class="fab fa-discord"></i></span>
+                                        <input type="text" id="discordLink" placeholder="Discord username" />
+                                    </div>
+                                    <div class="social-input-group" style="margin-top:8px;">
+                                        <span class="social-icon"><i class="fab fa-telegram"></i></span>
+                                        <input type="text" id="telegramLink" placeholder="Telegram username" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ===== BOTTOM NAV ===== -->
+    <div class="bottom-nav">
+        <a href="dashboard.html"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="trading.html"><i class="fas fa-chart-line"></i><span>Trading</span></a>
+        <a href="staking.html"><i class="fas fa-coins"></i><span>Staking</span></a>
+        <a href="investment.html"><i class="fas fa-wallet"></i><span>Investment</span></a>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ===== JS ===== -->
+    <script>
+        (function() {
+            'use strict';
+
+            // === Supabase Loader ===
+            const loadingEl = document.getElementById('authLoading');
+            const contentEl = document.getElementById('profileContentInner');
+
+            function loadSupabase(callback, retries) {
+                retries = retries || 0;
+                if (typeof supabase !== 'undefined' || typeof window.supabase !== 'undefined') { callback(); return; }
+                var script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+                script.async = true;
+                script.onload = function() {
+                    setTimeout(function() {
+                        if (typeof supabase !== 'undefined' || typeof window.supabase !== 'undefined') { callback(); }
+                        else if (retries < 3) { loadSupabase(callback, retries + 1); }
+                        else { loadingEl.innerHTML = '<p style="color:red;">Failed to load authentication.</p>'; }
+                    }, 300);
+                };
+                script.onerror = function() {
+                    if (retries < 3) loadSupabase(callback, retries + 1);
+                    else loadingEl.innerHTML = '<p style="color:red;">Failed to load authentication.</p>';
+                };
+                document.head.appendChild(script);
+            }
+
+            // === Supabase Auth ===
+            function initSupabaseAuth() {
+                const SUPABASE_URL = 'https://agscnbiwmotspzjbosmr.supabase.co';
+                const SUPABASE_ANON_KEY =
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnc2NuYml3bW90c3B6amJvc21yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyODQxNzksImV4cCI6MjA5OTg2MDE3OX0.tsG16bCY-KX5fSH2JoLI9DtO0n7MOt49UdKBnLvD4e8';
+                const sb = typeof supabase !== 'undefined' ? supabase : window.supabase;
+                if (!sb) return loadingEl.innerHTML = '<p style="color:red;">Supabase unavailable.</p>';
+                const supabaseClient = sb.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+                const auth = {
+                    async signOut() { await supabaseClient.auth.signOut();
+                        sessionStorage.clear();
+                        window.location.href = 'login.html'; },
+                    storeSession(user) { sessionStorage.setItem('user', JSON.stringify(user)); },
+                    getSession() { const stored = sessionStorage.getItem('user'); return stored ? JSON.parse(stored) :
+                        null; },
+                    async requireAuth() {
+                        const session = this.getSession();
+                        if (session) return session;
+                        const { data } = await supabaseClient.auth.getSession();
+                        if (!data.session) { window.location.href = 'login.html'; return null; }
+                        this.storeSession(data.session.user);
+                        return data.session.user;
+                    },
+                    get supabase() { return supabaseClient; }
+                };
+                window.supabaseClient = auth;
+                console.log('✅ Supabase auth loaded');
+                initProfile();
+            }
+
+            // === Profile Logic ===
+            let currentUser = null;
+            let profileData = {};
+
+            function showToast(msg, type = 'info') {
+                const t = document.getElementById('toast');
+                t.textContent = msg;
+                t.className = 'toast ' + type + ' show';
+                clearTimeout(t._timeout);
+                t._timeout = setTimeout(() => t.classList.remove('show'), 4000);
+            }
+
+            async function initProfile() {
+                loadingEl.style.display = 'none';
+                contentEl.style.display = 'block';
+
+                const auth = window.supabaseClient;
+                const user = await auth.requireAuth();
+                if (!user) return;
+                currentUser = user;
+
+                // Fetch profile
+                const { data: profile, error } = await auth.supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+
+                if (error || !profile) {
+                    showToast('Failed to load profile.', 'error');
+                    return;
+                }
+                profileData = profile;
+
+                // Fill UI
+                const name = profile.name || user.user_metadata?.name || user.email || 'User';
+                const email = user.email || profile.email || '';
+                const created = profile.created_at ? new Date(profile.created_at).toLocaleDateString() : 'N/A';
+                const lastLogin = profile.last_login_at ? new Date(profile.last_login_at).toLocaleString() : 'Never';
+
+                document.getElementById('profileAvatar').textContent = name.charAt(0).toUpperCase();
+                document.getElementById('profileName').textContent = name;
+                document.getElementById('profileEmail').textContent = email;
+                document.getElementById('profileSince').textContent = 'Member since: ' + created;
+                document.getElementById('memberSince').textContent = created;
+
+                // Stats
+                document.getElementById('emailVerified').textContent = user.email_confirmed_at ? '✅ Verified' : '❌ Unverified';
+                document.getElementById('emailVerified').className = 'value ' + (user.email_confirmed_at ? 'verified' :
+                    'unverified');
+                document.getElementById('twofaStatus').textContent = profile.two_factor_enabled ? '✅ Enabled' : '❌ Disabled';
+                document.getElementById('twofaStatus').className = 'value ' + (profile.two_factor_enabled ? 'verified' :
+                    'unverified');
+                document.getElementById('lastLogin').textContent = lastLogin;
+
+                // Form fields
+                document.getElementById('displayName').value = name;
+                document.getElementById('fullName').value = profile.full_name || '';
+                document.getElementById('phoneNumber').value = profile.phone || '';
+                document.getElementById('country').value = profile.country || '';
+                document.getElementById('timezone').value = profile.timezone || 'UTC';
+                document.getElementById('bio').value = profile.bio || '';
+                document.getElementById('twitterLink').value = profile.twitter || '';
+                document.getElementById('githubLink').value = profile.github || '';
+                document.getElementById('discordLink').value = profile.discord || '';
+                document.getElementById('telegramLink').value = profile.telegram || '';
+
+                // Avatar initials in navbar
+                const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                document.getElementById('avatarInitials').textContent = initials || 'U';
+
+                // Theme toggle
+                const themeIcon = document.getElementById('themeIconSidebar');
+                const themeLabel = document.getElementById('themeLabelSidebar');
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                updateThemeUI(savedTheme);
+
+                function updateThemeUI(theme) {
+                    if (!themeIcon || !themeLabel) return;
+                    if (theme === 'dark') {
+                        themeIcon.className = 'fas fa-sun';
+                        themeLabel.textContent = 'Light Mode';
+                    } else {
+                        themeIcon.className = 'fas fa-moon';
+                        themeLabel.textContent = 'Dark Mode';
+                    }
+                }
+
+                document.getElementById('themeToggleSidebar').addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    localStorage.setItem('theme', next);
+                    updateThemeUI(next);
+                });
+
+                // Sidebar toggle (mobile)
+                const hamburger = document.getElementById('hamburger');
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebarOverlay');
+                hamburger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    sidebar.classList.toggle('open');
+                    overlay.classList.toggle('open');
+                });
+                overlay.addEventListener('click', function() {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('open');
+                });
+
+                // Logout
+                function logout() { auth.signOut(); }
+                document.getElementById('logoutAvatar').addEventListener('click', logout);
+                document.getElementById('logoutSidebar').addEventListener('click', logout);
+
+                // Avatar dropdown
+                document.getElementById('avatarWrap').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    document.getElementById('avatarDropdown').classList.toggle('open');
+                });
+                document.addEventListener('click', function() {
+                    document.getElementById('avatarDropdown').classList.remove('open');
+                });
+
+                // Avatar upload
+                document.getElementById('avatarInput').addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        const avatarDiv = document.getElementById('profileAvatar');
+                        avatarDiv.innerHTML = `<img src="${ev.target.result}" alt="Avatar" />`;
+                        showToast('Avatar updated! (Upload to storage not implemented in demo)', 'info');
+                    };
+                    reader.readAsDataURL(file);
+                });
+
+                // Profile form submission
+                document.getElementById('profileForm').addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const displayName = document.getElementById('displayName').value.trim();
+                    const fullName = document.getElementById('fullName').value.trim();
+                    const phone = document.getElementById('phoneNumber').value.trim();
+                    const country = document.getElementById('country').value;
+                    const timezone = document.getElementById('timezone').value;
+                    const bio = document.getElementById('bio').value.trim();
+                    const twitter = document.getElementById('twitterLink').value.trim();
+                    const github = document.getElementById('githubLink').value.trim();
+                    const discord = document.getElementById('discordLink').value.trim();
+                    const telegram = document.getElementById('telegramLink').value.trim();
+
+                    if (!displayName) {
+                        showToast('Display name is required.', 'error');
+                        return;
+                    }
+
+                    const btn = this.querySelector('.btn-primary');
+                    btn.disabled = true;
+                    btn.textContent = 'Saving...';
+
+                    try {
+                        const updates = {
+                            name: displayName,
+                            full_name: fullName,
+                            phone: phone || null,
+                            country: country || null,
+                            timezone: timezone || null,
+                            bio: bio || null,
+                            twitter: twitter || null,
+                            github: github || null,
+                            discord: discord || null,
+                            telegram: telegram || null,
+                            updated_at: new Date().toISOString(),
+                        };
+
+                        const { error: profileError } = await auth.supabase
+                            .from('profiles')
+                            .update(updates)
+                            .eq('id', currentUser.id);
+
+                        if (profileError) throw profileError;
+
+                        // Update local display
+                        document.getElementById('profileName').textContent = displayName;
+                        document.getElementById('profileAvatar').textContent = displayName.charAt(0).toUpperCase();
+                        const initials = displayName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                        document.getElementById('avatarInitials').textContent = initials || 'U';
+
+                        showToast('Profile updated successfully!', 'success');
+                    } catch (err) {
+                        console.error(err);
+                        showToast('Error: ' + err.message, 'error');
+                    } finally {
+                        btn.disabled = false;
+                        btn.textContent = 'Save Changes';
+                    }
+                });
+
+                console.log('✅ Profile page initialized');
+            }
+
+            loadSupabase(initSupabaseAuth, 0);
+        })();
+    </script>
+</body>
+</html>

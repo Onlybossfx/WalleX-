@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings · WalleX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ===== THEME ===== */
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-glass: rgba(255,255,255,0.7);
+            --bg-glass-hover: rgba(255,255,255,0.9);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: rgba(124,58,237,0.15);
+            --border-subtle: rgba(0,0,0,0.06);
+            --shadow: 0 4px 24px rgba(0,0,0,0.05);
+            --shadow-hover: 0 8px 40px rgba(0,0,0,0.09);
+            --purple: #7C3AED;
+            --purple-light: #8B5CF6;
+            --purple-dark: #5B21B6;
+            --green: #10b981;
+            --red: #ef4444;
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        [data-theme="dark"] {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-glass: rgba(20,20,20,0.75);
+            --bg-glass-hover: rgba(30,30,30,0.85);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: rgba(124,58,237,0.25);
+            --border-subtle: rgba(255,255,255,0.06);
+            --shadow: 0 4px 24px rgba(0,0,0,0.5);
+            --shadow-hover: 0 8px 40px rgba(0,0,0,0.7);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background 0.3s, color 0.3s;
+            overflow-x:hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background:var(--purple); border-radius:10px; }
+
+        .glass {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .glass:hover {
+            background: var(--bg-glass-hover);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+            color: #fff; font-weight: 600; font-size: 0.95rem;
+            border: none; border-radius: 50px; cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 16px rgba(124,58,237,0.25);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124,58,237,0.35); }
+        .btn-primary:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+        .btn-secondary {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 28px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-weight: 600; font-size: 0.95rem;
+            border-radius: 50px; cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        .btn-secondary:hover { background: var(--bg-glass-hover); border-color: var(--purple); transform: translateY(-2px); }
+
+        .btn-danger { background: var(--red); color: #fff; }
+        .btn-danger:hover { background: #dc2626; }
+
+        .logo img { height:36px; width:auto; display:block; }
+
+        /* ===== NAVBAR (same as dashboard) ===== */
+        .navbar {
+            position: fixed; top:0; left:0; right:0; z-index:1000;
+            padding:12px 0;
+            background: var(--bg-glass);
+            backdrop-filter: blur(30px);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .navbar .container { display:flex; justify-content:space-between; align-items:center; }
+        .nav-links { display:flex; gap:28px; align-items:center; list-style:none; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight:500; font-size:0.9rem; display:flex; align-items:center; gap:6px; }
+        .nav-links a:hover, .nav-links a.active { color:var(--purple); }
+        @media (max-width:992px) { .nav-links { display:none !important; } }
+
+        .user-avatar-wrap { position:relative; cursor:pointer; }
+        .user-avatar { width:40px; height:40px; border-radius:50%; background: linear-gradient(135deg, var(--purple), var(--purple-light)); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1rem; color:#fff; transition:var(--transition); border:2px solid transparent; user-select:none; }
+        .user-avatar:hover { border-color:var(--purple-light); transform:scale(1.05); }
+        .avatar-dropdown { position:absolute; top:52px; right:0; min-width:200px; background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius); box-shadow:var(--shadow-hover); padding:8px 0; opacity:0; visibility:hidden; transform:translateY(-8px); transition:var(--transition); z-index:999; }
+        .avatar-dropdown.open { opacity:1; visibility:visible; transform:translateY(0); }
+        .avatar-dropdown .dropdown-item { display:flex; align-items:center; gap:12px; padding:10px 18px; color:var(--text-secondary); font-size:0.9rem; transition:var(--transition); cursor:pointer; border:none; background:none; width:100%; text-align:left; }
+        .avatar-dropdown .dropdown-item:hover { background:rgba(124,58,237,0.06); color:var(--purple); }
+        .avatar-dropdown .dropdown-divider { height:1px; background:var(--border-subtle); margin:4px 12px; }
+
+        .hamburger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px; margin-left:12px; }
+        .hamburger span { display:block; width:26px; height:2px; background:var(--text-primary); border-radius:4px; transition:var(--transition); }
+        @media (max-width:992px) { .hamburger { display:flex; } }
+
+        .nav-right { display:flex; align-items:center; gap:12px; }
+
+        /* ===== SIDEBAR ===== */
+        .dashboard { display:flex; min-height:100vh; padding-top:66px; background:var(--bg-primary); transition:var(--transition); }
+        .dashboard-sidebar {
+            width:220px; flex-shrink:0; padding:20px 12px;
+            background:var(--bg-glass); backdrop-filter:blur(20px);
+            border-right:1px solid var(--border-subtle);
+            height:calc(100vh - 66px); position:sticky; top:66px; overflow-y:auto;
+            display:flex; flex-direction:column; gap:2px;
+        }
+        .sidebar-item { display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:10px; color:var(--text-secondary); font-weight:500; font-size:0.9rem; transition:var(--transition); cursor:pointer; border:none; background:none; width:100%; text-align:left; }
+        .sidebar-item:hover { background:rgba(124,58,237,0.08); color:var(--purple); }
+        .sidebar-item.active { background:rgba(124,58,237,0.1); color:var(--purple); border:1px solid rgba(124,58,237,0.15); }
+        .sidebar-item i { width:18px; text-align:center; }
+        .sidebar-divider { height:1px; background:var(--border-subtle); margin:8px 0; }
+        .sidebar-bottom { margin-top:auto; display:flex; flex-direction:column; gap:2px; }
+
+        .sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.3); z-index:98; }
+        .sidebar-overlay.open { display:block; }
+
+        @media (max-width:992px) {
+            .dashboard-sidebar { display:none; position:fixed; top:66px; left:0; bottom:0; width:280px; background:var(--bg-secondary); backdrop-filter:blur(30px); border-right:1px solid var(--border-subtle); z-index:99; padding:20px 16px; overflow-y:auto; }
+            .dashboard-sidebar.open { display:flex; }
+        }
+
+        .dashboard-main { flex:1; padding:24px 32px 100px; overflow-y:auto; }
+        .page-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:28px; }
+        .page-header h1 { font-size:1.6rem; font-weight:700; }
+        .page-header .sub { color:var(--text-secondary); font-size:0.9rem; }
+
+        /* ===== SETTINGS LAYOUT ===== */
+        .settings-layout {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 24px;
+        }
+
+        /* Settings Sidebar (tabs) */
+        .settings-nav {
+            padding: 16px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .settings-nav .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+        .settings-nav .nav-item:hover {
+            background: rgba(124,58,237,0.06);
+            color: var(--purple);
+        }
+        .settings-nav .nav-item.active {
+            background: rgba(124,58,237,0.1);
+            color: var(--purple);
+            border: 1px solid rgba(124,58,237,0.15);
+        }
+        .settings-nav .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+        .settings-nav .nav-item .badge {
+            margin-left: auto;
+            font-size: 0.65rem;
+            background: var(--red);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        /* Settings Content */
+        .settings-content {
+            padding: 24px;
+        }
+        .settings-content .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .settings-content .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity:0; transform:translateY(8px); }
+            to { opacity:1; transform:translateY(0); }
+        }
+        .settings-content .tab-content h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .settings-content .tab-content .desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .settings-content .form-group { margin-bottom: 16px; }
+        .settings-content .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+            color: var(--text-secondary);
+        }
+        .settings-content .form-group input,
+        .settings-content .form-group select,
+        .settings-content .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            outline: none;
+            font-family: inherit;
+        }
+        .settings-content .form-group input:focus,
+        .settings-content .form-group select:focus,
+        .settings-content .form-group textarea:focus { border-color: var(--purple); }
+
+        .settings-content .form-actions { display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
+
+        /* Toggle switch */
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .toggle-row:last-child { border-bottom: none; }
+        .toggle-row .toggle-label { font-weight: 500; }
+        .toggle-row .toggle-desc { font-size: 0.8rem; color: var(--text-muted); }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: var(--border-subtle);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+        .toggle-switch.active {
+            background: var(--purple);
+        }
+        .toggle-switch .toggle-knob {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            transition: var(--transition);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .toggle-switch.active .toggle-knob {
+            left: 22px;
+        }
+
+        /* API Key list */
+        .api-key-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--bg-primary);
+            border-radius: 10px;
+            border: 1px solid var(--border-subtle);
+            margin-bottom: 8px;
+        }
+        .api-key-item .key-name { font-weight: 500; }
+        .api-key-item .key-prefix { color: var(--text-muted); font-family: monospace; font-size: 0.85rem; }
+        .api-key-item .key-actions { display: flex; gap: 8px; }
+        .api-key-item .key-actions button { font-size: 0.75rem; padding: 4px 12px; }
+
+        .toast {
+            position: fixed; bottom: 80px; left: 50%; transform:translateX(-50%);
+            padding: 12px 24px; border-radius: 12px;
+            background: var(--bg-secondary); border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-hover); z-index: 3000;
+            font-size:0.9rem; font-weight:500; display:none; max-width:90%; text-align:center;
+        }
+        .toast.show { display:block; animation:fadeInUp 0.3s ease; }
+        .toast.success { border-color:var(--green); color:var(--green); }
+        .toast.error { border-color:var(--red); color:var(--red); }
+        .toast.info { border-color:var(--purple); color:var(--purple); }
+        @keyframes fadeInUp { from { opacity:0; transform:translateX(-50%) translateY(10px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
+
+        .bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--bg-glass); backdrop-filter:blur(20px); border-top:1px solid var(--border-subtle); padding:6px 0 env(safe-area-inset-bottom); z-index:100; justify-content:space-around; transition:var(--transition); }
+        .bottom-nav a { display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--text-secondary); text-decoration:none; font-size:0.6rem; padding:6px 12px; transition:var(--transition); }
+        .bottom-nav a i { font-size:1.2rem; }
+        .bottom-nav a.active { color:var(--purple); }
+        .bottom-nav a:hover { color:var(--purple); }
+
+        @media (max-width:992px) {
+            .bottom-nav { display:flex; }
+            .dashboard-main { padding:16px 16px 90px; }
+            .settings-layout { grid-template-columns:1fr; }
+            .settings-nav { display:flex; flex-direction:row; flex-wrap:wrap; gap:4px; padding:12px; }
+            .settings-nav .nav-item { flex:1; min-width:100px; justify-content:center; font-size:0.8rem; padding:8px 12px; }
+            .settings-nav .nav-item .badge { display:none; }
+        }
+        @media (max-width:480px) {
+            .settings-content { padding:16px; }
+        }
+
+        .auth-loading { display:flex; align-items:center; justify-content:center; min-height:60vh; flex-direction:column; gap:16px; }
+        .auth-loading .spinner { width:40px; height:40px; border:3px solid var(--border-subtle); border-top-color:var(--purple); border-radius:50%; animation:spin 0.8s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .auth-loading p { color:var(--text-secondary); font-size:0.95rem; }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="dashboard.html" class="logo"><img src="logo.png" alt="WalleX" /></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="trading.html"><i class="fas fa-chart-line"></i> Trading</a></li>
+                <li><a href="staking.html"><i class="fas fa-coins"></i> Staking</a></li>
+                <li><a href="investment.html"><i class="fas fa-wallet"></i> Investment</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="user-avatar-wrap" id="avatarWrap">
+                    <div class="user-avatar" id="userAvatar"><span id="avatarInitials">U</span></div>
+                    <div class="avatar-dropdown" id="avatarDropdown">
+                        <a href="profile.html" class="dropdown-item"><i class="fas fa-user"></i> Profile</a>
+                        <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item" id="logoutAvatar"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    </div>
+                </div>
+                <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== SIDEBAR OVERLAY ===== -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="dashboard">
+
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-item"><i class="fas fa-user"></i> Profile</div>
+            <div class="sidebar-item active"><i class="fas fa-cog"></i> Settings</div>
+            <div class="sidebar-item"><i class="fas fa-credit-card"></i> Fund</div>
+            <div class="sidebar-item"><i class="fas fa-history"></i> Transactions</div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-item"><i class="fas fa-coins"></i> Staking</div>
+            <div class="sidebar-item"><i class="fas fa-wallet"></i> Investment</div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-item"><i class="fas fa-shield-alt"></i> Security</div>
+            <div class="sidebar-item"><i class="fas fa-headset"></i> Support</div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-bottom">
+                <div class="sidebar-item" id="themeToggleSidebar"><i class="fas fa-adjust"></i> Dark Mode</div>
+                <div class="sidebar-item" id="logoutSidebar"><i class="fas fa-sign-out-alt"></i> Logout</div>
+            </div>
+        </aside>
+
+        <main class="dashboard-main" id="settingsContent">
+            <div id="authLoading" class="auth-loading">
+                <div class="spinner"></div>
+                <p>Loading settings…</p>
+            </div>
+
+            <div id="settingsContentInner" style="display:none;">
+                <div class="page-header">
+                    <div>
+                        <h1>⚙️ Settings</h1>
+                        <div class="sub">Manage your account preferences and security</div>
+                    </div>
+                </div>
+
+                <div class="settings-layout">
+                    <!-- Settings Navigation (Tabs) -->
+                    <div class="settings-nav glass">
+                        <button class="nav-item active" data-tab="security"><i class="fas fa-shield-alt"></i> Security</button>
+                        <button class="nav-item" data-tab="notifications"><i class="fas fa-bell"></i> Notifications</button>
+                        <button class="nav-item" data-tab="privacy"><i class="fas fa-lock"></i> Privacy</button>
+                        <button class="nav-item" data-tab="appearance"><i class="fas fa-palette"></i> Appearance</button>
+                        <button class="nav-item" data-tab="api"><i class="fas fa-code"></i> API Keys</button>
+                        <button class="nav-item" data-tab="account"><i class="fas fa-user-cog"></i> Account</button>
+                    </div>
+
+                    <!-- Settings Content -->
+                    <div class="settings-content glass">
+
+                        <!-- ===== SECURITY TAB ===== -->
+                        <div class="tab-content active" id="tab-security">
+                            <h2>🔐 Security</h2>
+                            <p class="desc">Manage your password and two-factor authentication</p>
+
+                            <!-- Change Password -->
+                            <div style="margin-bottom:24px;">
+                                <h3 style="font-size:1rem;font-weight:600;margin-bottom:12px;">Change Password</h3>
+                                <form id="passwordForm">
+                                    <div class="form-group">
+                                        <label for="currentPassword">Current Password</label>
+                                        <input type="password" id="currentPassword" placeholder="••••••••" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newPassword">New Password</label>
+                                        <input type="password" id="newPassword" placeholder="••••••••" required minlength="8" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirmPassword">Confirm New Password</label>
+                                        <input type="password" id="confirmPassword" placeholder="••••••••" required />
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn-primary">Update Password</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Two-Factor Authentication -->
+                            <div>
+                                <h3 style="font-size:1rem;font-weight:600;margin-bottom:12px;">Two-Factor Authentication</h3>
+                                <div class="toggle-row">
+                                    <div>
+                                        <div class="toggle-label">Enable 2FA</div>
+                                        <div class="toggle-desc">Secure your account with an authenticator app</div>
+                                    </div>
+                                    <div class="toggle-switch" id="twofaToggle">
+                                        <div class="toggle-knob"></div>
+                                    </div>
+                                </div>
+                                <div id="twofaSection" style="display:none; margin-top:16px; padding:16px; background:var(--bg-primary); border-radius:10px;">
+                                    <p style="font-size:0.9rem;color:var(--text-secondary);margin-bottom:12px;">
+                                        Scan the QR code with your authenticator app (Google Authenticator, Authy, etc.)
+                                    </p>
+                                    <div style="background:var(--bg-glass);padding:16px;border-radius:8px;text-align:center;margin-bottom:12px;">
+                                        <div style="font-size:2rem;font-weight:700;letter-spacing:4px;font-family:monospace;" id="twofaSecret">------</div>
+                                    </div>
+                                    <div style="display:flex;gap:12px;">
+                                        <button class="btn-secondary" id="twofaVerifyBtn">Verify & Enable</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ===== NOTIFICATIONS TAB ===== -->
+                        <div class="tab-content" id="tab-notifications">
+                            <h2>🔔 Notifications</h2>
+                            <p class="desc">Choose what updates you receive</p>
+
+                            <div class="toggle-row">
+                                <div>
+                                    <div class="toggle-label">Email Notifications</div>
+                                    <div class="toggle-desc">All account and security updates</div>
+                                </div>
+                                <div class="toggle-switch active" id="emailNotifToggle">
+                                    <div class="toggle-knob"></div>
+                                </div>
+                            </div>
+                            <div class="toggle-row">
+                                <div>
+                                    <div class="toggle-label">Marketing Emails</div>
+                                    <div class="toggle-desc">New features, offers, and updates</div>
+                                </div>
+                                <div class="toggle-switch" id="marketingToggle">
+                                    <div class="toggle-knob"></div>
+                                </div>
+                            </div>
+                            <div class="toggle-row">
+                                <div>
+                                    <div class="toggle-label">Security Alerts</div>
+                                    <div class="toggle-desc">Login attempts, password changes, withdrawals</div>
+                                </div>
+                                <div class="toggle-switch active" id="securityAlertToggle">
+                                    <div class="toggle-knob"></div>
+                                </div>
+                            </div>
+                            <div class="toggle-row">
+                                <div>
+                                    <div class="toggle-label">Price Alerts</div>
+                                    <div class="toggle-desc">Notify when price targets are hit</div>
+                                </div>
+                                <div class="toggle-switch" id="priceAlertToggle">
+                                    <div class="toggle-knob"></div>
+                                </div>
+                            </div>
+                            <div class="toggle-row">
+                                <div>
+                                    <div class="toggle-label">Trade Confirmations</div>
+                                    <div class="toggle-desc">Email confirmation for every trade executed</div>
+                                </div>
+                                <div class="toggle-switch active" id="tradeConfirmToggle">
+                                    <div class="toggle-knob"></div>
+                                </div>
+                            </div>
+                            <div class="form-actions" style="margin-top:16px;">
+                                <button class="btn-primary" id="saveNotifBtn">Save Preferences</button>
+                            </div>
+                        </div>
+
+                        <!-- ===== PRIVACY TAB ===== -->
+                        <div class="tab-content" id="tab-privacy">
+                            <h2>🔒 Privacy</h2>
+                            <p class="desc">Control who can see your information</p>
+
+                            <div class="toggle-row">
+                                <div>
+                                    <div class="toggle-label">Profile Visibility</div>
+                                    <div class="toggle-desc">Make your profile visible to other users</div>
+                                </div>
+                                <div class="toggle-switch active" id="profileVisibilityToggle">
+                                    <div class="toggle-knob"></div>
+                                </div>
+                            </div>
+                            <div class="toggle-row">
+                                <div>
+                                    <div class="toggle-label">Show Email</div>
+                                    <div class="toggle-desc">Display your email address on your profile</div>
+                                </div>
+                                <div class="toggle-switch" id="showEmailToggle">
+                                    <div class="toggle-knob"></div>
+                                </div>
+                            </div>
+                            <div class="toggle-row">
+                                <div>
+                                    <div class="toggle-label">Show Phone Number</div>
+                                    <div class="toggle-desc">Display your phone number on your profile</div>
+                                </div>
+                                <div class="toggle-switch" id="showPhoneToggle">
+                                    <div class="toggle-knob"></div>
+                                </div>
+                            </div>
+                            <div class="toggle-row">
+                                <div>
+                                    <div class="toggle-label">Show Trading Activity</div>
+                                    <div class="toggle-desc">Allow others to see your public trades</div>
+                                </div>
+                                <div class="toggle-switch active" id="showTradesToggle">
+                                    <div class="toggle-knob"></div>
+                                </div>
+                            </div>
+                            <div class="form-actions" style="margin-top:16px;">
+                                <button class="btn-primary" id="savePrivacyBtn">Save Privacy Settings</button>
+                            </div>
+                        </div>
+
+                        <!-- ===== APPEARANCE TAB ===== -->
+                        <div class="tab-content" id="tab-appearance">
+                            <h2>🎨 Appearance</h2>
+                            <p class="desc">Customize the look and feel of your dashboard</p>
+
+                            <div class="toggle-row">
+                                <div>
+                                    <div class="toggle-label">Dark Mode</div>
+                                    <div class="toggle-desc">Switch between light and dark theme</div>
+                                </div>
+                                <div class="toggle-switch" id="darkModeToggle">
+                                    <div class="toggle-knob"></div>
+                                </div>
+                            </div>
+                            <div class="toggle-row" style="border-bottom: none;">
+                                <div>
+                                    <div class="toggle-label">System Preference</div>
+                                    <div class="toggle-desc">Automatically follow your system theme</div>
+                                </div>
+                                <div class="toggle-switch" id="systemThemeToggle">
+                                    <div class="toggle-knob"></div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-top:16px;">
+                                <label for="fontSize">Font Size</label>
+                                <select id="fontSize">
+                                    <option value="small">Small</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="large">Large</option>
+                                </select>
+                            </div>
+                            <div class="form-actions" style="margin-top:8px;">
+                                <button class="btn-primary" id="saveAppearanceBtn">Save Appearance</button>
+                            </div>
+                        </div>
+
+                        <!-- ===== API KEYS TAB ===== -->
+                        <div class="tab-content" id="tab-api">
+                            <h2>🔑 API Keys</h2>
+                            <p class="desc">Generate and manage API keys for programmatic access</p>
+
+                            <div style="margin-bottom:16px;">
+                                <button class="btn-primary" id="generateApiBtn"><i class="fas fa-plus"></i> Generate New Key</button>
+                            </div>
+                            <div id="apiKeysList">
+                                <div class="api-key-item">
+                                    <div>
+                                        <div class="key-name">Default Key</div>
+                                        <div class="key-prefix">••••••••••••</div>
+                                    </div>
+                                    <div class="key-actions">
+                                        <button class="btn-secondary" style="padding:4px 12px;font-size:0.75rem;">Revoke</button>
+                                    </div>
+                                </div>
+                                <div class="api-key-item">
+                                    <div>
+                                        <div class="key-name">Trading Bot</div>
+                                        <div class="key-prefix">••••••••••••</div>
+                                    </div>
+                                    <div class="key-actions">
+                                        <button class="btn-secondary" style="padding:4px 12px;font-size:0.75rem;">Revoke</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions" style="margin-top:8px;">
+                                <button class="btn-secondary" id="refreshApiBtn">Refresh Keys</button>
+                            </div>
+                        </div>
+
+                        <!-- ===== ACCOUNT TAB ===== -->
+                        <div class="tab-content" id="tab-account">
+                            <h2>👤 Account</h2>
+                            <p class="desc">Manage your account data and preferences</p>
+
+                            <div style="margin-bottom:20px;">
+                                <h3 style="font-size:1rem;font-weight:600;margin-bottom:8px;">Export Data</h3>
+                                <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:12px;">
+                                    Download a copy of all your data (transactions, trades, profile)
+                                </p>
+                                <button class="btn-secondary" id="exportDataBtn"><i class="fas fa-download"></i> Export Data</button>
+                            </div>
+
+                            <div style="border-top:1px solid var(--border-subtle);padding-top:20px;">
+                                <h3 style="font-size:1rem;font-weight:600;color:var(--red);margin-bottom:8px;">⚠️ Danger Zone</h3>
+                                <div class="toggle-row" style="border: none; padding: 8px 0;">
+                                    <div>
+                                        <div class="toggle-label">Delete Account</div>
+                                        <div class="toggle-desc">Permanently delete your account and all associated data</div>
+                                    </div>
+                                    <button class="btn-danger" id="deleteAccountBtn">Delete Account</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ===== BOTTOM NAV ===== -->
+    <div class="bottom-nav">
+        <a href="dashboard.html"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="trading.html"><i class="fas fa-chart-line"></i><span>Trading</span></a>
+        <a href="staking.html"><i class="fas fa-coins"></i><span>Staking</span></a>
+        <a href="investment.html"><i class="fas fa-wallet"></i><span>Investment</span></a>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ================================================================ JS ================================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            // === Supabase Loader ===
+            const loadingEl = document.getElementById('authLoading');
+            const contentEl = document.getElementById('settingsContentInner');
+
+            function loadSupabase(callback, retries) {
+                retries = retries || 0;
+                if (typeof supabase !== 'undefined' || typeof window.supabase !== 'undefined') { callback(); return; }
+                var script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+                script.async = true;
+                script.onload = function() {
+                    setTimeout(function() {
+                        if (typeof supabase !== 'undefined' || typeof window.supabase !== 'undefined') { callback(); }
+                        else if (retries < 3) { loadSupabase(callback, retries + 1); }
+                        else { loadingEl.innerHTML = '<p style="color:red;">Failed to load authentication.</p>'; }
+                    }, 300);
+                };
+                script.onerror = function() {
+                    if (retries < 3) loadSupabase(callback, retries + 1);
+                    else loadingEl.innerHTML = '<p style="color:red;">Failed to load authentication.</p>';
+                };
+                document.head.appendChild(script);
+            }
+
+            // === Supabase Auth ===
+            function initSupabaseAuth() {
+                const SUPABASE_URL = 'https://agscnbiwmotspzjbosmr.supabase.co';
+                const SUPABASE_ANON_KEY =
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnc2NuYml3bW90c3B6amJvc21yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyODQxNzksImV4cCI6MjA5OTg2MDE3OX0.tsG16bCY-KX5fSH2JoLI9DtO0n7MOt49UdKBnLvD4e8';
+                const sb = typeof supabase !== 'undefined' ? supabase : window.supabase;
+                if (!sb) return loadingEl.innerHTML = '<p style="color:red;">Supabase unavailable.</p>';
+                const supabaseClient = sb.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+                const auth = {
+                    async signOut() { await supabaseClient.auth.signOut();
+                        sessionStorage.clear();
+                        window.location.href = 'login.html'; },
+                    storeSession(user) { sessionStorage.setItem('user', JSON.stringify(user)); },
+                    getSession() { const stored = sessionStorage.getItem('user'); return stored ? JSON.parse(stored) :
+                        null; },
+                    async requireAuth() {
+                        const session = this.getSession();
+                        if (session) return session;
+                        const { data } = await supabaseClient.auth.getSession();
+                        if (!data.session) { window.location.href = 'login.html'; return null; }
+                        this.storeSession(data.session.user);
+                        return data.session.user;
+                    },
+                    get supabase() { return supabaseClient; }
+                };
+                window.supabaseClient = auth;
+                console.log('✅ Supabase auth loaded');
+                initSettings();
+            }
+
+            // === Settings Logic ===
+            let currentUser = null;
+
+            function showToast(msg, type = 'info') {
+                const t = document.getElementById('toast');
+                t.textContent = msg;
+                t.className = 'toast ' + type + ' show';
+                clearTimeout(t._timeout);
+                t._timeout = setTimeout(() => t.classList.remove('show'), 4000);
+            }
+
+            async function initSettings() {
+                loadingEl.style.display = 'none';
+                contentEl.style.display = 'block';
+
+                const auth = window.supabaseClient;
+                const user = await auth.requireAuth();
+                if (!user) return;
+                currentUser = user;
+
+                // Avatar initials
+                const name = user.user_metadata?.name || user.email || 'User';
+                const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                document.getElementById('avatarInitials').textContent = initials || 'U';
+
+                // Theme toggle (sidebar)
+                const themeIconSidebar = document.getElementById('themeIconSidebar');
+                const themeLabelSidebar = document.getElementById('themeLabelSidebar');
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                updateSidebarThemeUI(savedTheme);
+
+                function updateSidebarThemeUI(theme) {
+                    if (!themeIconSidebar || !themeLabelSidebar) return;
+                    if (theme === 'dark') {
+                        themeIconSidebar.className = 'fas fa-sun';
+                        themeLabelSidebar.textContent = 'Light Mode';
+                    } else {
+                        themeIconSidebar.className = 'fas fa-moon';
+                        themeLabelSidebar.textContent = 'Dark Mode';
+                    }
+                }
+
+                document.getElementById('themeToggleSidebar').addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    localStorage.setItem('theme', next);
+                    updateSidebarThemeUI(next);
+                    updateInPageDarkModeToggle(next);
+                });
+
+                // In-page dark mode toggle
+                const darkModeToggle = document.getElementById('darkModeToggle');
+                const isDark = savedTheme === 'dark';
+                if (isDark) darkModeToggle.classList.add('active');
+                darkModeToggle.addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    localStorage.setItem('theme', next);
+                    this.classList.toggle('active');
+                    updateSidebarThemeUI(next);
+                });
+
+                function updateInPageDarkModeToggle(theme) {
+                    if (theme === 'dark') {
+                        darkModeToggle.classList.add('active');
+                    } else {
+                        darkModeToggle.classList.remove('active');
+                    }
+                }
+
+                // ===== TAB NAVIGATION =====
+                const navItems = document.querySelectorAll('.settings-nav .nav-item');
+                const tabContents = document.querySelectorAll('.settings-content .tab-content');
+
+                navItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        navItems.forEach(n => n.classList.remove('active'));
+                        this.classList.add('active');
+                        const tabId = this.dataset.tab;
+                        tabContents.forEach(tc => tc.classList.remove('active'));
+                        document.getElementById('tab-' + tabId).classList.add('active');
+                    });
+                });
+
+                // Sidebar toggle (mobile)
+                const hamburger = document.getElementById('hamburger');
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebarOverlay');
+                hamburger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    sidebar.classList.toggle('open');
+                    overlay.classList.toggle('open');
+                });
+                overlay.addEventListener('click', function() {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('open');
+                });
+
+                // Logout
+                function logout() { auth.signOut(); }
+                document.getElementById('logoutAvatar').addEventListener('click', logout);
+                document.getElementById('logoutSidebar').addEventListener('click', logout);
+
+                // Avatar dropdown
+                document.getElementById('avatarWrap').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    document.getElementById('avatarDropdown').classList.toggle('open');
+                });
+                document.addEventListener('click', function() {
+                    document.getElementById('avatarDropdown').classList.remove('open');
+                });
+
+                // ===== SECURITY: Change Password =====
+                document.getElementById('passwordForm').addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const current = document.getElementById('currentPassword').value.trim();
+                    const newPwd = document.getElementById('newPassword').value.trim();
+                    const confirm = document.getElementById('confirmPassword').value.trim();
+
+                    if (!current || !newPwd || !confirm) {
+                        showToast('Please fill in all fields.', 'error');
+                        return;
+                    }
+                    if (newPwd.length < 8) {
+                        showToast('Password must be at least 8 characters.', 'error');
+                        return;
+                    }
+                    if (newPwd !== confirm) {
+                        showToast('Passwords do not match.', 'error');
+                        return;
+                    }
+
+                    const btn = this.querySelector('.btn-primary');
+                    btn.disabled = true;
+                    btn.textContent = 'Updating...';
+
+                    try {
+                        const { error } = await auth.supabase.auth.updateUser({
+                            password: newPwd
+                        });
+                        if (error) throw error;
+                        showToast('Password updated successfully!', 'success');
+                        this.reset();
+                    } catch (err) {
+                        console.error(err);
+                        showToast('Error: ' + err.message, 'error');
+                    } finally {
+                        btn.disabled = false;
+                        btn.textContent = 'Update Password';
+                    }
+                });
+
+                // ===== SECURITY: 2FA =====
+                const twofaToggle = document.getElementById('twofaToggle');
+                const twofaSection = document.getElementById('twofaSection');
+                const twofaSecret = document.getElementById('twofaSecret');
+
+                function generateSecret() {
+                    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+                    let secret = '';
+                    for (let i = 0; i < 16; i++) {
+                        secret += chars.charAt(Math.floor(Math.random() * chars.length));
+                    }
+                    return secret;
+                }
+
+                twofaToggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    if (this.classList.contains('active')) {
+                        twofaSection.style.display = 'block';
+                        const secret = generateSecret();
+                        twofaSecret.textContent = secret;
+                        showToast('Scan the QR code (simulated) or enter the secret manually.', 'info');
+                    } else {
+                        twofaSection.style.display = 'none';
+                        showToast('2FA disabled.', 'info');
+                    }
+                });
+
+                document.getElementById('twofaVerifyBtn').addEventListener('click', function() {
+                    const code = prompt('Enter the 6-digit code from your authenticator app:');
+                    if (code && code.length === 6) {
+                        showToast('2FA verified successfully! (demo)', 'success');
+                    } else {
+                        showToast('Invalid code. Please try again.', 'error');
+                    }
+                });
+
+                // ===== NOTIFICATIONS: Save =====
+                document.getElementById('saveNotifBtn').addEventListener('click', function() {
+                    showToast('Notification preferences saved!', 'success');
+                });
+
+                // ===== PRIVACY: Save =====
+                document.getElementById('savePrivacyBtn').addEventListener('click', function() {
+                    showToast('Privacy settings saved!', 'success');
+                });
+
+                // ===== APPEARANCE: Save =====
+                document.getElementById('saveAppearanceBtn').addEventListener('click', function() {
+                    const fontSize = document.getElementById('fontSize').value;
+                    document.documentElement.style.fontSize = fontSize === 'small' ? '14px' : fontSize === 'large' ?
+                        '18px' : '16px';
+                    showToast('Appearance settings saved!', 'success');
+                });
+
+                // ===== API KEYS: Generate =====
+                document.getElementById('generateApiBtn').addEventListener('click', function() {
+                    const name = prompt('Name for this API key:');
+                    if (name) {
+                        const key = 'wallex_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36)
+                            .substring(2, 15);
+                        const list = document.getElementById('apiKeysList');
+                        const item = document.createElement('div');
+                        item.className = 'api-key-item';
+                        item.innerHTML = `
+                            <div>
+                                <div class="key-name">${name}</div>
+                                <div class="key-prefix">${key}</div>
+                            </div>
+                            <div class="key-actions">
+                                <button class="btn-secondary" style="padding:4px 12px;font-size:0.75rem;" onclick="this.closest('.api-key-item').remove()">Revoke</button>
+                            </div>
+                        `;
+                        list.appendChild(item);
+                        showToast('API key generated successfully!', 'success');
+                    }
+                });
+
+                // ===== ACCOUNT: Export Data =====
+                document.getElementById('exportDataBtn').addEventListener('click', function() {
+                    const data = {
+                        user: currentUser,
+                        timestamp: new Date().toISOString(),
+                    };
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'wallex_export_' + Date.now() + '.json';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    showToast('Data exported successfully!', 'success');
+                });
+
+                // ===== ACCOUNT: Delete Account =====
+                document.getElementById('deleteAccountBtn').addEventListener('click', function() {
+                    if (!confirm('Are you sure you want to permanently delete your account? This cannot be undone.'))
+                        return;
+                    if (!confirm('All your data, balances, and trades will be lost. Continue?')) return;
+                    showToast('Account deletion is not implemented in demo. Please contact support.', 'error');
+                });
+
+                // ===== TOGGLE SWITCHES (general) =====
+                document.querySelectorAll('.toggle-switch:not(#twofaToggle):not(#darkModeToggle)').forEach(toggle => {
+                    toggle.addEventListener('click', function() {
+                        this.classList.toggle('active');
+                        const label = this.closest('.toggle-row')?.querySelector('.toggle-label')
+                        ?.textContent || 'Setting';
+                        showToast(label + ' updated.', 'info');
+                    });
+                });
+
+                console.log('✅ Settings page initialized');
+            }
+
+            loadSupabase(initSupabaseAuth, 0);
+        })();
+    </script>
+</body>
+</html>
