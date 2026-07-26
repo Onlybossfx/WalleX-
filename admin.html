@@ -732,52 +732,27 @@
                 }
             }
 
-            // ===== API Calls with Authorization Header (FIXED) =====
             // ===== API Calls with Authorization + token in body as fallback =====
-async function callAdminFunction(name, body) {
-    try {
-        const { data: { session }, error: sessionError } = await window.supabaseClient.supabase.auth.getSession();
-        if (sessionError || !session) {
-            throw new Error('Not authenticated. Please log in again.');
-        }
+            async function callAdminFunction(name, body) {
+                try {
+                    const { data: { session }, error: sessionError } = await window.supabaseClient.supabase.auth.getSession();
+                    if (sessionError || !session) {
+                        throw new Error('Not authenticated. Please log in again.');
+                    }
 
-        const token = session.access_token;
+                    const token = session.access_token;
 
-        // Always include the token in the body (as fallback for missing headers)
-        const payload = typeof body === 'object' && body !== null ? { ...body, token } : { token };
-
-        const options = {
-            method: 'POST', // keep POST for consistency – backend handles both
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-            body: payload, // supabase-js will stringify this
-        };
-
-        const { data, error } = await window.supabaseClient.supabase.functions.invoke(name, options);
-        if (error) throw new Error(error.message);
-        return data;
-    } catch (err) {
-        console.error('API call error:', err);
-        throw err;
-    }
-}
-            
-                    // Determine HTTP method: GET if no body or empty object, else POST
-                    const isGet = !body || Object.keys(body).length === 0;
+                    // Always include the token in the body (as fallback for missing headers)
+                    const payload = typeof body === 'object' && body !== null ? { ...body, token } : { token };
 
                     const options = {
-                        method: isGet ? 'GET' : 'POST',
+                        method: 'POST',
                         headers: {
-                            'Authorization': `Bearer ${session.access_token}`,
+                            'Authorization': `Bearer ${token}`,
                             'Content-Type': 'application/json',
                         },
+                        body: payload, // supabase-js will stringify this
                     };
-
-                    if (!isGet) {
-                        options.body = body; // supabase-js will stringify for us
-                    }
 
                     const { data, error } = await window.supabaseClient.supabase.functions.invoke(name, options);
                     if (error) throw new Error(error.message);
@@ -791,7 +766,7 @@ async function callAdminFunction(name, body) {
             // ===== Dashboard =====
             async function loadStats() {
                 try {
-                    const stats = await callAdminFunction('admin-stats', {}); // now uses GET
+                    const stats = await callAdminFunction('admin-stats', {});
                     document.getElementById('statUsers').textContent = stats.totalUsers || 0;
                     document.getElementById('statDeposits').textContent = '$' + (stats.totalDeposits || 0).toFixed(2);
                     document.getElementById('statWithdrawals').textContent = '$' + (stats.totalWithdrawals || 0).toFixed(2);
