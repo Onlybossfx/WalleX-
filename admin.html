@@ -733,14 +733,37 @@
             }
 
             // ===== API Calls with Authorization Header (FIXED) =====
-            async function callAdminFunction(name, body) {
-                try {
-                    const { data: { session }, error: sessionError } = await window.supabaseClient.supabase.auth
-                        .getSession();
-                    if (sessionError || !session) {
-                        throw new Error('Not authenticated. Please log in again.');
-                    }
+            // ===== API Calls with Authorization + token in body as fallback =====
+async function callAdminFunction(name, body) {
+    try {
+        const { data: { session }, error: sessionError } = await window.supabaseClient.supabase.auth.getSession();
+        if (sessionError || !session) {
+            throw new Error('Not authenticated. Please log in again.');
+        }
 
+        const token = session.access_token;
+
+        // Always include the token in the body (as fallback for missing headers)
+        const payload = typeof body === 'object' && body !== null ? { ...body, token } : { token };
+
+        const options = {
+            method: 'POST', // keep POST for consistency – backend handles both
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: payload, // supabase-js will stringify this
+        };
+
+        const { data, error } = await window.supabaseClient.supabase.functions.invoke(name, options);
+        if (error) throw new Error(error.message);
+        return data;
+    } catch (err) {
+        console.error('API call error:', err);
+        throw err;
+    }
+}
+            
                     // Determine HTTP method: GET if no body or empty object, else POST
                     const isGet = !body || Object.keys(body).length === 0;
 
