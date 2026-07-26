@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* ===== THEME ===== */
+        /* (your existing styles – unchanged) */
         :root {
             --bg-primary: #f8fafc;
             --bg-secondary: #ffffff;
@@ -732,7 +732,7 @@
                 }
             }
 
-            // ===== API Calls with Authorization + token in body as fallback =====
+            // ===== API Calls with Authorization + token in body as fallback (FIXED) =====
             async function callAdminFunction(name, body) {
                 try {
                     const { data: { session }, error: sessionError } = await window.supabaseClient.supabase.auth.getSession();
@@ -742,16 +742,17 @@
 
                     const token = session.access_token;
 
-                    // Always include the token in the body (as fallback for missing headers)
+                    // Always include the token in the body (fallback for missing headers)
                     const payload = typeof body === 'object' && body !== null ? { ...body, token } : { token };
 
+                    // IMPORTANT: Do NOT set Content-Type manually – let the client handle it.
                     const options = {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json',
+                            // Content-Type will be set automatically by supabase-js
                         },
-                        body: payload, // supabase-js will stringify this
+                        body: payload, // object – client will JSON.stringify and set Content-Type
                     };
 
                     const { data, error } = await window.supabaseClient.supabase.functions.invoke(name, options);
@@ -759,6 +760,8 @@
                     return data;
                 } catch (err) {
                     console.error('API call error:', err);
+                    // For debugging, show a more detailed error in the toast
+                    showToast('Error: ' + err.message, 'error');
                     throw err;
                 }
             }
@@ -776,7 +779,7 @@
                     document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
                     drawCharts();
                 } catch (err) {
-                    showToast('Error loading stats: ' + err.message, 'error');
+                    // error already shown in callAdminFunction
                 }
             }
 
@@ -828,9 +831,7 @@
                             </td>
                         </tr>
                     `).join('');
-                } catch (err) {
-                    showToast('Error loading users: ' + err.message, 'error');
-                }
+                } catch (err) { /* already shown */ }
             }
 
             window.viewUser = async function(userId) {
@@ -848,7 +849,7 @@
                         <p><strong>Suspended:</strong> ${user.suspended ? 'Yes' : 'No'}</p>
                     `;
                     openModal('userModal');
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             };
 
             window.toggleSuspend = async function(userId, suspend) {
@@ -857,7 +858,7 @@
                     await callAdminFunction('admin-users', { action: suspend ? 'suspend' : 'activate', userId });
                     showToast('User ' + (suspend ? 'suspended' : 'activated'), 'success');
                     loadUsers();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             };
 
             window.reset2FA = async function(userId) {
@@ -866,7 +867,7 @@
                     await callAdminFunction('admin-users', { action: 'reset2fa', userId });
                     showToast('2FA reset successfully', 'success');
                     loadUsers();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             };
 
             // ===== Deposits =====
@@ -889,7 +890,7 @@
                             </td>
                         </tr>
                     `).join('');
-                } catch (err) { showToast('Error loading deposits: ' + err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             }
 
             window.markDepositComplete = async function(depositId) {
@@ -898,7 +899,7 @@
                     await callAdminFunction('admin-deposits', { action: 'complete', depositId });
                     showToast('Deposit marked completed', 'success');
                     loadDeposits();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             };
 
             // ===== Withdrawals =====
@@ -923,7 +924,7 @@
                             </td>
                         </tr>
                     `).join('');
-                } catch (err) { showToast('Error loading withdrawals: ' + err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             }
 
             let currentWithdrawalId = null;
@@ -956,7 +957,7 @@
                     showToast('Withdrawal ' + action + 'd', 'success');
                     closeModal('withdrawalModal');
                     loadWithdrawals();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             }
 
             // ===== Transactions =====
@@ -975,7 +976,7 @@
                             <td>${new Date(t.created_at).toLocaleString()}</td>
                         </tr>
                     `).join('');
-                } catch (err) { showToast('Error loading transactions: ' + err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             }
 
             // ===== Staking Pools =====
@@ -999,7 +1000,7 @@
                             </td>
                         </tr>
                     `).join('');
-                } catch (err) { showToast('Error loading pools: ' + err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             }
 
             document.getElementById('addPoolBtn').addEventListener('click', function() {
@@ -1017,7 +1018,7 @@
                     await callAdminFunction('admin-pools', { action: 'toggle', poolId: id });
                     showToast('Pool toggled', 'success');
                     loadPools();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             };
 
             window.deletePool = async function(id) {
@@ -1026,7 +1027,7 @@
                     await callAdminFunction('admin-pools', { action: 'delete', poolId: id });
                     showToast('Pool deleted', 'success');
                     loadPools();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             };
 
             // ===== Investment Plans =====
@@ -1050,7 +1051,7 @@
                             </td>
                         </tr>
                     `).join('');
-                } catch (err) { showToast('Error loading plans: ' + err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             }
 
             document.getElementById('addPlanBtn').addEventListener('click', function() {
@@ -1068,7 +1069,7 @@
                     await callAdminFunction('admin-plans', { action: 'toggle', planId: id });
                     showToast('Plan toggled', 'success');
                     loadPlans();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             };
 
             window.deletePlan = async function(id) {
@@ -1077,7 +1078,7 @@
                     await callAdminFunction('admin-plans', { action: 'delete', planId: id });
                     showToast('Plan deleted', 'success');
                     loadPlans();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             };
 
             // ===== Form Modal (Pool / Plan) =====
@@ -1141,7 +1142,7 @@
                     closeModal('formModal');
                     if (type === 'pool') loadPools();
                     else loadPlans();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             });
 
             // ===== KYC =====
@@ -1163,7 +1164,7 @@
                             </td>
                         </tr>
                     `).join('');
-                } catch (err) { showToast('Error loading KYC: ' + err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             }
 
             window.reviewKyc = async function(id) {
@@ -1189,7 +1190,7 @@
                     document.getElementById('kycApproveBtn').dataset.id = id;
                     document.getElementById('kycRejectBtn').dataset.id = id;
                     openModal('kycModal');
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             };
 
             document.getElementById('kycApproveBtn').addEventListener('click', async function() {
@@ -1200,7 +1201,7 @@
                     showToast('KYC approved', 'success');
                     closeModal('kycModal');
                     loadKyc();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             });
 
             document.getElementById('kycRejectBtn').addEventListener('click', async function() {
@@ -1212,7 +1213,7 @@
                     showToast('KYC rejected', 'success');
                     closeModal('kycModal');
                     loadKyc();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             });
 
             // ===== Settings =====
@@ -1226,7 +1227,7 @@
                     document.getElementById('minWithdrawal').value = settings.min_withdrawal?.amount || 0;
                     document.getElementById('maxWithdrawal').value = settings.max_withdrawal?.amount || 0;
                     document.getElementById('kycThreshold').value = settings.kyc_required?.min_amount || 0;
-                } catch (err) { showToast('Error loading settings: ' + err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             }
 
             document.getElementById('settingsForm').addEventListener('submit', async function(e) {
@@ -1248,7 +1249,7 @@
                 try {
                     await callAdminFunction('admin-settings', { settings });
                     showToast('Settings saved', 'success');
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             });
 
             // ===== Audit Log =====
@@ -1267,7 +1268,7 @@
                             <td>${new Date(l.created_at).toLocaleString()}</td>
                         </tr>
                     `).join('');
-                } catch (err) { showToast('Error loading audit: ' + err.message, 'error'); }
+                } catch (err) { /* already shown */ }
             }
 
             // ===== Init =====
