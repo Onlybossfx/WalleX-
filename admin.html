@@ -672,14 +672,7 @@
                 initAdmin();
             }
 
-            // === Admin Logic ===
-            // Force GET and test without body
-const { data, error } = await window.supabaseClient.supabase.functions.invoke(name, {
-  method: 'GET',
-  headers: {
-    'Authorization': `Bearer ${session.access_token}`,
-  },
-});
+            // === Admin Logic
             let currentUser = null;
             let activeTab = 'dashboard';
 
