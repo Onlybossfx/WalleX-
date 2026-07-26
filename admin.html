@@ -177,7 +177,6 @@
         }
         .page-header h1 { font-size:1.4rem; font-weight:700; }
 
-        /* Stats Cards */
         .stats-grid {
             display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:12px; margin-bottom:20px;
         }
@@ -187,7 +186,6 @@
         .stat-card .label { font-size:0.7rem; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.5px; font-weight:500; }
         .stat-card .value { font-size:1.6rem; font-weight:700; color:var(--purple); margin-top:2px; }
 
-        /* Tables */
         .table-wrap { overflow-x:auto; margin-top:12px; }
         .admin-table { width:100%; border-collapse:collapse; font-size:0.85rem; }
         .admin-table th { text-align:left; padding:8px 12px; color:var(--text-muted); font-weight:500; border-bottom:1px solid var(--border-subtle); position:sticky; top:0; background:var(--bg-secondary); z-index:2; }
@@ -201,9 +199,6 @@
         .status-badge.active { background:rgba(16,185,129,0.15); color:var(--green); }
         .status-badge.inactive { background:rgba(148,163,184,0.15); color:var(--text-muted); }
 
-        .admin-actions { display:flex; gap:6px; flex-wrap:wrap; }
-
-        /* Forms */
         .form-group { margin-bottom:14px; }
         .form-group label { display:block; font-weight:500; font-size:0.85rem; margin-bottom:4px; color:var(--text-secondary); }
         .form-group input, .form-group select, .form-group textarea {
@@ -243,7 +238,6 @@
         .toast.info { border-color:var(--purple); color:var(--purple); }
         @keyframes fadeInUp { from { opacity:0; transform:translateX(-50%) translateY(10px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
 
-        /* Charts */
         .chart-container { height:260px; position:relative; margin-bottom:20px; }
         .chart-row { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
 
@@ -302,20 +296,19 @@
     <!-- ===== DASHBOARD ===== -->
     <div class="dashboard">
 
-        <!-- Sidebar -->
         <aside class="dashboard-sidebar" id="sidebar">
-            <div class="sidebar-item active" data-tab="dashboard"><a href="#panel-dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a></div>
-            <div class="sidebar-item" data-tab="users"><a href="#panel-users"><i class="fas fa-users"></i> Users</a></div>
-            <div class="sidebar-item" data-tab="deposits"><a href="#panel-deposits"><i class="fas fa-arrow-down"></i> Deposits</a></div>
-            <div class="sidebar-item" data-tab="withdrawals"><a href="#panel-withdrawals"><i class="fas fa-arrow-up"></i> Withdrawals</a></div>
-            <div class="sidebar-item" data-tab="transactions"><a href="#panel-transactions"><i class="fas fa-list-ul"></i> Transactions</a></div>
+            <div class="sidebar-item active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</div>
+            <div class="sidebar-item" data-tab="users"><i class="fas fa-users"></i> Users</div>
+            <div class="sidebar-item" data-tab="deposits"><i class="fas fa-arrow-down"></i> Deposits</div>
+            <div class="sidebar-item" data-tab="withdrawals"><i class="fas fa-arrow-up"></i> Withdrawals</div>
+            <div class="sidebar-item" data-tab="transactions"><i class="fas fa-list-ul"></i> Transactions</div>
             <div class="sidebar-divider"></div>
-            <div class="sidebar-item" data-tab="staking"><a href="#panel-staking"><i class="fas fa-coins"></i> Staking Pools</a></div>
-            <div class="sidebar-item" data-tab="investment"><a href="#panel-investment"><i class="fas fa-wallet"></i> Investment Plans</a></div>
-            <div class="sidebar-item" data-tab="kyc"><a href="#panel-kyc"><i class="fas fa-id-card"></i> KYC Verification</a></div>
+            <div class="sidebar-item" data-tab="staking"><i class="fas fa-coins"></i> Staking Pools</div>
+            <div class="sidebar-item" data-tab="investment"><i class="fas fa-wallet"></i> Investment Plans</div>
+            <div class="sidebar-item" data-tab="kyc"><i class="fas fa-id-card"></i> KYC Verification</div>
             <div class="sidebar-divider"></div>
-            <div class="sidebar-item" data-tab="settings"><a href="#panel-settings"><i class="fas fa-sliders-h"></i> Settings</a></div>
-            <div class="sidebar-item" data-tab="audit"><a href="#panel-audit"><i class="fas fa-history"></i> Audit Log</a></div>
+            <div class="sidebar-item" data-tab="settings"><i class="fas fa-sliders-h"></i> Settings</div>
+            <div class="sidebar-item" data-tab="audit"><i class="fas fa-history"></i> Audit Log</div>
             <div class="sidebar-divider"></div>
             <div class="sidebar-bottom">
                 <div class="sidebar-item" id="themeToggleSidebar"><i class="fas fa-moon" id="themeIconSidebar"></i><span id="themeLabelSidebar">Dark Mode</span></div>
@@ -333,9 +326,7 @@
 
             <div id="adminContentInner" style="display:none;">
 
-                <!-- ============================================================ -->
                 <!-- DASHBOARD TAB -->
-                <!-- ============================================================ -->
                 <div class="tab-panel" id="panel-dashboard">
                     <div class="page-header">
                         <h1><i class="fas fa-chart-pie"></i> Dashboard</h1>
@@ -355,9 +346,7 @@
                     </div>
                 </div>
 
-                <!-- ============================================================ -->
                 <!-- USERS TAB -->
-                <!-- ============================================================ -->
                 <div class="tab-panel" id="panel-users" style="display:none;">
                     <div class="page-header">
                         <h1><i class="fas fa-users"></i> Users</h1>
@@ -376,9 +365,7 @@
                     </div>
                 </div>
 
-                <!-- ============================================================ -->
                 <!-- DEPOSITS TAB -->
-                <!-- ============================================================ -->
                 <div class="tab-panel" id="panel-deposits" style="display:none;">
                     <div class="page-header">
                         <h1><i class="fas fa-arrow-down"></i> Deposits</h1>
@@ -398,9 +385,7 @@
                     </div>
                 </div>
 
-                <!-- ============================================================ -->
                 <!-- WITHDRAWALS TAB -->
-                <!-- ============================================================ -->
                 <div class="tab-panel" id="panel-withdrawals" style="display:none;">
                     <div class="page-header">
                         <h1><i class="fas fa-arrow-up"></i> Withdrawals</h1>
@@ -420,9 +405,7 @@
                     </div>
                 </div>
 
-                <!-- ============================================================ -->
                 <!-- TRANSACTIONS TAB -->
-                <!-- ============================================================ -->
                 <div class="tab-panel" id="panel-transactions" style="display:none;">
                     <div class="page-header">
                         <h1><i class="fas fa-list-ul"></i> Transactions</h1>
@@ -443,9 +426,7 @@
                     </div>
                 </div>
 
-                <!-- ============================================================ -->
                 <!-- STAKING POOLS TAB -->
-                <!-- ============================================================ -->
                 <div class="tab-panel" id="panel-staking" style="display:none;">
                     <div class="page-header">
                         <h1><i class="fas fa-coins"></i> Staking Pools</h1>
@@ -461,9 +442,7 @@
                     </div>
                 </div>
 
-                <!-- ============================================================ -->
                 <!-- INVESTMENT PLANS TAB -->
-                <!-- ============================================================ -->
                 <div class="tab-panel" id="panel-investment" style="display:none;">
                     <div class="page-header">
                         <h1><i class="fas fa-wallet"></i> Investment Plans</h1>
@@ -479,9 +458,7 @@
                     </div>
                 </div>
 
-                <!-- ============================================================ -->
                 <!-- KYC TAB -->
-                <!-- ============================================================ -->
                 <div class="tab-panel" id="panel-kyc" style="display:none;">
                     <div class="page-header">
                         <h1><i class="fas fa-id-card"></i> KYC Verification</h1>
@@ -501,9 +478,7 @@
                     </div>
                 </div>
 
-                <!-- ============================================================ -->
                 <!-- SETTINGS TAB -->
-                <!-- ============================================================ -->
                 <div class="tab-panel" id="panel-settings" style="display:none;">
                     <div class="page-header">
                         <h1><i class="fas fa-sliders-h"></i> System Settings</h1>
@@ -546,9 +521,7 @@
                     </div>
                 </div>
 
-                <!-- ============================================================ -->
                 <!-- AUDIT LOG TAB -->
-                <!-- ============================================================ -->
                 <div class="tab-panel" id="panel-audit" style="display:none;">
                     <div class="page-header">
                         <h1><i class="fas fa-history"></i> Audit Log</h1>
@@ -581,7 +554,6 @@
     <div class="toast" id="toast"></div>
 
     <!-- ===== MODALS ===== -->
-    <!-- User Modal (view/suspend) -->
     <div class="modal-overlay" id="userModal">
         <div class="modal">
             <div class="modal-header">
@@ -595,7 +567,6 @@
         </div>
     </div>
 
-    <!-- Pool/Plan Modal -->
     <div class="modal-overlay" id="formModal">
         <div class="modal">
             <div class="modal-header">
@@ -612,7 +583,6 @@
         </div>
     </div>
 
-    <!-- KYC Review Modal -->
     <div class="modal-overlay" id="kycModal">
         <div class="modal">
             <div class="modal-header">
@@ -627,7 +597,6 @@
         </div>
     </div>
 
-    <!-- Withdrawal Action Modal -->
     <div class="modal-overlay" id="withdrawalModal">
         <div class="modal">
             <div class="modal-header">
@@ -648,7 +617,7 @@
         (function() {
             'use strict';
 
-            // ===== Supabase Loader =====
+            // === Supabase Loader ===
             const loadingEl = document.getElementById('authLoading');
             const contentEl = document.getElementById('adminContentInner');
 
@@ -763,12 +732,28 @@
                 }
             }
 
-            // ===== API Calls (Invoke Edge Functions) =====
-
+            // ===== API Calls with Authorization Header =====
             async function callAdminFunction(name, body) {
-                const { data, error } = await window.supabaseClient.supabase.functions.invoke(name, { body });
-                if (error) throw new Error(error.message);
-                return data;
+                try {
+                    // Get the current session token
+                    const { data: { session }, error: sessionError } = await window.supabaseClient.supabase.auth
+                        .getSession();
+                    if (sessionError || !session) {
+                        throw new Error('Not authenticated. Please log in again.');
+                    }
+
+                    const { data, error } = await window.supabaseClient.supabase.functions.invoke(name, {
+                        body: body || {},
+                        headers: {
+                            'Authorization': `Bearer ${session.access_token}`,
+                        },
+                    });
+                    if (error) throw new Error(error.message);
+                    return data;
+                } catch (err) {
+                    console.error('API call error:', err);
+                    throw err;
+                }
             }
 
             // ===== Dashboard =====
@@ -782,7 +767,6 @@
                     document.getElementById('statStakes').textContent = stats.activeStakes || 0;
                     document.getElementById('statInvestments').textContent = stats.activeInvestments || 0;
                     document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
-                    // Charts – we'll use Chart.js
                     drawCharts();
                 } catch (err) {
                     showToast('Error loading stats: ' + err.message, 'error');
@@ -793,7 +777,6 @@
                 revenueChart = null;
 
             function drawCharts() {
-                // Simulate data – in production fetch real daily aggregates
                 const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
                 const userData = [10, 25, 40, 55, 70, 90, 105];
                 const revenueData = [100, 250, 400, 550, 700, 900, 1200];
@@ -1017,7 +1000,6 @@
             });
 
             window.editPool = function(id) {
-                // Fetch pool details and open modal
                 callAdminFunction('admin-pools', { action: 'get', poolId: id }).then(pool => {
                     openFormModal('pool', pool);
                 }).catch(err => showToast(err.message, 'error'));
@@ -1385,9 +1367,6 @@
                 document.getElementById('refreshTxBtn').addEventListener('click', () => loadTransactions());
                 document.getElementById('refreshKycBtn').addEventListener('click', () => loadKyc());
                 document.getElementById('refreshAuditBtn').addEventListener('click', () => loadAudit());
-
-                // Search filters – we'll implement simple client-side filtering
-                // For brevity, we skip full filter implementation; you can add later.
 
                 console.log('✅ Admin panel initialized');
             }
