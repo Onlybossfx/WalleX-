@@ -672,7 +672,7 @@
                 initAdmin();
             }
 
-            // === Admin Logic
+            // === Admin Logic ===
             let currentUser = null;
             let activeTab = 'dashboard';
 
@@ -732,22 +732,31 @@
                 }
             }
 
-            // ===== API Calls with Authorization Header =====
+            // ===== API Calls with Authorization Header (FIXED) =====
             async function callAdminFunction(name, body) {
                 try {
-                    // Get the current session token
                     const { data: { session }, error: sessionError } = await window.supabaseClient.supabase.auth
                         .getSession();
                     if (sessionError || !session) {
                         throw new Error('Not authenticated. Please log in again.');
                     }
 
-                    const { data, error } = await window.supabaseClient.supabase.functions.invoke(name, {
-                        body: body || {},
+                    // Determine HTTP method: GET if no body or empty object, else POST
+                    const isGet = !body || Object.keys(body).length === 0;
+
+                    const options = {
+                        method: isGet ? 'GET' : 'POST',
                         headers: {
                             'Authorization': `Bearer ${session.access_token}`,
+                            'Content-Type': 'application/json',
                         },
-                    });
+                    };
+
+                    if (!isGet) {
+                        options.body = body; // supabase-js will stringify for us
+                    }
+
+                    const { data, error } = await window.supabaseClient.supabase.functions.invoke(name, options);
                     if (error) throw new Error(error.message);
                     return data;
                 } catch (err) {
@@ -759,7 +768,7 @@
             // ===== Dashboard =====
             async function loadStats() {
                 try {
-                    const stats = await callAdminFunction('admin-stats', {});
+                    const stats = await callAdminFunction('admin-stats', {}); // now uses GET
                     document.getElementById('statUsers').textContent = stats.totalUsers || 0;
                     document.getElementById('statDeposits').textContent = '$' + (stats.totalDeposits || 0).toFixed(2);
                     document.getElementById('statWithdrawals').textContent = '$' + (stats.totalWithdrawals || 0).toFixed(2);
