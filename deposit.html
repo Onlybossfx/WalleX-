@@ -2,15 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Deposit · WalleX</title>
+    <!-- Heleket merchant verification -->
+    <meta name="heleket" content="42456505" />
     <meta name="referrer" content="no-referrer" />
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
     <style>
-        /* ===== THEME ===== */
+        /* (Same as before – included below for completeness) */
         :root {
             --bg-primary: #f8fafc;
             --bg-secondary: #ffffff;
@@ -28,6 +30,7 @@
             --purple-dark: #5B21B6;
             --green: #10b981;
             --red: #ef4444;
+            --amber: #f59e0b;
             --radius: 16px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -53,6 +56,7 @@
             line-height:1.6;
             transition: background 0.3s, color 0.3s;
             overflow-x:hidden;
+            -webkit-tap-highlight-color: transparent;
         }
         ::-webkit-scrollbar { width:6px; }
         ::-webkit-scrollbar-track { background:var(--bg-primary); }
@@ -60,7 +64,6 @@
 
         .container { max-width:1200px; margin:0 auto; padding:0 24px; }
 
-        /* ===== GLASS ===== */
         .glass {
             background: var(--bg-glass);
             backdrop-filter: blur(20px);
@@ -75,22 +78,24 @@
             box-shadow: var(--shadow-hover);
         }
 
-        /* ===== BUTTONS ===== */
         .btn-primary {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 12px 28px;
+            padding: 14px 28px;
             background: linear-gradient(135deg, var(--purple), var(--purple-dark));
             color: #fff;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 1rem;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             transition: var(--transition);
             text-decoration: none;
             box-shadow: 0 4px 16px rgba(124, 58, 237, 0.25);
+            touch-action: manipulation;
+            width: 100%;
+            justify-content: center;
         }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124, 58, 237, 0.35); }
         .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
@@ -110,13 +115,13 @@
             cursor: pointer;
             transition: var(--transition);
             text-decoration: none;
+            touch-action: manipulation;
         }
         .btn-secondary:hover { background: var(--bg-glass-hover); border-color: var(--purple); transform: translateY(-2px); }
 
-        /* ===== LOGO ===== */
         .logo img { height:36px; width:auto; display:block; }
 
-        /* ===== NAVBAR ===== */
+        /* Navbar */
         .navbar {
             position: fixed; top:0; left:0; right:0; z-index:1000;
             padding:12px 0;
@@ -141,7 +146,6 @@
         .nav-links a:hover, .nav-links a.active { color:var(--purple); }
         @media (max-width:992px) { .nav-links { display:none !important; } }
 
-        /* ===== AVATAR ===== */
         .user-avatar-wrap { position:relative; cursor:pointer; }
         .user-avatar {
             width:40px; height:40px; border-radius:50%;
@@ -183,13 +187,14 @@
         .hamburger {
             display:none; flex-direction:column; gap:5px;
             background:none; border:none; cursor:pointer; padding:4px; margin-left:12px;
+            touch-action: manipulation;
         }
         .hamburger span { display:block; width:26px; height:2px; background:var(--text-primary); border-radius:4px; transition:var(--transition); }
         @media (max-width:992px) { .hamburger { display:flex; } }
 
         .nav-right { display:flex; align-items:center; gap:12px; }
 
-        /* ===== SIDEBAR ===== */
+        /* Sidebar */
         .dashboard { display:flex; min-height:100vh; padding-top:66px; background:var(--bg-primary); transition:var(--transition); }
         .dashboard-sidebar {
             width:220px; flex-shrink:0; padding:20px 12px;
@@ -216,18 +221,21 @@
         .sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.3); z-index:98; }
         .sidebar-overlay.open { display:block; }
 
-        /* ===== MAIN CONTENT ===== */
-        .dashboard-main { flex:1; padding:24px 32px 100px; overflow-y:auto; }
+        @media (max-width:992px) {
+            .dashboard-sidebar { display:none; position:fixed; top:66px; left:0; bottom:0; width:280px; background:var(--bg-secondary); backdrop-filter:blur(30px); border-right:1px solid var(--border-subtle); z-index:99; padding:20px 16px; overflow-y:auto; }
+            .dashboard-sidebar.open { display:flex; }
+        }
+
+        .dashboard-main { flex:1; padding:24px 16px 100px; overflow-y:auto; }
         .page-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:28px; }
         .page-header h1 { font-size:1.6rem; font-weight:700; }
         .page-header .sub { color:var(--text-secondary); font-size:0.9rem; }
 
-        /* ===== DEPOSIT SECTION ===== */
+        /* Deposit */
         .deposit-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 24px;
-            margin-bottom: 32px;
         }
         .deposit-form-card {
             padding: 28px 24px;
@@ -244,12 +252,12 @@
         }
         .deposit-form-card .form-group input {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 16px;
             border-radius: 10px;
             border: 1px solid var(--border-subtle);
             background: var(--bg-primary);
             color: var(--text-primary);
-            font-size: 1rem;
+            font-size: 1.1rem;
             transition: var(--transition);
             outline: none;
         }
@@ -275,7 +283,31 @@
             color: var(--purple);
         }
 
-        /* ===== DEPOSIT HISTORY ===== */
+        .deposit-status {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            display: none;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-subtle);
+        }
+        .deposit-status.show { display: block; }
+        .deposit-status.error { border-color: var(--red); color: var(--red); }
+        .deposit-status.success { border-color: var(--green); color: var(--green); }
+        .deposit-status.info { border-color: var(--purple); color: var(--purple); }
+
+        .deposit-status .details-btn {
+            background: none;
+            border: none;
+            color: var(--purple);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 4px 0;
+            font-size: 0.8rem;
+        }
+
         .deposit-history {
             padding: 24px;
             min-height: 300px;
@@ -351,7 +383,6 @@
         }
         .empty-state i { font-size: 2.5rem; color: var(--text-muted); margin-bottom: 12px; }
 
-        /* ===== TOAST ===== */
         .toast {
             position: fixed;
             bottom: 80px;
@@ -378,7 +409,6 @@
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
-        /* ===== BOTTOM NAV ===== */
         .bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--bg-glass); backdrop-filter:blur(20px); border-top:1px solid var(--border-subtle); padding:6px 0 env(safe-area-inset-bottom); z-index:100; justify-content:space-around; transition:var(--transition); }
         .bottom-nav a { display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--text-secondary); text-decoration:none; font-size:0.6rem; padding:6px 12px; transition:var(--transition); }
         .bottom-nav a i { font-size:1.2rem; }
@@ -396,6 +426,7 @@
             .page-header h1 { font-size:1.3rem; }
             .deposit-form-card { padding:20px 16px; }
             .history-item { flex-wrap: wrap; gap: 8px; }
+            .btn-primary { padding: 16px; font-size: 1.1rem; }
         }
 
         .auth-loading { display:flex; align-items:center; justify-content:center; min-height:60vh; flex-direction:column; gap:16px; }
@@ -406,12 +437,10 @@
 </head>
 <body>
 
-    <!-- ===== NAVBAR ===== -->
+    <!-- Navbar (same as before) -->
     <nav class="navbar" id="navbar">
         <div class="container">
-            <a href="dashboard.html" class="logo">
-                <img src="logo.png" alt="WalleX" />
-            </a>
+            <a href="dashboard.html" class="logo"><img src="logo.png" alt="WalleX" /></a>
             <ul class="nav-links" id="navLinks">
                 <li><a href="dashboard.html"><i class="fas fa-home"></i> Home</a></li>
                 <li><a href="trading.html"><i class="fas fa-chart-line"></i> Trading</a></li>
@@ -420,9 +449,7 @@
             </ul>
             <div class="nav-right">
                 <div class="user-avatar-wrap" id="avatarWrap">
-                    <div class="user-avatar" id="userAvatar">
-                        <span id="avatarInitials">U</span>
-                    </div>
+                    <div class="user-avatar" id="userAvatar"><span id="avatarInitials">U</span></div>
                     <div class="avatar-dropdown" id="avatarDropdown">
                         <a href="profile.html" class="dropdown-item"><i class="fas fa-user"></i> Profile</a>
                         <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a>
@@ -430,16 +457,13 @@
                         <button class="dropdown-item" id="logoutAvatar"><i class="fas fa-sign-out-alt"></i> Logout</button>
                     </div>
                 </div>
-                <button class="hamburger" id="hamburger" aria-label="Menu">
-                    <span></span><span></span><span></span>
-                </button>
+                <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
             </div>
         </div>
     </nav>
 
-    <!-- ===== DASHBOARD ===== -->
+    <!-- Sidebar & Main -->
     <div class="dashboard" id="depositMain">
-
         <aside class="dashboard-sidebar" id="sidebar">
             <div class="sidebar-item"><i class="fas fa-th-large"></i> Overview</div>
             <div class="sidebar-item"><i class="fas fa-user"></i> Account Settings</div>
@@ -450,37 +474,27 @@
             <div class="sidebar-item"><i class="fas fa-headset"></i> Support</div>
             <div class="sidebar-divider"></div>
             <div class="sidebar-bottom">
-                <div class="sidebar-item" id="themeToggleSidebar">
-                    <i class="fas fa-moon" id="themeIconSidebar"></i>
-                    <span id="themeLabelSidebar">Dark Mode</span>
-                </div>
+                <div class="sidebar-item" id="themeToggleSidebar"><i class="fas fa-moon" id="themeIconSidebar"></i><span id="themeLabelSidebar">Dark Mode</span></div>
                 <div class="sidebar-item" id="logoutSidebar"><i class="fas fa-sign-out-alt"></i> Logout</div>
             </div>
         </aside>
-
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-        <!-- Main Content -->
         <main class="dashboard-main" id="depositContent">
-
             <div id="authLoading" class="auth-loading">
                 <div class="spinner"></div>
                 <p>Loading your deposit data…</p>
             </div>
 
             <div id="depositContentInner" style="display:none;">
-
-                <!-- Header -->
                 <div class="page-header">
                     <div>
-                        <h1> Deposit</h1>
-                        <div class="sub">Add funds to your account via crypto</div>
+                        <h1>💳 Deposit</h1>
+                        <div class="sub">Add funds via Heleket (low fees, instant)</div>
                     </div>
                 </div>
 
-                <!-- Deposit Grid -->
                 <div class="deposit-grid">
-
                     <!-- Form -->
                     <div class="deposit-form-card glass">
                         <div class="balance-display">
@@ -490,34 +504,36 @@
 
                         <div class="form-group">
                             <label for="depositAmount">Amount (USD)</label>
-                            <input type="number" id="depositAmount" placeholder="Enter amount..." min="0.01" step="0.01" />
+                            <input type="number" id="depositAmount" placeholder="Enter amount..." min="0.01" step="0.01" inputmode="decimal" />
                             <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">
-                                You'll be redirected to Paymento to complete the payment.
+                                You'll be redirected to Heleket to complete the payment.
                             </div>
                         </div>
-                        <button class="btn-primary" id="depositBtn" style="width:100%;justify-content:center;">
+                        <button class="btn-primary" id="depositBtn">
                             <i class="fas fa-arrow-down"></i> Deposit Now
                         </button>
+
+                        <div class="deposit-status" id="depositStatus">
+                            <span id="statusMessage"></span>
+                            <button class="details-btn" id="statusDetailsBtn" style="display:none;">Show Error Details</button>
+                            <pre id="statusDetails" style="display:none;font-size:0.75rem;margin-top:8px;padding:8px;background:var(--bg-primary);border-radius:6px;overflow:auto;white-space:pre-wrap;word-break:break-all;"></pre>
+                        </div>
                     </div>
 
                     <!-- History -->
                     <div class="deposit-history glass">
                         <div class="history-header">
                             <h2><i class="fas fa-clock" style="color:var(--purple);"></i> Deposit History</h2>
-                            <span class="badge">Latest</span>
+                            <button class="btn-secondary" style="padding:4px 12px;font-size:0.7rem;" id="refreshHistoryBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
                         </div>
-                        <div class="history-list" id="depositHistoryList">
-                            <!-- populated by JS -->
-                        </div>
+                        <div class="history-list" id="depositHistoryList"></div>
                     </div>
-
                 </div>
-
-            </div><!-- /depositContentInner -->
+            </div>
         </main>
     </div>
 
-    <!-- ===== BOTTOM NAV ===== -->
+    <!-- Bottom Nav -->
     <div class="bottom-nav">
         <a href="dashboard.html"><i class="fas fa-home"></i><span>Home</span></a>
         <a href="trading.html"><i class="fas fa-chart-line"></i><span>Trading</span></a>
@@ -525,23 +541,73 @@
         <a href="investment.html"><i class="fas fa-wallet"></i><span>Investment</span></a>
     </div>
 
-    <!-- ===== TOAST ===== -->
     <div class="toast" id="toast"></div>
 
     <!-- ================================================================
-    JAVASCRIPT
+    JAVASCRIPT (Heleket Integration)
     ================================================================ -->
     <script>
         (function() {
             'use strict';
 
-            // ============================================================
-            //  0. DYNAMIC SUPABASE LOADER
-            // ============================================================
+            // ===== Heleket Configuration =====
+            const HELEKET_MERCHANT_ID = '42456505';
+            // The callback URL where Heleket sends the user after payment
+            const CALLBACK_URL = window.location.origin + '/deposit.html?status=success';
 
+            // ===== DOM refs =====
             const loadingEl = document.getElementById('authLoading');
             const contentEl = document.getElementById('depositContentInner');
+            const currentBalanceEl = document.getElementById('currentBalance');
+            const depositAmount = document.getElementById('depositAmount');
+            const depositBtn = document.getElementById('depositBtn');
+            const historyList = document.getElementById('depositHistoryList');
+            const refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
+            const statusDiv = document.getElementById('depositStatus');
+            const statusMsg = document.getElementById('statusMessage');
+            const statusDetailsBtn = document.getElementById('statusDetailsBtn');
+            const statusDetails = document.getElementById('statusDetails');
 
+            let currentUser = null;
+            let userBalance = 0;
+            let depositHistory = [];
+            let pollingInterval = null;
+
+            // ===== Helpers =====
+            function showStatus(msg, type = 'info', details = '') {
+                statusDiv.className = 'deposit-status show ' + type;
+                statusMsg.textContent = msg;
+                if (details) {
+                    statusDetailsBtn.style.display = 'inline-block';
+                    statusDetails.textContent = details;
+                    statusDetails.style.display = 'none';
+                    statusDetailsBtn.onclick = function() {
+                        statusDetails.style.display = statusDetails.style.display === 'none' ? 'block' : 'none';
+                        this.textContent = statusDetails.style.display === 'none' ? 'Show Error Details' :
+                            'Hide Error Details';
+                    };
+                } else {
+                    statusDetailsBtn.style.display = 'none';
+                    statusDetails.textContent = '';
+                }
+            }
+
+            function hideStatus() {
+                statusDiv.className = 'deposit-status';
+                statusMsg.textContent = '';
+                statusDetails.textContent = '';
+                statusDetailsBtn.style.display = 'none';
+            }
+
+            function showToast(msg, type = 'info') {
+                const t = document.getElementById('toast');
+                t.textContent = msg;
+                t.className = 'toast ' + type + ' show';
+                clearTimeout(t._timeout);
+                t._timeout = setTimeout(() => t.classList.remove('show'), 4000);
+            }
+
+            // ===== Supabase Loader =====
             function loadSupabase(callback, retries) {
                 retries = retries || 0;
                 if (typeof supabase !== 'undefined' || typeof window.supabase !== 'undefined') {
@@ -574,10 +640,7 @@
                 document.head.appendChild(script);
             }
 
-            // ============================================================
-            //  1. SUPABASE CLIENT & AUTH
-            // ============================================================
-
+            // ===== Supabase Client =====
             function initSupabaseAuth() {
                 const SUPABASE_URL = 'https://agscnbiwmotspzjbosmr.supabase.co';
                 const SUPABASE_ANON_KEY =
@@ -592,86 +655,14 @@
                 const supabaseClient = sb.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
                 const auth = {
-                    async signUp(email, password, name) {
-                        try {
-                            const { data, error } = await supabaseClient.auth.signUp({
-                                email,
-                                password,
-                                options: {
-                                    data: { name },
-                                    emailRedirectTo: window.location.origin + '/login.html',
-                                },
-                            });
-                            if (error) {
-                                console.error('Signup error:', error.message);
-                                return { success: false, message: 'Unable to create account.' };
-                            }
-                            if (data.user) {
-                                await supabaseClient
-                                    .from('profiles')
-                                    .insert([{ id: data.user.id, email, name }]);
-                            }
-                            return { success: true, user: data.user };
-                        } catch (err) {
-                            console.error('Signup exception:', err);
-                            return { success: false, message: 'Unable to create account.' };
-                        }
-                    },
-
-                    async signIn(email, password) {
-                        try {
-                            const { data, error } = await supabaseClient.auth.signInWithPassword({
-                                email,
-                                password,
-                            });
-                            if (error) {
-                                console.error('Login error:', error.message);
-                                return { success: false, message: 'Incorrect details.' };
-                            }
-                            if (data.user) {
-                                await supabaseClient
-                                    .from('profiles')
-                                    .update({ last_login_at: new Date().toISOString() })
-                                    .eq('id', data.user.id);
-                            }
-                            return { success: true, user: data.user, session: data.session };
-                        } catch (err) {
-                            console.error('Login exception:', err);
-                            return { success: false, message: 'Incorrect details.' };
-                        }
-                    },
-
                     async signOut() {
-                        const { error } = await supabaseClient.auth.signOut();
-                        if (error) console.error('Signout error:', error);
+                        await supabaseClient.auth.signOut();
                         sessionStorage.clear();
                         window.location.href = 'login.html';
                     },
-
-                    async getCurrentUser() {
-                        const { data, error } = await supabaseClient.auth.getUser();
-                        if (error || !data.user) return null;
-                        return data.user;
-                    },
-
-                    async isAuthenticated() {
-                        const { data } = await supabaseClient.auth.getSession();
-                        return !!data.session;
-                    },
-
-                    storeSession(user) {
-                        sessionStorage.setItem('user', JSON.stringify(user));
-                    },
-
-                    getSession() {
-                        const stored = sessionStorage.getItem('user');
-                        return stored ? JSON.parse(stored) : null;
-                    },
-
-                    clearSession() {
-                        sessionStorage.clear();
-                    },
-
+                    storeSession(user) { sessionStorage.setItem('user', JSON.stringify(user)); },
+                    getSession() { const stored = sessionStorage.getItem('user'); return stored ? JSON.parse(stored) :
+                            null; },
                     async requireAuth() {
                         const session = this.getSession();
                         if (session) return session;
@@ -683,51 +674,21 @@
                         this.storeSession(data.session.user);
                         return data.session.user;
                     },
-
-                    get supabase() {
-                        return supabaseClient;
-                    }
+                    get supabase() { return supabaseClient; }
                 };
 
                 window.supabaseClient = auth;
-                console.log('✅ Supabase auth module loaded');
+                console.log('✅ Supabase auth loaded');
                 initDeposit();
             }
 
-            // ============================================================
-            //  2. DEPOSIT LOGIC (Paymento Integration)
-            // ============================================================
-
-            let currentUser = null;
-            let userBalance = 0;
-            let depositHistory = [];
-            let pollingInterval = null;
-
-            // DOM refs
-            const currentBalanceEl = document.getElementById('currentBalance');
-            const depositAmount = document.getElementById('depositAmount');
-            const depositBtn = document.getElementById('depositBtn');
-            const historyList = document.getElementById('depositHistoryList');
-
-            // --- Toast ---
-            function showToast(message, type = 'info') {
-                const toast = document.getElementById('toast');
-                toast.textContent = message;
-                toast.className = 'toast ' + type + ' show';
-                clearTimeout(toast._timeout);
-                toast._timeout = setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 4000);
-            }
-
-            // --- Fetch Balance ---
+            // ===== Data Functions =====
             async function fetchBalance(userId) {
                 const { data, error } = await window.supabaseClient.supabase
                     .from('profiles')
                     .select('balance')
                     .eq('id', userId)
                     .single();
-
                 if (error) {
                     console.error('Fetch balance error:', error);
                     return 0;
@@ -735,7 +696,6 @@
                 return data?.balance || 0;
             }
 
-            // --- Fetch Deposit History ---
             async function fetchDepositHistory(userId) {
                 const { data, error } = await window.supabaseClient.supabase
                     .from('transactions')
@@ -744,7 +704,6 @@
                     .eq('type', 'deposit')
                     .order('created_at', { ascending: false })
                     .limit(20);
-
                 if (error) {
                     console.error('Fetch history error:', error);
                     return [];
@@ -752,7 +711,6 @@
                 return data || [];
             }
 
-            // --- Render History ---
             function renderHistory(history) {
                 if (!history || history.length === 0) {
                     historyList.innerHTML = `
@@ -763,11 +721,10 @@
                     `;
                     return;
                 }
-
                 historyList.innerHTML = history.map(item => {
                     const statusClass = item.status || 'completed';
                     const date = new Date(item.created_at).toLocaleDateString();
-                    const method = item.method || 'Paymento';
+                    const method = item.method || 'Heleket';
                     return `
                         <div class="history-item">
                             <div class="left">
@@ -783,13 +740,12 @@
                 }).join('');
             }
 
-            // --- Update UI ---
             function updateUI(balance, history) {
                 currentBalanceEl.textContent = '$' + balance.toFixed(2);
                 renderHistory(history);
             }
 
-            // --- Poll for transaction completion ---
+            // ===== Polling =====
             function startPolling(userId, expectedAmount, maxAttempts = 30) {
                 let attempts = 0;
                 if (pollingInterval) clearInterval(pollingInterval);
@@ -798,8 +754,8 @@
                     attempts++;
                     const history = await fetchDepositHistory(userId);
                     const recentCompleted = history.find(tx =>
-                        tx.amount === expectedAmount &&
                         tx.status === 'completed' &&
+                        Math.abs(tx.amount - expectedAmount) < 0.01 &&
                         new Date(tx.created_at) > new Date(Date.now() - 5 * 60 * 1000)
                     );
                     if (recentCompleted) {
@@ -809,71 +765,104 @@
                         userBalance = newBalance;
                         depositHistory = history;
                         updateUI(userBalance, history);
-                        showToast('✅ Deposit of $' + expectedAmount.toFixed(2) + ' confirmed!', 'success');
+                        showStatus('✅ Deposit of $' + expectedAmount.toFixed(2) + ' confirmed!', 'success');
+                        showToast('✅ Deposit confirmed!', 'success');
                     } else if (attempts >= maxAttempts) {
                         clearInterval(pollingInterval);
                         pollingInterval = null;
-                        showToast('⏳ Payment still pending. Please check your transaction history later.', 'info');
+                        showStatus('⏳ Payment still pending. Check your transaction history later.', 'info');
+                        showToast('⏳ Payment pending, check history later.', 'info');
                     }
                 }, 4000);
             }
 
-            // --- Handle Deposit ---
+            // ===== Handle Deposit =====
             async function handleDeposit() {
+                hideStatus();
                 const amount = parseFloat(depositAmount.value);
-
                 if (!amount || amount <= 0) {
-                    showToast('Please enter a valid amount.', 'error');
+                    showStatus('Please enter a valid amount.', 'error');
                     return;
                 }
                 if (amount < 0.01) {
-                    showToast('Minimum deposit is $0.01.', 'error');
+                    showStatus('Minimum deposit is $0.01.', 'error');
                     return;
                 }
 
                 depositBtn.disabled = true;
-                depositBtn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;"></span> Creating order...';
+                depositBtn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;"></span> Redirecting...';
 
                 try {
-                    const { data, error } = await window.supabaseClient.supabase.functions.invoke('create-deposit', {
-                        body: {
-                            userId: currentUser.id,
+                    // Insert a pending transaction in Supabase (so we can poll later)
+                    const { error: insertError } = await window.supabaseClient.supabase
+                        .from('transactions')
+                        .insert({
+                            user_id: currentUser.id,
+                            type: 'deposit',
                             amount: amount,
-                            currency: 'usd',
-                        },
-                    });
+                            status: 'pending',
+                            method: 'Heleket',
+                            tx_hash: 'heleket_' + Date.now(),
+                        });
 
-                    if (error) throw new Error(error.message || 'Failed to create payment order');
-                    if (!data.paymentUrl) throw new Error('No payment URL returned');
+                    if (insertError) {
+                        console.error('Insert pending transaction error:', insertError);
+                        // Continue anyway – user can still pay
+                    }
 
+                    // Build Heleket payment URL
+                    const paymentUrl =
+                        `https://heleket.com/pay/${HELEKET_MERCHANT_ID}?amount=${amount}&currency=USD&callback=${encodeURIComponent(CALLBACK_URL)}`;
+
+                    // Start polling for completion
                     startPolling(currentUser.id, amount);
-                    window.location.href = data.paymentUrl;
+
+                    // Redirect to Heleket
+                    window.location.href = paymentUrl;
 
                 } catch (err) {
                     console.error('Deposit error:', err);
-                    showToast('❌ ' + (err.message || 'Failed to initiate deposit. Please try again.'), 'error');
+                    showStatus('❌ ' + (err.message || 'Failed to initiate deposit. Please try again.'), 'error', err.stack);
                     depositBtn.disabled = false;
                     depositBtn.innerHTML = '<i class="fas fa-arrow-down"></i> Deposit Now';
                 }
             }
 
-            // --- Check URL for status on return ---
+            // ===== Refresh Data =====
+            async function refreshData() {
+                if (!currentUser) return;
+                try {
+                    const balance = await fetchBalance(currentUser.id);
+                    userBalance = balance;
+                    const history = await fetchDepositHistory(currentUser.id);
+                    depositHistory = history;
+                    updateUI(balance, history);
+                    showStatus('🔄 Data refreshed', 'info');
+                    setTimeout(hideStatus, 1500);
+                } catch (err) {
+                    console.error('Refresh error:', err);
+                    showStatus('Failed to refresh data.', 'error', err.message);
+                }
+            }
+
+            // ===== Check return status =====
             function checkReturnStatus() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const status = urlParams.get('status');
                 if (status === 'success') {
-                    showToast('✅ Payment initiated! Waiting for confirmation…', 'info');
+                    showStatus('✅ Payment initiated! Waiting for confirmation…', 'info');
                     if (currentUser) {
-                        startPolling(currentUser.id, 0, 15);
+                        refreshData();
+                        startPolling(currentUser.id, 0, 10);
                     }
                     window.history.replaceState({}, document.title, window.location.pathname);
                 } else if (status === 'cancel') {
-                    showToast('Payment cancelled.', 'info');
+                    showStatus('Payment cancelled.', 'info');
                     window.history.replaceState({}, document.title, window.location.pathname);
                 }
             }
 
-            // --- Init Deposit ---
+            // ===== Init =====
             async function initDeposit() {
                 loadingEl.style.display = 'none';
                 contentEl.style.display = 'block';
@@ -884,6 +873,7 @@
 
                 currentUser = user;
 
+                // Avatar
                 const name = user.user_metadata?.name || user.email || 'User';
                 const avatarEl = document.getElementById('avatarInitials');
                 if (avatarEl) {
@@ -891,11 +881,8 @@
                     avatarEl.textContent = initials || 'U';
                 }
 
-                const balance = await fetchBalance(user.id);
-                userBalance = balance;
-                const history = await fetchDepositHistory(user.id);
-                depositHistory = history;
-                updateUI(balance, history);
+                // Load data
+                await refreshData();
 
                 // ---- Theme toggle ----
                 const themeIcon = document.getElementById('themeIconSidebar');
@@ -939,28 +926,43 @@
                     avatarDropdown.classList.remove('open');
                 });
 
+                // ---- Sidebar toggle ----
+                const hamburger = document.getElementById('hamburger');
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebarOverlay');
+                hamburger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    sidebar.classList.toggle('open');
+                    overlay.classList.toggle('open');
+                });
+                overlay.addEventListener('click', function() {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('open');
+                });
+
                 // ---- Deposit button ----
                 depositBtn.addEventListener('click', handleDeposit);
 
-                // ---- Enter key shortcut ----
+                // ---- Enter key ----
                 depositAmount.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter') {
+                        e.preventDefault();
                         depositBtn.click();
                     }
                 });
 
+                // ---- Refresh history ----
+                refreshHistoryBtn.addEventListener('click', refreshData);
+
+                // ---- Check URL params ----
                 checkReturnStatus();
 
-                console.log('✅ Deposit page initialized with Paymento integration');
+                console.log('✅ Deposit page with Heleket integration ready');
             }
 
-            // ============================================================
-            //  3. START
-            // ============================================================
+            // ===== Start =====
             loadSupabase(initSupabaseAuth, 0);
-
         })();
     </script>
-
 </body>
 </html>
