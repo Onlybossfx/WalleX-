@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Deposit · WalleX</title>
     <!-- Heleket merchant verification -->
-    <meta name="heleket" content="42456505" />
+    <meta name="heleket" content="32e0bfbb-5816-48b1-9213-1a4f4c85c10f" />
     <meta name="referrer" content="no-referrer" />
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
     <style>
-        /* (Same as before – included below for completeness) */
+        /* ===== THEME ===== */
         :root {
             --bg-primary: #f8fafc;
             --bg-secondary: #ffffff;
@@ -437,7 +437,7 @@
 </head>
 <body>
 
-    <!-- Navbar (same as before) -->
+    <!-- Navbar -->
     <nav class="navbar" id="navbar">
         <div class="container">
             <a href="dashboard.html" class="logo"><img src="logo.png" alt="WalleX" /></a>
@@ -544,16 +544,17 @@
     <div class="toast" id="toast"></div>
 
     <!-- ================================================================
-    JAVASCRIPT (Heleket Integration)
+    JAVASCRIPT (Heleket Integration - Vercel URL)
     ================================================================ -->
     <script>
         (function() {
             'use strict';
 
             // ===== Heleket Configuration =====
-            const HELEKET_MERCHANT_ID = '42456505';
-            // The callback URL where Heleket sends the user after payment
-            const CALLBACK_URL = window.location.origin + '/deposit.html?status=success';
+            const HELEKET_MERCHANT_ID = '32e0bfbb-5816-48b1-9213-1a4f4c85c10f';
+            
+            // ✅ CORRECT CALLBACK URL for your Vercel site
+            const CALLBACK_URL = 'https://walle-x-jade.vercel.app/deposit.html?status=success';
 
             // ===== DOM refs =====
             const loadingEl = document.getElementById('authLoading');
@@ -583,8 +584,7 @@
                     statusDetails.style.display = 'none';
                     statusDetailsBtn.onclick = function() {
                         statusDetails.style.display = statusDetails.style.display === 'none' ? 'block' : 'none';
-                        this.textContent = statusDetails.style.display === 'none' ? 'Show Error Details' :
-                            'Hide Error Details';
+                        this.textContent = statusDetails.style.display === 'none' ? 'Show Error Details' : 'Hide Error Details';
                     };
                 } else {
                     statusDetailsBtn.style.display = 'none';
@@ -661,8 +661,7 @@
                         window.location.href = 'login.html';
                     },
                     storeSession(user) { sessionStorage.setItem('user', JSON.stringify(user)); },
-                    getSession() { const stored = sessionStorage.getItem('user'); return stored ? JSON.parse(stored) :
-                            null; },
+                    getSession() { const stored = sessionStorage.getItem('user'); return stored ? JSON.parse(stored) : null; },
                     async requireAuth() {
                         const session = this.getSession();
                         if (session) return session;
@@ -776,7 +775,7 @@
                 }, 4000);
             }
 
-            // ===== Handle Deposit =====
+            // ===== Handle Deposit (Heleket) =====
             async function handleDeposit() {
                 hideStatus();
                 const amount = parseFloat(depositAmount.value);
@@ -793,26 +792,36 @@
                 depositBtn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;"></span> Redirecting...';
 
                 try {
-                    // Insert a pending transaction in Supabase (so we can poll later)
-                    const { error: insertError } = await window.supabaseClient.supabase
-                        .from('transactions')
-                        .insert({
-                            user_id: currentUser.id,
-                            type: 'deposit',
-                            amount: amount,
-                            status: 'pending',
-                            method: 'Heleket',
-                            tx_hash: 'heleket_' + Date.now(),
-                        });
+                    // Insert a pending transaction
+                    let insertError = null;
+                    try {
+                        const { error } = await window.supabaseClient.supabase
+                            .from('transactions')
+                            .insert({
+                                user_id: currentUser.id,
+                                type: 'deposit',
+                                amount: amount,
+                                status: 'pending',
+                                method: 'Heleket',
+                                tx_hash: 'heleket_' + Date.now(),
+                            });
+                        insertError = error;
+                    } catch (err) {
+                        insertError = err;
+                    }
 
                     if (insertError) {
                         console.error('Insert pending transaction error:', insertError);
-                        // Continue anyway – user can still pay
+                        showStatus('⚠️ Database error: ' + insertError.message + '. Proceeding anyway.', 'error', JSON.stringify(insertError));
+                    } else {
+                        console.log('✅ Pending transaction inserted.');
                     }
 
-                    // Build Heleket payment URL
+                    // Build Heleket payment URL with your merchant ID
                     const paymentUrl =
                         `https://heleket.com/pay/${HELEKET_MERCHANT_ID}?amount=${amount}&currency=USD&callback=${encodeURIComponent(CALLBACK_URL)}`;
+
+                    console.log('🔗 Redirecting to:', paymentUrl);
 
                     // Start polling for completion
                     startPolling(currentUser.id, amount);
@@ -881,7 +890,6 @@
                     avatarEl.textContent = initials || 'U';
                 }
 
-                // Load data
                 await refreshData();
 
                 // ---- Theme toggle ----
@@ -957,12 +965,14 @@
                 // ---- Check URL params ----
                 checkReturnStatus();
 
-                console.log('✅ Deposit page with Heleket integration ready');
+                console.log('✅ Deposit page with Heleket ready (merchant: ' + HELEKET_MERCHANT_ID + ')');
+                console.log('📌 Callback URL:', CALLBACK_URL);
             }
 
             // ===== Start =====
             loadSupabase(initSupabaseAuth, 0);
         })();
     </script>
+
 </body>
 </html>
