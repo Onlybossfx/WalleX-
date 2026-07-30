@@ -383,7 +383,7 @@
                     </div>
                 </div>
 
-                <!-- WITHDRAWALS TAB -->
+                <!-- WITHDRAWALS TAB (UPDATED) -->
                 <div class="tab-panel" id="panel-withdrawals" style="display:none;">
                     <div class="page-header">
                         <h1><i class="fas fa-arrow-up"></i> Withdrawals</h1>
@@ -396,8 +396,8 @@
                     <div class="glass" style="padding:12px;">
                         <div class="table-wrap">
                             <table class="admin-table">
-                                <thead><tr><th>User</th><th>Amount</th><th>Address</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
-                                <tbody id="withdrawalsTableBody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);">Loading...</td></tr></tbody>
+                                <thead><tr><th>User</th><th>Amount</th><th>Method</th><th>Details</th><th>Address</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+                                <tbody id="withdrawalsTableBody"><tr><td colspan="8" style="text-align:center;color:var(--text-muted);">Loading...</td></tr></tbody>
                             </table>
                         </div>
                     </div>
@@ -595,6 +595,7 @@
         </div>
     </div>
 
+    <!-- WITHDRAWAL MODAL (updated with details) -->
     <div class="modal-overlay" id="withdrawalModal">
         <div class="modal">
             <div class="modal-header">
@@ -717,7 +718,7 @@
             }
 
             // ============================================================
-            //  2.1 DASHBOARD STATS
+            //  2.1 DASHBOARD STATS (unchanged)
             // ============================================================
             async function loadStats() {
                 try {
@@ -725,14 +726,14 @@
                     const [usersRes, depositsRes, withdrawalsRes, stakesRes, investmentsRes] = await Promise.all([
                         sb.from('profiles').select('id', { count: 'exact', head: true }),
                         sb.from('transactions').select('amount', { count: 'exact', head: true }).eq('type', 'deposit').eq('status', 'completed'),
-                        sb.from('transactions').select('amount', { count: 'exact', head: true }).eq('type', 'withdraw').eq('status', 'completed'),
+                        sb.from('transactions').select('amount', { count: 'exact', head: true }).eq('type', 'withdraw').eq('status', 'approved'),
                         sb.from('user_stakes').select('id', { count: 'exact', head: true }).eq('status', 'active'),
                         sb.from('investments').select('id', { count: 'exact', head: true }).eq('status', 'active'),
                     ]);
 
                     const [depositsData, withdrawalsData] = await Promise.all([
                         sb.from('transactions').select('amount').eq('type', 'deposit').eq('status', 'completed'),
-                        sb.from('transactions').select('amount').eq('type', 'withdraw').eq('status', 'completed'),
+                        sb.from('transactions').select('amount').eq('type', 'withdraw').eq('status', 'approved'),
                     ]);
 
                     const totalDeposits = depositsData.data?.reduce((sum, t) => sum + t.amount, 0) || 0;
@@ -778,7 +779,7 @@
             }
 
             // ============================================================
-            //  2.2 USERS
+            //  2.2 USERS (unchanged)
             // ============================================================
             async function loadUsers() {
                 try {
@@ -865,7 +866,7 @@
             };
 
             // ============================================================
-            //  2.3 DEPOSITS (FIXED)
+            //  2.3 DEPOSITS (unchanged)
             // ============================================================
             async function loadDeposits() {
                 try {
@@ -947,7 +948,7 @@
             };
 
             // ============================================================
-            //  2.4 WITHDRAWALS (FIXED)
+            //  2.4 WITHDRAWALS (UPDATED with new fields & refund)
             // ============================================================
             async function loadWithdrawals() {
                 try {
@@ -959,7 +960,7 @@
                     if (error) throw error;
                     const tbody = document.getElementById('withdrawalsTableBody');
                     if (!data || data.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No withdrawals</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-muted);">No withdrawals</td></tr>';
                         return;
                     }
                     const userIds = [...new Set(data.map(d => d.user_id).filter(id => id))];
@@ -975,11 +976,18 @@
                     }
                     tbody.innerHTML = data.map(w => {
                         const user = userMap[w.user_id] || {};
+                        const method = w.method || 'Crypto';
+                        const details = method === 'crypto'
+                            ? (w.currency || '') + ' ' + (w.network || '')
+                            : 'Bank: ' + (w.bank_name || '');
+                        const address = w.address || w.tx_hash || '-';
                         return `
                             <tr>
                                 <td>${user.email || w.user_id}</td>
                                 <td>$${w.amount.toFixed(2)}</td>
-                                <td style="font-size:0.7rem;max-width:100px;overflow:hidden;text-overflow:ellipsis;">${w.tx_hash || '-'}</td>
+                                <td>${method}</td>
+                                <td>${details}</td>
+                                <td style="font-size:0.7rem;max-width:100px;overflow:hidden;text-overflow:ellipsis;">${address}</td>
                                 <td><span class="status-badge ${w.status}">${w.status}</span></td>
                                 <td>${new Date(w.created_at).toLocaleDateString()}</td>
                                 <td>
@@ -997,27 +1005,56 @@
             }
 
             let currentWithdrawalId = null;
+
             window.openWithdrawalAction = function(id, action) {
                 currentWithdrawalId = id;
-                document.getElementById('withdrawalModalTitle').textContent = action === 'approve' ? 'Approve Withdrawal' :
-                    'Reject Withdrawal';
-                document.getElementById('withdrawalModalBody').innerHTML = `
-                    <div class="form-group">
-                        <label for="withdrawalReason">Reason (optional)</label>
-                        <input type="text" id="withdrawalReason" placeholder="Enter reason..." />
-                    </div>
-                    <p style="font-size:0.85rem;color:var(--text-secondary);">You are about to ${action} this withdrawal request.</p>
-                `;
-                document.getElementById('withdrawalApproveBtn').style.display = action === 'approve' ? 'inline-flex' : 'none';
-                document.getElementById('withdrawalRejectBtn').style.display = action === 'reject' ? 'inline-flex' : 'none';
-                document.getElementById('withdrawalApproveBtn').onclick = () => processWithdrawal('approve');
-                document.getElementById('withdrawalRejectBtn').onclick = () => processWithdrawal('reject');
-                openModal('withdrawalModal');
+                window.supabaseClient.supabase
+                    .from('transactions')
+                    .select('*')
+                    .eq('id', id)
+                    .single()
+                    .then(({ data, error }) => {
+                        if (error) throw error;
+                        const details = `
+                            <p><strong>Amount:</strong> $${data.amount.toFixed(2)}</p>
+                            <p><strong>Fee:</strong> $${(data.fee || 0).toFixed(2)}</p>
+                            <p><strong>Net Amount:</strong> $${(data.net_amount || data.amount).toFixed(2)}</p>
+                            <p><strong>Method:</strong> ${data.method || 'Crypto'}</p>
+                            ${data.method === 'crypto' ? `
+                                <p><strong>Currency:</strong> ${data.currency || '-'}</p>
+                                <p><strong>Network:</strong> ${data.network || '-'}</p>
+                                <p><strong>Address:</strong> ${data.address || data.tx_hash || '-'}</p>
+                            ` : `
+                                <p><strong>Bank Name:</strong> ${data.bank_name || '-'}</p>
+                                <p><strong>Account Number:</strong> ${data.bank_account || '-'}</p>
+                                <p><strong>Account Holder:</strong> ${data.bank_account_name || '-'}</p>
+                                ${data.tx_hash ? `<p><strong>Routing/Sort Code:</strong> ${data.tx_hash}</p>` : ''}
+                            `}
+                            <p><strong>Status:</strong> ${data.status}</p>
+                            <p><strong>Submitted:</strong> ${new Date(data.created_at).toLocaleString()}</p>
+                            ${data.rejection_reason ? `<p><strong>Rejection Reason:</strong> ${data.rejection_reason}</p>` : ''}
+                        `;
+                        document.getElementById('withdrawalModalBody').innerHTML = details;
+                        document.getElementById('withdrawalModalTitle').textContent = action === 'approve' ? 'Approve Withdrawal' : 'Reject Withdrawal';
+                        document.getElementById('withdrawalApproveBtn').style.display = action === 'approve' ? 'inline-flex' : 'none';
+                        document.getElementById('withdrawalRejectBtn').style.display = action === 'reject' ? 'inline-flex' : 'none';
+                        document.getElementById('withdrawalApproveBtn').onclick = () => processWithdrawal('approve');
+                        document.getElementById('withdrawalRejectBtn').onclick = () => processWithdrawal('reject');
+                        openModal('withdrawalModal');
+                    })
+                    .catch(err => showToast(err.message, 'error'));
             };
 
             async function processWithdrawal(action) {
-                const reason = document.getElementById('withdrawalReason').value.trim();
+                const reason = document.getElementById('withdrawalReason') ? document.getElementById('withdrawalReason').value.trim() : '';
                 try {
+                    const { data: tx, error: fetchError } = await window.supabaseClient.supabase
+                        .from('transactions')
+                        .select('*')
+                        .eq('id', currentWithdrawalId)
+                        .single();
+                    if (fetchError) throw fetchError;
+
                     if (action === 'approve') {
                         await window.supabaseClient.supabase
                             .from('transactions')
@@ -1025,30 +1062,27 @@
                             .eq('id', currentWithdrawalId);
                         showToast('Withdrawal approved', 'success');
                     } else {
-                        const { data: tx, error: fetchError } = await window.supabaseClient.supabase
-                            .from('transactions')
-                            .select('user_id, amount')
-                            .eq('id', currentWithdrawalId)
-                            .single();
-                        if (fetchError) throw fetchError;
-
-                        await window.supabaseClient.supabase
-                            .from('transactions')
-                            .update({ status: 'rejected' })
-                            .eq('id', currentWithdrawalId);
-
+                        // REFUND balance
                         const { data: profile } = await window.supabaseClient.supabase
                             .from('profiles')
                             .select('balance')
                             .eq('id', tx.user_id)
                             .single();
                         if (profile) {
+                            const newBalance = (profile.balance || 0) + tx.amount;
                             await window.supabaseClient.supabase
                                 .from('profiles')
-                                .update({ balance: (profile.balance || 0) + tx.amount })
+                                .update({ balance: newBalance })
                                 .eq('id', tx.user_id);
                         }
-                        showToast('Withdrawal rejected and funds refunded', 'success');
+                        await window.supabaseClient.supabase
+                            .from('transactions')
+                            .update({
+                                status: 'rejected',
+                                rejection_reason: reason || 'No reason provided'
+                            })
+                            .eq('id', currentWithdrawalId);
+                        showToast('Withdrawal rejected – balance refunded', 'success');
                     }
                     closeModal('withdrawalModal');
                     loadWithdrawals();
@@ -1058,7 +1092,7 @@
             }
 
             // ============================================================
-            //  2.5 TRANSACTIONS (FIXED)
+            //  2.5 TRANSACTIONS (unchanged)
             // ============================================================
             async function loadTransactions() {
                 try {
@@ -1102,7 +1136,7 @@
             }
 
             // ============================================================
-            //  2.6 STAKING POOLS
+            //  2.6 STAKING POOLS (unchanged)
             // ============================================================
             async function loadPools() {
                 try {
@@ -1185,7 +1219,7 @@
             };
 
             // ============================================================
-            //  2.7 INVESTMENT PLANS
+            //  2.7 INVESTMENT PLANS (unchanged)
             // ============================================================
             async function loadPlans() {
                 try {
@@ -1268,7 +1302,7 @@
             };
 
             // ============================================================
-            //  2.8 FORM MODAL (Pool / Plan)
+            //  2.8 FORM MODAL (Pool / Plan) – unchanged
             // ============================================================
             function openFormModal(type, data) {
                 const isEdit = !!data;
@@ -1342,7 +1376,7 @@
             });
 
             // ============================================================
-            //  2.9 KYC (FIXED)
+            //  2.9 KYC (unchanged)
             // ============================================================
             async function loadKyc() {
                 try {
@@ -1452,7 +1486,7 @@
             });
 
             // ============================================================
-            //  2.10 SETTINGS
+            //  2.10 SETTINGS (unchanged)
             // ============================================================
             async function loadSettings() {
                 try {
@@ -1509,7 +1543,7 @@
             });
 
             // ============================================================
-            //  2.11 AUDIT LOG
+            //  2.11 AUDIT LOG (unchanged)
             // ============================================================
             async function loadAudit() {
                 try {
@@ -1539,7 +1573,7 @@
             }
 
             // ============================================================
-            //  2.12 INIT
+            //  2.12 INIT (unchanged)
             // ============================================================
             async function initAdmin() {
                 loadingEl.style.display = 'none';

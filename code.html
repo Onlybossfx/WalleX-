@@ -2,10 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Deposit · WalleX</title>
-    <!-- Heleket merchant verification -->
-    <meta name="heleket" content="32e0bfbb-5816-48b1-9213-1a4f4c85c10f" />
     <meta name="referrer" content="no-referrer" />
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -16,15 +14,15 @@
         :root {
             --bg-primary: #f8fafc;
             --bg-secondary: #ffffff;
-            --bg-glass: rgba(255, 255, 255, 0.6);
-            --bg-glass-hover: rgba(255, 255, 255, 0.85);
+            --bg-glass: rgba(255,255,255,0.6);
+            --bg-glass-hover: rgba(255,255,255,0.85);
             --text-primary: #0f172a;
             --text-secondary: #475569;
             --text-muted: #94a3b8;
-            --border-color: rgba(124, 58, 237, 0.15);
-            --border-subtle: rgba(0, 0, 0, 0.06);
-            --shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
-            --shadow-hover: 0 8px 40px rgba(0, 0, 0, 0.09);
+            --border-color: rgba(124,58,237,0.15);
+            --border-subtle: rgba(0,0,0,0.06);
+            --shadow: 0 4px 24px rgba(0,0,0,0.05);
+            --shadow-hover: 0 8px 40px rgba(0,0,0,0.09);
             --purple: #7C3AED;
             --purple-light: #8B5CF6;
             --purple-dark: #5B21B6;
@@ -32,20 +30,20 @@
             --red: #ef4444;
             --amber: #f59e0b;
             --radius: 16px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
         }
         [data-theme="dark"] {
             --bg-primary: #000000;
             --bg-secondary: #0a0a0a;
-            --bg-glass: rgba(20, 20, 20, 0.75);
-            --bg-glass-hover: rgba(30, 30, 30, 0.85);
+            --bg-glass: rgba(20,20,20,0.75);
+            --bg-glass-hover: rgba(30,30,30,0.85);
             --text-primary: #ffffff;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
-            --border-color: rgba(124, 58, 237, 0.25);
-            --border-subtle: rgba(255, 255, 255, 0.06);
-            --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
-            --shadow-hover: 0 8px 40px rgba(0, 0, 0, 0.7);
+            --border-color: rgba(124,58,237,0.25);
+            --border-subtle: rgba(255,255,255,0.06);
+            --shadow: 0 4px 24px rgba(0,0,0,0.5);
+            --shadow-hover: 0 8px 40px rgba(0,0,0,0.7);
         }
         * { margin:0; padding:0; box-sizing:border-box; }
         html { scroll-behavior:smooth; }
@@ -56,7 +54,6 @@
             line-height:1.6;
             transition: background 0.3s, color 0.3s;
             overflow-x:hidden;
-            -webkit-tap-highlight-color: transparent;
         }
         ::-webkit-scrollbar { width:6px; }
         ::-webkit-scrollbar-track { background:var(--bg-primary); }
@@ -79,122 +76,64 @@
         }
 
         .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 14px 28px;
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 28px;
             background: linear-gradient(135deg, var(--purple), var(--purple-dark));
-            color: #fff;
-            font-weight: 600;
-            font-size: 1rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
+            color: #fff; font-weight: 600; font-size: 0.95rem;
+            border: none; border-radius: 50px; cursor: pointer;
             transition: var(--transition);
             text-decoration: none;
-            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.25);
-            touch-action: manipulation;
-            width: 100%;
-            justify-content: center;
+            box-shadow: 0 4px 16px rgba(124,58,237,0.25);
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124, 58, 237, 0.35); }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124,58,237,0.35); }
+        .btn-primary:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
 
         .btn-secondary {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            display: inline-flex; align-items: center; gap: 8px;
             padding: 12px 28px;
             background: var(--bg-glass);
             backdrop-filter: blur(10px);
             border: 1px solid var(--border-color);
             color: var(--text-primary);
-            font-weight: 600;
-            font-size: 0.95rem;
-            border-radius: 50px;
-            cursor: pointer;
+            font-weight: 600; font-size: 0.95rem;
+            border-radius: 50px; cursor: pointer;
             transition: var(--transition);
             text-decoration: none;
-            touch-action: manipulation;
         }
         .btn-secondary:hover { background: var(--bg-glass-hover); border-color: var(--purple); transform: translateY(-2px); }
 
         .logo img { height:36px; width:auto; display:block; }
 
-        /* Navbar */
+        /* ===== NAVBAR ===== */
         .navbar {
             position: fixed; top:0; left:0; right:0; z-index:1000;
             padding:12px 0;
             background: var(--bg-glass);
             backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
             border-bottom: 1px solid var(--border-subtle);
-            transition: var(--transition);
         }
         .navbar .container { display:flex; justify-content:space-between; align-items:center; }
-        .nav-links {
-            display: flex; gap:28px; align-items:center; list-style:none;
-        }
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
-            font-size:0.9rem;
-            display:flex; align-items:center; gap:6px;
-        }
+        .nav-links { display:flex; gap:28px; align-items:center; list-style:none; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight:500; font-size:0.9rem; display:flex; align-items:center; gap:6px; }
         .nav-links a:hover, .nav-links a.active { color:var(--purple); }
         @media (max-width:992px) { .nav-links { display:none !important; } }
 
         .user-avatar-wrap { position:relative; cursor:pointer; }
-        .user-avatar {
-            width:40px; height:40px; border-radius:50%;
-            background: linear-gradient(135deg, var(--purple), var(--purple-light));
-            display:flex; align-items:center; justify-content:center;
-            font-weight:700; font-size:1rem; color:#fff;
-            transition:var(--transition);
-            border:2px solid transparent;
-            user-select:none;
-        }
+        .user-avatar { width:40px; height:40px; border-radius:50%; background: linear-gradient(135deg, var(--purple), var(--purple-light)); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1rem; color:#fff; transition:var(--transition); border:2px solid transparent; user-select:none; }
         .user-avatar:hover { border-color:var(--purple-light); transform:scale(1.05); }
-        .avatar-dropdown {
-            position:absolute; top:52px; right:0; min-width:200px;
-            background:var(--bg-secondary);
-            border:1px solid var(--border-subtle);
-            border-radius:var(--radius);
-            box-shadow:var(--shadow-hover);
-            padding:8px 0;
-            opacity:0; visibility:hidden;
-            transform:translateY(-8px);
-            transition:var(--transition);
-            z-index:999;
-        }
+        .avatar-dropdown { position:absolute; top:52px; right:0; min-width:200px; background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius); box-shadow:var(--shadow-hover); padding:8px 0; opacity:0; visibility:hidden; transform:translateY(-8px); transition:var(--transition); z-index:999; }
         .avatar-dropdown.open { opacity:1; visibility:visible; transform:translateY(0); }
-        .avatar-dropdown .dropdown-item {
-            display:flex; align-items:center; gap:12px;
-            padding:10px 18px;
-            color:var(--text-secondary);
-            text-decoration:none;
-            font-size:0.9rem;
-            transition:var(--transition);
-            cursor:pointer;
-            border:none; background:none; width:100%; text-align:left;
-        }
+        .avatar-dropdown .dropdown-item { display:flex; align-items:center; gap:12px; padding:10px 18px; color:var(--text-secondary); font-size:0.9rem; transition:var(--transition); cursor:pointer; border:none; background:none; width:100%; text-align:left; }
         .avatar-dropdown .dropdown-item:hover { background:rgba(124,58,237,0.06); color:var(--purple); }
-        .avatar-dropdown .dropdown-item i { width:18px; text-align:center; }
         .avatar-dropdown .dropdown-divider { height:1px; background:var(--border-subtle); margin:4px 12px; }
 
-        .hamburger {
-            display:none; flex-direction:column; gap:5px;
-            background:none; border:none; cursor:pointer; padding:4px; margin-left:12px;
-            touch-action: manipulation;
-        }
+        .hamburger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px; margin-left:12px; }
         .hamburger span { display:block; width:26px; height:2px; background:var(--text-primary); border-radius:4px; transition:var(--transition); }
         @media (max-width:992px) { .hamburger { display:flex; } }
 
         .nav-right { display:flex; align-items:center; gap:12px; }
 
-        /* Sidebar */
+        /* ===== SIDEBAR ===== */
         .dashboard { display:flex; min-height:100vh; padding-top:66px; background:var(--bg-primary); transition:var(--transition); }
         .dashboard-sidebar {
             width:220px; flex-shrink:0; padding:20px 12px;
@@ -204,17 +143,10 @@
             display:flex; flex-direction:column; gap:2px;
             transition:var(--transition);
         }
-        .sidebar-item {
-            display:flex; align-items:center; gap:12px;
-            padding:10px 14px; border-radius:10px;
-            color:var(--text-secondary);
-            text-decoration:none; font-weight:500; font-size:0.9rem;
-            transition:var(--transition);
-            cursor:pointer; border:none; background:none; width:100%; text-align:left;
-        }
+        .sidebar-item { display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:10px; color:var(--text-secondary); font-weight:500; font-size:0.9rem; transition:var(--transition); cursor:pointer; border:none; background:none; width:100%; text-align:left; }
         .sidebar-item:hover { background:rgba(124,58,237,0.08); color:var(--purple); }
         .sidebar-item.active { background:rgba(124,58,237,0.1); color:var(--purple); border:1px solid rgba(124,58,237,0.15); }
-        .sidebar-item i { width:18px; text-align:center; font-size:1rem; }
+        .sidebar-item i { width:18px; text-align:center; }
         .sidebar-divider { height:1px; background:var(--border-subtle); margin:8px 0; }
         .sidebar-bottom { margin-top:auto; display:flex; flex-direction:column; gap:2px; }
 
@@ -226,23 +158,19 @@
             .dashboard-sidebar.open { display:flex; }
         }
 
-        .dashboard-main { flex:1; padding:24px 16px 100px; overflow-y:auto; }
+        .dashboard-main { flex:1; padding:24px 32px 100px; overflow-y:auto; }
         .page-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:28px; }
         .page-header h1 { font-size:1.6rem; font-weight:700; }
         .page-header .sub { color:var(--text-secondary); font-size:0.9rem; }
 
-        /* Deposit */
+        /* ===== DEPOSIT SECTION ===== */
         .deposit-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 24px;
         }
-        .deposit-form-card {
-            padding: 28px 24px;
-        }
-        .deposit-form-card .form-group {
-            margin-bottom: 20px;
-        }
+        .deposit-form-card { padding: 28px 24px; }
+        .deposit-form-card .form-group { margin-bottom: 20px; }
         .deposit-form-card .form-group label {
             display: block;
             font-weight: 500;
@@ -252,17 +180,17 @@
         }
         .deposit-form-card .form-group input {
             width: 100%;
-            padding: 14px 16px;
+            padding: 12px 16px;
             border-radius: 10px;
             border: 1px solid var(--border-subtle);
             background: var(--bg-primary);
             color: var(--text-primary);
-            font-size: 1.1rem;
+            font-size: 1rem;
             transition: var(--transition);
             outline: none;
         }
         .deposit-form-card .form-group input:focus { border-color: var(--purple); }
-        .deposit-form-card .form-group input:disabled { opacity: 0.6; cursor: not-allowed; }
+        .deposit-form-card .form-group input:disabled { opacity:0.6; cursor:not-allowed; }
         .deposit-form-card .balance-display {
             display: flex;
             justify-content: space-between;
@@ -273,141 +201,88 @@
             margin-bottom: 20px;
             border: 1px solid var(--border-subtle);
         }
-        .deposit-form-card .balance-display .label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-        .deposit-form-card .balance-display .value {
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: var(--purple);
-        }
+        .deposit-form-card .balance-display .label { color: var(--text-secondary); font-size:0.9rem; }
+        .deposit-form-card .balance-display .value { font-weight:700; font-size:1.2rem; color:var(--purple); }
 
-        .deposit-status {
-            margin-top: 16px;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            display: none;
-            background: var(--bg-glass);
+        /* QR Code (placeholder) */
+        .qr-container {
+            text-align: center;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .qr-container canvas {
+            max-width: 160px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+        .qr-container .address {
+            font-family: monospace;
+            font-size: 0.75rem;
+            word-break: break-all;
+            background: var(--bg-primary);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            color: var(--text-secondary);
             border: 1px solid var(--border-subtle);
         }
-        .deposit-status.show { display: block; }
-        .deposit-status.error { border-color: var(--red); color: var(--red); }
-        .deposit-status.success { border-color: var(--green); color: var(--green); }
-        .deposit-status.info { border-color: var(--purple); color: var(--purple); }
 
-        .deposit-status .details-btn {
-            background: none;
-            border: none;
-            color: var(--purple);
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: underline;
-            padding: 4px 0;
-            font-size: 0.8rem;
-        }
-
-        .deposit-history {
-            padding: 24px;
-            min-height: 300px;
-        }
+        /* Deposit History */
+        .deposit-history { padding: 24px; min-height:300px; }
         .deposit-history .history-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
         }
-        .deposit-history .history-header h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
+        .deposit-history .history-header h2 { font-size:1.1rem; font-weight:600; }
         .deposit-history .history-header .badge {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            background: var(--bg-glass);
-            padding: 4px 12px;
-            border-radius: 20px;
-            border: 1px solid var(--border-subtle);
+            font-size:0.7rem; color:var(--text-secondary); background:var(--bg-glass);
+            padding:4px 12px; border-radius:20px; border:1px solid var(--border-subtle);
         }
-        .history-list {
-            max-height: 320px;
-            overflow-y: auto;
-        }
+        .history-list { max-height:320px; overflow-y:auto; }
         .history-list::-webkit-scrollbar { width:4px; }
         .history-list::-webkit-scrollbar-thumb { background:var(--purple); border-radius:10px; }
         .history-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
+            padding: 10px 0;
             border-bottom: 1px solid var(--border-subtle);
         }
-        .history-item:last-child { border-bottom: none; }
-        .history-item .left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .history-item:last-child { border-bottom:none; }
+        .history-item .left { display:flex; align-items:center; gap:12px; }
         .history-item .left .icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(16,185,129,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--green);
+            width:36px; height:36px; border-radius:50%;
+            background:rgba(16,185,129,0.1);
+            display:flex; align-items:center; justify-content:center;
+            color:var(--green);
         }
-        .history-item .left .details .amount {
-            font-weight: 600;
-        }
-        .history-item .left .details .meta {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
+        .history-item .left .details .amount { font-weight:600; }
+        .history-item .left .details .meta { font-size:0.8rem; color:var(--text-muted); }
         .history-item .status {
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 4px 12px;
-            border-radius: 20px;
+            font-size:0.7rem; font-weight:600; padding:4px 12px; border-radius:20px;
         }
-        .history-item .status.completed { background: rgba(16,185,129,0.15); color: var(--green); }
-        .history-item .status.pending { background: rgba(245,158,11,0.15); color: var(--amber); }
-        .history-item .status.failed { background: rgba(239,68,68,0.1); color: var(--red); }
+        .history-item .status.completed { background:rgba(16,185,129,0.15); color:var(--green); }
+        .history-item .status.pending { background:rgba(245,158,11,0.15); color:var(--amber); }
+        .history-item .status.failed { background:rgba(239,68,68,0.1); color:var(--red); }
 
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-secondary);
-        }
-        .empty-state i { font-size: 2.5rem; color: var(--text-muted); margin-bottom: 12px; }
+        .empty-state { text-align:center; padding:40px 20px; color:var(--text-secondary); }
+        .empty-state i { font-size:2.5rem; color:var(--text-muted); margin-bottom:12px; }
 
         .toast {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 24px;
-            border-radius: 12px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-subtle);
-            box-shadow: var(--shadow-hover);
-            z-index: 3000;
-            font-size: 0.9rem;
-            font-weight: 500;
-            display: none;
-            max-width: 90%;
-            text-align: center;
+            position:fixed; bottom:80px; left:50%; transform:translateX(-50%);
+            padding:12px 24px; border-radius:12px;
+            background:var(--bg-secondary); border:1px solid var(--border-subtle);
+            box-shadow:var(--shadow-hover); z-index:3000;
+            font-size:0.9rem; font-weight:500; display:none; max-width:90%; text-align:center;
         }
-        .toast.show { display: block; animation: fadeInUp 0.3s ease; }
-        .toast.success { border-color: var(--green); color: var(--green); }
-        .toast.error { border-color: var(--red); color: var(--red); }
-        .toast.info { border-color: var(--purple); color: var(--purple); }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
+        .toast.show { display:block; animation:fadeInUp 0.3s ease; }
+        .toast.success { border-color:var(--green); color:var(--green); }
+        .toast.error { border-color:var(--red); color:var(--red); }
+        .toast.info { border-color:var(--purple); color:var(--purple); }
+        @keyframes fadeInUp { from { opacity:0; transform:translateX(-50%) translateY(10px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
 
         .bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--bg-glass); backdrop-filter:blur(20px); border-top:1px solid var(--border-subtle); padding:6px 0 env(safe-area-inset-bottom); z-index:100; justify-content:space-around; transition:var(--transition); }
         .bottom-nav a { display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--text-secondary); text-decoration:none; font-size:0.6rem; padding:6px 12px; transition:var(--transition); }
@@ -425,8 +300,7 @@
         @media (max-width:480px) {
             .page-header h1 { font-size:1.3rem; }
             .deposit-form-card { padding:20px 16px; }
-            .history-item { flex-wrap: wrap; gap: 8px; }
-            .btn-primary { padding: 16px; font-size: 1.1rem; }
+            .history-item { flex-wrap:wrap; gap:8px; }
         }
 
         .auth-loading { display:flex; align-items:center; justify-content:center; min-height:60vh; flex-direction:column; gap:16px; }
@@ -437,8 +311,8 @@
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar" id="navbar">
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
         <div class="container">
             <a href="dashboard.html" class="logo"><img src="logo.png" alt="WalleX" /></a>
             <ul class="nav-links" id="navLinks">
@@ -453,6 +327,7 @@
                     <div class="avatar-dropdown" id="avatarDropdown">
                         <a href="profile.html" class="dropdown-item"><i class="fas fa-user"></i> Profile</a>
                         <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a>
+                        <a href="kyc.html" class="dropdown-item"><i class="fas fa-id-card"></i> KYC</a>
                         <div class="dropdown-divider"></div>
                         <button class="dropdown-item" id="logoutAvatar"><i class="fas fa-sign-out-alt"></i> Logout</button>
                     </div>
@@ -462,40 +337,49 @@
         </div>
     </nav>
 
-    <!-- Sidebar & Main -->
-    <div class="dashboard" id="depositMain">
+    <!-- ===== SIDEBAR ===== -->
+    <div class="dashboard">
+
         <aside class="dashboard-sidebar" id="sidebar">
-            <div class="sidebar-item"><i class="fas fa-th-large"></i> Overview</div>
-            <div class="sidebar-item"><i class="fas fa-user"></i> Account Settings</div>
-            <div class="sidebar-item active"><i class="fas fa-credit-card"></i> Deposit</div>
-            <div class="sidebar-item"><i class="fas fa-history"></i> Transactions</div>
+            <a href="dashboard.html" class="sidebar-item"><i class="fas fa-th-large"></i> Overview</a>
+            <a href="profile.html" class="sidebar-item"><i class="fas fa-user"></i> Profile</a>
+            <a href="settings.html" class="sidebar-item"><i class="fas fa-cog"></i> Settings</a>
+            <a href="kyc.html" class="sidebar-item"><i class="fas fa-id-card"></i> KYC</a>
+            <a href="deposit.html" class="sidebar-item active"><i class="fas fa-credit-card"></i> Fund / Deposit</a>
+            <a href="#" class="sidebar-item"><i class="fas fa-history"></i> Transactions</a>
             <div class="sidebar-divider"></div>
-            <div class="sidebar-item"><i class="fas fa-shield-alt"></i> Security</div>
-            <div class="sidebar-item"><i class="fas fa-headset"></i> Support</div>
+            <a href="trading.html" class="sidebar-item"><i class="fas fa-chart-line"></i> Trading</a>
+            <a href="staking.html" class="sidebar-item"><i class="fas fa-coins"></i> Staking</a>
+            <a href="investment.html" class="sidebar-item"><i class="fas fa-wallet"></i> Investment</a>
             <div class="sidebar-divider"></div>
-            <div class="sidebar-bottom">
-                <div class="sidebar-item" id="themeToggleSidebar"><i class="fas fa-moon" id="themeIconSidebar"></i><span id="themeLabelSidebar">Dark Mode</span></div>
-                <div class="sidebar-item" id="logoutSidebar"><i class="fas fa-sign-out-alt"></i> Logout</div>
-            </div>
+            <a href="#" class="sidebar-item"><i class="fas fa-shield-alt"></i> Security</a>
+            <a href="#" class="sidebar-item"><i class="fas fa-headset"></i> Support</a>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-item" id="themeToggleSidebar"><i class="fas fa-adjust"></i> Dark Mode</div>
+            <div class="sidebar-item" id="logoutSidebar"><i class="fas fa-sign-out-alt"></i> Logout</div>
         </aside>
+
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
         <main class="dashboard-main" id="depositContent">
+
             <div id="authLoading" class="auth-loading">
                 <div class="spinner"></div>
                 <p>Loading your deposit data…</p>
             </div>
 
             <div id="depositContentInner" style="display:none;">
+
                 <div class="page-header">
                     <div>
-                        <h1>💳 Deposit</h1>
-                        <div class="sub">Add funds via Heleket (low fees, instant)</div>
+                        <h1>Deposit</h1>
+                        <div class="sub">Add funds to your account via crypto</div>
                     </div>
                 </div>
 
                 <div class="deposit-grid">
-                    <!-- Form -->
+
+                    <!-- Form + QR -->
                     <div class="deposit-form-card glass">
                         <div class="balance-display">
                             <span class="label">Current Balance</span>
@@ -504,19 +388,25 @@
 
                         <div class="form-group">
                             <label for="depositAmount">Amount (USD)</label>
-                            <input type="number" id="depositAmount" placeholder="Enter amount..." min="0.01" step="0.01" inputmode="decimal" />
+                            <input type="number" id="depositAmount" placeholder="Enter amount..." min="0.01" step="0.01" />
                             <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">
-                                You'll be redirected to Heleket to complete the payment.
+                                You'll be redirected to Paymento to complete the payment.
                             </div>
                         </div>
-                        <button class="btn-primary" id="depositBtn">
+
+                        <button class="btn-primary" id="depositBtn" style="width:100%;justify-content:center;">
                             <i class="fas fa-arrow-down"></i> Deposit Now
                         </button>
 
-                        <div class="deposit-status" id="depositStatus">
-                            <span id="statusMessage"></span>
-                            <button class="details-btn" id="statusDetailsBtn" style="display:none;">Show Error Details</button>
-                            <pre id="statusDetails" style="display:none;font-size:0.75rem;margin-top:8px;padding:8px;background:var(--bg-primary);border-radius:6px;overflow:auto;white-space:pre-wrap;word-break:break-all;"></pre>
+                        <!-- Placeholder for direct send (optional) -->
+                        <div class="qr-container">
+                            <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px;">
+                                Or send directly to:
+                            </div>
+                            <div class="address" id="depositAddress">0x742d35Cc6634C0532925a3b844Bc9e7598f0b0e0</div>
+                            <div style="font-size:0.7rem;color:var(--text-muted);margin-top:4px;">
+                                USDC / USDT on Ethereum, Polygon, or BSC
+                            </div>
                         </div>
                     </div>
 
@@ -524,16 +414,20 @@
                     <div class="deposit-history glass">
                         <div class="history-header">
                             <h2><i class="fas fa-clock" style="color:var(--purple);"></i> Deposit History</h2>
-                            <button class="btn-secondary" style="padding:4px 12px;font-size:0.7rem;" id="refreshHistoryBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+                            <span class="badge">Latest</span>
                         </div>
-                        <div class="history-list" id="depositHistoryList"></div>
+                        <div class="history-list" id="depositHistoryList">
+                            <!-- populated by JS -->
+                        </div>
                     </div>
+
                 </div>
-            </div>
+
+            </div><!-- /depositContentInner -->
         </main>
     </div>
 
-    <!-- Bottom Nav -->
+    <!-- ===== BOTTOM NAV ===== -->
     <div class="bottom-nav">
         <a href="dashboard.html"><i class="fas fa-home"></i><span>Home</span></a>
         <a href="trading.html"><i class="fas fa-chart-line"></i><span>Trading</span></a>
@@ -541,64 +435,79 @@
         <a href="investment.html"><i class="fas fa-wallet"></i><span>Investment</span></a>
     </div>
 
+    <!-- ===== TOAST ===== -->
     <div class="toast" id="toast"></div>
 
-    <!-- ================================================================
-    JAVASCRIPT (Heleket Integration - Vercel URL)
-    ================================================================ -->
+    <!-- ================================================================ JS ================================================================ -->
     <script>
-    const MOCK_MODE = true;
         (function() {
             'use strict';
 
-            // ===== Heleket Configuration =====
-            const HELEKET_MERCHANT_ID = '32e0bfbb-5816-48b1-9213-1a4f4c85c10f';
-            
-            // ✅ CORRECT CALLBACK URL for your Vercel site
-            const CALLBACK_URL = 'https://walle-x-jade.vercel.app/deposit.html?status=success';
-
-            // ===== DOM refs =====
+            // === Supabase Loader ===
             const loadingEl = document.getElementById('authLoading');
             const contentEl = document.getElementById('depositContentInner');
-            const currentBalanceEl = document.getElementById('currentBalance');
-            const depositAmount = document.getElementById('depositAmount');
-            const depositBtn = document.getElementById('depositBtn');
-            const historyList = document.getElementById('depositHistoryList');
-            const refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
-            const statusDiv = document.getElementById('depositStatus');
-            const statusMsg = document.getElementById('statusMessage');
-            const statusDetailsBtn = document.getElementById('statusDetailsBtn');
-            const statusDetails = document.getElementById('statusDetails');
 
+            function loadSupabase(callback, retries) {
+                retries = retries || 0;
+                if (typeof supabase !== 'undefined' || typeof window.supabase !== 'undefined') { callback(); return; }
+                var script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+                script.async = true;
+                script.onload = function() {
+                    setTimeout(function() {
+                        if (typeof supabase !== 'undefined' || typeof window.supabase !== 'undefined') { callback(); }
+                        else if (retries < 3) { loadSupabase(callback, retries + 1); }
+                        else { loadingEl.innerHTML = '<p style="color:red;">Failed to load authentication.</p>'; }
+                    }, 300);
+                };
+                script.onerror = function() {
+                    if (retries < 3) loadSupabase(callback, retries + 1);
+                    else loadingEl.innerHTML = '<p style="color:red;">Failed to load authentication.</p>';
+                };
+                document.head.appendChild(script);
+            }
+
+            // === Supabase Auth ===
+            function initSupabaseAuth() {
+                const SUPABASE_URL = 'https://agscnbiwmotspzjbosmr.supabase.co';
+                const SUPABASE_ANON_KEY =
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnc2NuYml3bW90c3B6amJvc21yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyODQxNzksImV4cCI6MjA5OTg2MDE3OX0.tsG16bCY-KX5fSH2JoLI9DtO0n7MOt49UdKBnLvD4e8';
+                const sb = typeof supabase !== 'undefined' ? supabase : window.supabase;
+                if (!sb) return loadingEl.innerHTML = '<p style="color:red;">Supabase unavailable.</p>';
+                const supabaseClient = sb.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+                const auth = {
+                    async signOut() { await supabaseClient.auth.signOut();
+                        sessionStorage.clear();
+                        window.location.href = 'login.html'; },
+                    storeSession(user) { sessionStorage.setItem('user', JSON.stringify(user)); },
+                    getSession() { const stored = sessionStorage.getItem('user'); return stored ? JSON.parse(stored) :
+                        null; },
+                    async requireAuth() {
+                        const session = this.getSession();
+                        if (session) return session;
+                        const { data } = await supabaseClient.auth.getSession();
+                        if (!data.session) { window.location.href = 'login.html'; return null; }
+                        this.storeSession(data.session.user);
+                        return data.session.user;
+                    },
+                    get supabase() { return supabaseClient; }
+                };
+                window.supabaseClient = auth;
+                console.log('✅ Supabase auth loaded');
+                initDeposit();
+            }
+
+            // === Deposit Logic (Paymento) ===
             let currentUser = null;
             let userBalance = 0;
             let depositHistory = [];
             let pollingInterval = null;
 
-            // ===== Helpers =====
-            function showStatus(msg, type = 'info', details = '') {
-                statusDiv.className = 'deposit-status show ' + type;
-                statusMsg.textContent = msg;
-                if (details) {
-                    statusDetailsBtn.style.display = 'inline-block';
-                    statusDetails.textContent = details;
-                    statusDetails.style.display = 'none';
-                    statusDetailsBtn.onclick = function() {
-                        statusDetails.style.display = statusDetails.style.display === 'none' ? 'block' : 'none';
-                        this.textContent = statusDetails.style.display === 'none' ? 'Show Error Details' : 'Hide Error Details';
-                    };
-                } else {
-                    statusDetailsBtn.style.display = 'none';
-                    statusDetails.textContent = '';
-                }
-            }
-
-            function hideStatus() {
-                statusDiv.className = 'deposit-status';
-                statusMsg.textContent = '';
-                statusDetails.textContent = '';
-                statusDetailsBtn.style.display = 'none';
-            }
+            const currentBalanceEl = document.getElementById('currentBalance');
+            const depositAmount = document.getElementById('depositAmount');
+            const depositBtn = document.getElementById('depositBtn');
+            const historyList = document.getElementById('depositHistoryList');
 
             function showToast(msg, type = 'info') {
                 const t = document.getElementById('toast');
@@ -608,91 +517,13 @@
                 t._timeout = setTimeout(() => t.classList.remove('show'), 4000);
             }
 
-            // ===== Supabase Loader =====
-            function loadSupabase(callback, retries) {
-                retries = retries || 0;
-                if (typeof supabase !== 'undefined' || typeof window.supabase !== 'undefined') {
-                    callback();
-                    return;
-                }
-                var script = document.createElement('script');
-                script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
-                script.async = true;
-                script.onload = function() {
-                    setTimeout(function() {
-                        if (typeof supabase !== 'undefined' || typeof window.supabase !== 'undefined') {
-                            callback();
-                        } else if (retries < 3) {
-                            loadSupabase(callback, retries + 1);
-                        } else {
-                            loadingEl.innerHTML =
-                                '<p style="color:#ef4444;">⚠️ Failed to load authentication. Please refresh.</p>';
-                        }
-                    }, 300);
-                };
-                script.onerror = function() {
-                    if (retries < 3) {
-                        loadSupabase(callback, retries + 1);
-                    } else {
-                        loadingEl.innerHTML =
-                            '<p style="color:#ef4444;">⚠️ Failed to load authentication. Check your internet.</p>';
-                    }
-                };
-                document.head.appendChild(script);
-            }
-
-            // ===== Supabase Client =====
-            function initSupabaseAuth() {
-                const SUPABASE_URL = 'https://agscnbiwmotspzjbosmr.supabase.co';
-                const SUPABASE_ANON_KEY =
-                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnc2NuYml3bW90c3B6amJvc21yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyODQxNzksImV4cCI6MjA5OTg2MDE3OX0.tsG16bCY-KX5fSH2JoLI9DtO0n7MOt49UdKBnLvD4e8';
-
-                const sb = typeof supabase !== 'undefined' ? supabase : window.supabase;
-                if (!sb) {
-                    loadingEl.innerHTML = '<p style="color:#ef4444;">⚠️ Supabase not available.</p>';
-                    return;
-                }
-
-                const supabaseClient = sb.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-                const auth = {
-                    async signOut() {
-                        await supabaseClient.auth.signOut();
-                        sessionStorage.clear();
-                        window.location.href = 'login.html';
-                    },
-                    storeSession(user) { sessionStorage.setItem('user', JSON.stringify(user)); },
-                    getSession() { const stored = sessionStorage.getItem('user'); return stored ? JSON.parse(stored) : null; },
-                    async requireAuth() {
-                        const session = this.getSession();
-                        if (session) return session;
-                        const { data } = await supabaseClient.auth.getSession();
-                        if (!data.session) {
-                            window.location.href = 'login.html';
-                            return null;
-                        }
-                        this.storeSession(data.session.user);
-                        return data.session.user;
-                    },
-                    get supabase() { return supabaseClient; }
-                };
-
-                window.supabaseClient = auth;
-                console.log('✅ Supabase auth loaded');
-                initDeposit();
-            }
-
-            // ===== Data Functions =====
             async function fetchBalance(userId) {
                 const { data, error } = await window.supabaseClient.supabase
                     .from('profiles')
                     .select('balance')
                     .eq('id', userId)
                     .single();
-                if (error) {
-                    console.error('Fetch balance error:', error);
-                    return 0;
-                }
+                if (error) return 0;
                 return data?.balance || 0;
             }
 
@@ -704,10 +535,7 @@
                     .eq('type', 'deposit')
                     .order('created_at', { ascending: false })
                     .limit(20);
-                if (error) {
-                    console.error('Fetch history error:', error);
-                    return [];
-                }
+                if (error) return [];
                 return data || [];
             }
 
@@ -724,7 +552,7 @@
                 historyList.innerHTML = history.map(item => {
                     const statusClass = item.status || 'completed';
                     const date = new Date(item.created_at).toLocaleDateString();
-                    const method = item.method || 'Heleket';
+                    const method = item.method || 'Paymento';
                     return `
                         <div class="history-item">
                             <div class="left">
@@ -745,17 +573,15 @@
                 renderHistory(history);
             }
 
-            // ===== Polling =====
             function startPolling(userId, expectedAmount, maxAttempts = 30) {
                 let attempts = 0;
                 if (pollingInterval) clearInterval(pollingInterval);
-
                 pollingInterval = setInterval(async () => {
                     attempts++;
                     const history = await fetchDepositHistory(userId);
                     const recentCompleted = history.find(tx =>
+                        tx.amount === expectedAmount &&
                         tx.status === 'completed' &&
-                        Math.abs(tx.amount - expectedAmount) < 0.01 &&
                         new Date(tx.created_at) > new Date(Date.now() - 5 * 60 * 1000)
                     );
                     if (recentCompleted) {
@@ -765,114 +591,67 @@
                         userBalance = newBalance;
                         depositHistory = history;
                         updateUI(userBalance, history);
-                        showStatus('✅ Deposit of $' + expectedAmount.toFixed(2) + ' confirmed!', 'success');
-                        showToast('✅ Deposit confirmed!', 'success');
+                        showToast('✅ Deposit of $' + expectedAmount.toFixed(2) + ' confirmed!', 'success');
                     } else if (attempts >= maxAttempts) {
                         clearInterval(pollingInterval);
                         pollingInterval = null;
-                        showStatus('⏳ Payment still pending. Check your transaction history later.', 'info');
-                        showToast('⏳ Payment pending, check history later.', 'info');
+                        showToast('⏳ Payment still pending. Please check your transaction history later.', 'info');
                     }
                 }, 4000);
             }
 
-            // ===== Handle Deposit (Heleket) =====
             async function handleDeposit() {
-                hideStatus();
                 const amount = parseFloat(depositAmount.value);
                 if (!amount || amount <= 0) {
-                    showStatus('Please enter a valid amount.', 'error');
+                    showToast('Please enter a valid amount.', 'error');
                     return;
                 }
                 if (amount < 0.01) {
-                    showStatus('Minimum deposit is $0.01.', 'error');
+                    showToast('Minimum deposit is $0.01.', 'error');
                     return;
                 }
 
                 depositBtn.disabled = true;
-                depositBtn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;"></span> Redirecting...';
+                depositBtn.innerHTML = '<span class="spinner">Creating order...</span>';
 
                 try {
-                    // Insert a pending transaction
-                    let insertError = null;
-                    try {
-                        const { error } = await window.supabaseClient.supabase
-                            .from('transactions')
-                            .insert({
-                                user_id: currentUser.id,
-                                type: 'deposit',
-                                amount: amount,
-                                status: 'pending',
-                                method: 'Heleket',
-                                tx_hash: 'heleket_' + Date.now(),
-                            });
-                        insertError = error;
-                    } catch (err) {
-                        insertError = err;
-                    }
+                    const { data, error } = await window.supabaseClient.supabase.functions.invoke('create-deposit', {
+                        body: {
+                            userId: currentUser.id,
+                            amount: amount,
+                            currency: 'usd',
+                        },
+                    });
 
-                    if (insertError) {
-                        console.error('Insert pending transaction error:', insertError);
-                        showStatus('⚠️ Database error: ' + insertError.message + '. Proceeding anyway.', 'error', JSON.stringify(insertError));
-                    } else {
-                        console.log('✅ Pending transaction inserted.');
-                    }
+                    if (error) throw new Error(error.message || 'Failed to create payment order');
+                    if (!data.paymentUrl) throw new Error('No payment URL returned');
 
-                    // Build Heleket payment URL with your merchant ID
-                    const paymentUrl =
-                        `https://heleket.com/pay/${HELEKET_MERCHANT_ID}?amount=${amount}&currency=USD&callback=${encodeURIComponent(CALLBACK_URL)}`;
-
-                    console.log('🔗 Redirecting to:', paymentUrl);
-
-                    // Start polling for completion
                     startPolling(currentUser.id, amount);
-
-                    // Redirect to Heleket
-                    window.location.href = paymentUrl;
+                    window.location.href = data.paymentUrl;
 
                 } catch (err) {
                     console.error('Deposit error:', err);
-                    showStatus('❌ ' + (err.message || 'Failed to initiate deposit. Please try again.'), 'error', err.stack);
+                    showToast('❌ ' + (err.message || 'Failed to initiate deposit. Please try again.'), 'error');
                     depositBtn.disabled = false;
                     depositBtn.innerHTML = '<i class="fas fa-arrow-down"></i> Deposit Now';
                 }
             }
 
-            // ===== Refresh Data =====
-            async function refreshData() {
-                if (!currentUser) return;
-                try {
-                    const balance = await fetchBalance(currentUser.id);
-                    userBalance = balance;
-                    const history = await fetchDepositHistory(currentUser.id);
-                    depositHistory = history;
-                    updateUI(balance, history);
-                    showStatus('🔄 Data refreshed', 'info');
-                    setTimeout(hideStatus, 1500);
-                } catch (err) {
-                    console.error('Refresh error:', err);
-                    showStatus('Failed to refresh data.', 'error', err.message);
-                }
-            }
-
-            // ===== Check return status =====
             function checkReturnStatus() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const status = urlParams.get('status');
                 if (status === 'success') {
-                    showStatus('✅ Payment initiated! Waiting for confirmation…', 'info');
+                    showToast('✅ Payment initiated! Waiting for confirmation…', 'info');
                     if (currentUser) {
-                        refreshData();
-                        startPolling(currentUser.id, 0, 10);
+                        startPolling(currentUser.id, 0, 15);
                     }
                     window.history.replaceState({}, document.title, window.location.pathname);
                 } else if (status === 'cancel') {
-                    showStatus('Payment cancelled.', 'info');
+                    showToast('Payment cancelled.', 'info');
                     window.history.replaceState({}, document.title, window.location.pathname);
                 }
             }
 
-            // ===== Init =====
             async function initDeposit() {
                 loadingEl.style.display = 'none';
                 contentEl.style.display = 'block';
@@ -880,10 +659,8 @@
                 const auth = window.supabaseClient;
                 const user = await auth.requireAuth();
                 if (!user) return;
-
                 currentUser = user;
 
-                // Avatar
                 const name = user.user_metadata?.name || user.email || 'User';
                 const avatarEl = document.getElementById('avatarInitials');
                 if (avatarEl) {
@@ -891,7 +668,11 @@
                     avatarEl.textContent = initials || 'U';
                 }
 
-                await refreshData();
+                const balance = await fetchBalance(user.id);
+                userBalance = balance;
+                const history = await fetchDepositHistory(user.id);
+                depositHistory = history;
+                updateUI(balance, history);
 
                 // ---- Theme toggle ----
                 const themeIcon = document.getElementById('themeIconSidebar');
@@ -925,14 +706,12 @@
                 document.getElementById('logoutSidebar').addEventListener('click', logout);
 
                 // ---- Avatar dropdown ----
-                const avatarWrap = document.getElementById('avatarWrap');
-                const avatarDropdown = document.getElementById('avatarDropdown');
-                avatarWrap.addEventListener('click', function(e) {
+                document.getElementById('avatarWrap').addEventListener('click', function(e) {
                     e.stopPropagation();
-                    avatarDropdown.classList.toggle('open');
+                    document.getElementById('avatarDropdown').classList.toggle('open');
                 });
                 document.addEventListener('click', function() {
-                    avatarDropdown.classList.remove('open');
+                    document.getElementById('avatarDropdown').classList.remove('open');
                 });
 
                 // ---- Sidebar toggle ----
@@ -952,25 +731,18 @@
                 // ---- Deposit button ----
                 depositBtn.addEventListener('click', handleDeposit);
 
-                // ---- Enter key ----
+                // ---- Enter key shortcut ----
                 depositAmount.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter') {
-                        e.preventDefault();
                         depositBtn.click();
                     }
                 });
 
-                // ---- Refresh history ----
-                refreshHistoryBtn.addEventListener('click', refreshData);
-
-                // ---- Check URL params ----
                 checkReturnStatus();
 
-                console.log('✅ Deposit page with Heleket ready (merchant: ' + HELEKET_MERCHANT_ID + ')');
-                console.log('📌 Callback URL:', CALLBACK_URL);
+                console.log('✅ Deposit page initialized with Paymento');
             }
 
-            // ===== Start =====
             loadSupabase(initSupabaseAuth, 0);
         })();
     </script>

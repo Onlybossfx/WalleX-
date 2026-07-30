@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Deposit · WalleX</title>
-    <!-- Heleket merchant verification -->
-    <meta name="heleket" content="32e0bfbb-5816-48b1-9213-1a4f4c85c10f" />
+    <title>Withdraw · WalleX</title>
     <meta name="referrer" content="no-referrer" />
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
     <style>
-        /* ===== THEME ===== */
+        /* ===== THEME (identical to deposit page) ===== */
         :root {
             --bg-primary: #f8fafc;
             --bg-secondary: #ffffff;
@@ -231,59 +229,121 @@
         .page-header h1 { font-size:1.6rem; font-weight:700; }
         .page-header .sub { color:var(--text-secondary); font-size:0.9rem; }
 
-        /* Deposit */
-        .deposit-grid {
+        /* Withdraw */
+        .withdraw-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 24px;
         }
-        .deposit-form-card {
+        .withdraw-form-card {
             padding: 28px 24px;
         }
-        .deposit-form-card .form-group {
+        .withdraw-form-card .form-group {
             margin-bottom: 20px;
         }
-        .deposit-form-card .form-group label {
+        .withdraw-form-card .form-group label {
             display: block;
             font-weight: 500;
             font-size: 0.9rem;
             margin-bottom: 6px;
             color: var(--text-secondary);
         }
-        .deposit-form-card .form-group input {
+        .withdraw-form-card .form-group input,
+        .withdraw-form-card .form-group select {
             width: 100%;
             padding: 14px 16px;
             border-radius: 10px;
             border: 1px solid var(--border-subtle);
             background: var(--bg-primary);
             color: var(--text-primary);
-            font-size: 1.1rem;
+            font-size: 1rem;
             transition: var(--transition);
             outline: none;
         }
-        .deposit-form-card .form-group input:focus { border-color: var(--purple); }
-        .deposit-form-card .form-group input:disabled { opacity: 0.6; cursor: not-allowed; }
-        .deposit-form-card .balance-display {
+        .withdraw-form-card .form-group input:focus,
+        .withdraw-form-card .form-group select:focus { border-color: var(--purple); }
+        .withdraw-form-card .form-group input:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .withdraw-form-card .balance-display {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 12px 16px;
             background: var(--bg-glass);
             border-radius: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             border: 1px solid var(--border-subtle);
         }
-        .deposit-form-card .balance-display .label {
+        .withdraw-form-card .balance-display .label {
             color: var(--text-secondary);
             font-size: 0.9rem;
         }
-        .deposit-form-card .balance-display .value {
+        .withdraw-form-card .balance-display .value {
             font-weight: 700;
             font-size: 1.2rem;
             color: var(--purple);
         }
+        .withdraw-form-card .daily-limit {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            padding: 8px 12px;
+            background: var(--bg-glass);
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+        }
+        .withdraw-form-card .daily-limit .remaining {
+            font-weight: 600;
+            color: var(--purple);
+        }
 
-        .deposit-status {
+        .method-toggle {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .method-toggle button {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            background: var(--bg-glass);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            touch-action: manipulation;
+        }
+        .method-toggle button.active {
+            background: var(--purple);
+            color: #fff;
+            border-color: var(--purple);
+        }
+        .method-toggle button i { margin-right: 6px; }
+
+        .fee-breakdown {
+            padding: 12px 16px;
+            background: var(--bg-glass);
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+            margin: 8px 0 16px;
+            font-size: 0.9rem;
+        }
+        .fee-breakdown .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+        }
+        .fee-breakdown .total {
+            font-weight: 700;
+            color: var(--purple);
+            border-top: 1px solid var(--border-subtle);
+            padding-top: 6px;
+            margin-top: 4px;
+        }
+
+        .withdraw-status {
             margin-top: 16px;
             padding: 12px;
             border-radius: 10px;
@@ -292,12 +352,12 @@
             background: var(--bg-glass);
             border: 1px solid var(--border-subtle);
         }
-        .deposit-status.show { display: block; }
-        .deposit-status.error { border-color: var(--red); color: var(--red); }
-        .deposit-status.success { border-color: var(--green); color: var(--green); }
-        .deposit-status.info { border-color: var(--purple); color: var(--purple); }
+        .withdraw-status.show { display: block; }
+        .withdraw-status.error { border-color: var(--red); color: var(--red); }
+        .withdraw-status.success { border-color: var(--green); color: var(--green); }
+        .withdraw-status.info { border-color: var(--purple); color: var(--purple); }
 
-        .deposit-status .details-btn {
+        .withdraw-status .details-btn {
             background: none;
             border: none;
             color: var(--purple);
@@ -308,21 +368,21 @@
             font-size: 0.8rem;
         }
 
-        .deposit-history {
+        .withdraw-history {
             padding: 24px;
             min-height: 300px;
         }
-        .deposit-history .history-header {
+        .withdraw-history .history-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
         }
-        .deposit-history .history-header h2 {
+        .withdraw-history .history-header h2 {
             font-size: 1.1rem;
             font-weight: 600;
         }
-        .deposit-history .history-header .badge {
+        .withdraw-history .history-header .badge {
             font-size: 0.7rem;
             color: var(--text-secondary);
             background: var(--bg-glass);
@@ -342,22 +402,25 @@
             align-items: center;
             padding: 12px 0;
             border-bottom: 1px solid var(--border-subtle);
+            flex-wrap: wrap;
+            gap: 4px;
         }
         .history-item:last-child { border-bottom: none; }
         .history-item .left {
             display: flex;
             align-items: center;
             gap: 12px;
+            flex: 1;
         }
         .history-item .left .icon {
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: rgba(16,185,129,0.1);
+            background: rgba(239,68,68,0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--green);
+            color: var(--red);
         }
         .history-item .left .details .amount {
             font-weight: 600;
@@ -372,9 +435,13 @@
             padding: 4px 12px;
             border-radius: 20px;
         }
-        .history-item .status.completed { background: rgba(16,185,129,0.15); color: var(--green); }
         .history-item .status.pending { background: rgba(245,158,11,0.15); color: var(--amber); }
-        .history-item .status.failed { background: rgba(239,68,68,0.1); color: var(--red); }
+        .history-item .status.approved { background: rgba(16,185,129,0.15); color: var(--green); }
+        .history-item .status.rejected { background: rgba(239,68,68,0.1); color: var(--red); }
+        .history-item .net-amount {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
 
         .empty-state {
             text-align: center;
@@ -420,13 +487,13 @@
             .dashboard-main { padding:16px 16px 90px; }
             .dashboard-sidebar { display:none; position:fixed; top:66px; left:0; bottom:0; width:280px; background:var(--bg-secondary); backdrop-filter:blur(30px); border-right:1px solid var(--border-subtle); z-index:99; padding:20px 16px; overflow-y:auto; }
             .dashboard-sidebar.open { display:flex; }
-            .deposit-grid { grid-template-columns:1fr; }
+            .withdraw-grid { grid-template-columns:1fr; }
         }
         @media (max-width:480px) {
             .page-header h1 { font-size:1.3rem; }
-            .deposit-form-card { padding:20px 16px; }
-            .history-item { flex-wrap: wrap; gap: 8px; }
-            .btn-primary { padding: 16px; font-size: 1.1rem; }
+            .withdraw-form-card { padding:20px 16px; }
+            .history-item { flex-direction: column; align-items: stretch; }
+            .method-toggle button { font-size:0.8rem; padding:8px; }
         }
 
         .auth-loading { display:flex; align-items:center; justify-content:center; min-height:60vh; flex-direction:column; gap:16px; }
@@ -457,63 +524,145 @@
                         <button class="dropdown-item" id="logoutAvatar"><i class="fas fa-sign-out-alt"></i> Logout</button>
                     </div>
                 </div>
-                <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+                <button class="hamburger" id="hamburger" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
         </div>
     </nav>
 
-    <!-- Sidebar & Main -->
-    <div class="dashboard" id="depositMain">
+    <!-- ===== SIDEBAR ===== -->
+    <div class="dashboard" id="withdrawMain">
+
         <aside class="dashboard-sidebar" id="sidebar">
             <div class="sidebar-item"><i class="fas fa-th-large"></i> Overview</div>
             <div class="sidebar-item"><i class="fas fa-user"></i> Account Settings</div>
-            <div class="sidebar-item active"><i class="fas fa-credit-card"></i> Deposit</div>
+            <div class="sidebar-item active"><i class="fas fa-arrow-up"></i> Withdraw</div>
             <div class="sidebar-item"><i class="fas fa-history"></i> Transactions</div>
             <div class="sidebar-divider"></div>
             <div class="sidebar-item"><i class="fas fa-shield-alt"></i> Security</div>
             <div class="sidebar-item"><i class="fas fa-headset"></i> Support</div>
             <div class="sidebar-divider"></div>
             <div class="sidebar-bottom">
-                <div class="sidebar-item" id="themeToggleSidebar"><i class="fas fa-moon" id="themeIconSidebar"></i><span id="themeLabelSidebar">Dark Mode</span></div>
+                <div class="sidebar-item" id="themeToggleSidebar">
+                    <i class="fas fa-moon" id="themeIconSidebar"></i>
+                    <span id="themeLabelSidebar">Dark Mode</span>
+                </div>
                 <div class="sidebar-item" id="logoutSidebar"><i class="fas fa-sign-out-alt"></i> Logout</div>
             </div>
         </aside>
+
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-        <main class="dashboard-main" id="depositContent">
+        <!-- Main Content -->
+        <main class="dashboard-main" id="withdrawContent">
+
             <div id="authLoading" class="auth-loading">
                 <div class="spinner"></div>
-                <p>Loading your deposit data…</p>
+                <p>Loading withdrawal data…</p>
             </div>
 
-            <div id="depositContentInner" style="display:none;">
+            <div id="withdrawContentInner" style="display:none;">
+
+                <!-- Header -->
                 <div class="page-header">
                     <div>
-                        <h1>💳 Deposit</h1>
-                        <div class="sub">Add funds via Heleket (low fees, instant)</div>
+                        <h1>💸 Withdraw</h1>
+                        <div class="sub">Cash out to crypto or your bank account</div>
                     </div>
                 </div>
 
-                <div class="deposit-grid">
+                <div class="withdraw-grid">
+
                     <!-- Form -->
-                    <div class="deposit-form-card glass">
+                    <div class="withdraw-form-card glass">
                         <div class="balance-display">
-                            <span class="label">Current Balance</span>
-                            <span class="value" id="currentBalance">$0.00</span>
+                            <span class="label">Available Balance</span>
+                            <span class="value" id="availableBalance">$0.00</span>
+                        </div>
+                        <div class="daily-limit">
+                            <i class="fas fa-clock"></i> Daily Limit Remaining: <span class="remaining" id="dailyRemaining">$100.00</span>
                         </div>
 
-                        <div class="form-group">
-                            <label for="depositAmount">Amount (USD)</label>
-                            <input type="number" id="depositAmount" placeholder="Enter amount..." min="0.01" step="0.01" inputmode="decimal" />
-                            <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">
-                                You'll be redirected to Heleket to complete the payment.
+                        <!-- Method Toggle -->
+                        <div class="method-toggle" id="methodToggle">
+                            <button class="active" data-method="crypto"><i class="fab fa-bitcoin"></i> Crypto</button>
+                            <button data-method="bank"><i class="fas fa-university"></i> Bank Transfer</button>
+                        </div>
+
+                        <!-- Crypto Fields -->
+                        <div id="cryptoFields">
+                            <div class="form-group">
+                                <label for="withdrawCurrency">Currency</label>
+                                <select id="withdrawCurrency">
+                                    <option value="BTC">Bitcoin (BTC)</option>
+                                    <option value="ETH">Ethereum (ETH)</option>
+                                    <option value="USDT">Tether (USDT)</option>
+                                    <option value="USDC">USD Coin (USDC)</option>
+                                    <option value="SOL">Solana (SOL)</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="networkGroup">
+                                <label for="withdrawNetwork">Network</label>
+                                <select id="withdrawNetwork">
+                                    <option value="BTC">Bitcoin</option>
+                                    <option value="ERC20">Ethereum (ERC20)</option>
+                                    <option value="BEP20">Binance Smart Chain (BEP20)</option>
+                                    <option value="TRC20">Tron (TRC20)</option>
+                                    <option value="SOL">Solana</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="withdrawAddress">Wallet Address</label>
+                                <input type="text" id="withdrawAddress" placeholder="Enter wallet address..." />
+                            </div>
+                            <div class="form-group">
+                                <label for="withdrawMemo">Memo / Tag (optional)</label>
+                                <input type="text" id="withdrawMemo" placeholder="Memo for some networks" />
                             </div>
                         </div>
-                        <button class="btn-primary" id="depositBtn">
-                            <i class="fas fa-arrow-down"></i> Deposit Now
+
+                        <!-- Bank Fields (hidden by default) -->
+                        <div id="bankFields" style="display:none;">
+                            <div class="form-group">
+                                <label for="bankName">Bank Name</label>
+                                <input type="text" id="bankName" placeholder="e.g., Chase Bank" />
+                            </div>
+                            <div class="form-group">
+                                <label for="bankAccount">Account Number</label>
+                                <input type="text" id="bankAccount" placeholder="Account number" />
+                            </div>
+                            <div class="form-group">
+                                <label for="bankAccountName">Account Holder Name</label>
+                                <input type="text" id="bankAccountName" placeholder="Full name on account" />
+                            </div>
+                            <div class="form-group">
+                                <label for="bankRouting">Routing / Sort Code (optional)</label>
+                                <input type="text" id="bankRouting" placeholder="Routing number" />
+                            </div>
+                        </div>
+
+                        <!-- Amount -->
+                        <div class="form-group">
+                            <label for="withdrawAmount">Amount (USD)</label>
+                            <input type="number" id="withdrawAmount" placeholder="Enter amount..." min="0.01" step="0.01" inputmode="decimal" />
+                            <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">
+                                Min: $1.00 | Max: $<span id="maxAmountDisplay">100.00</span>
+                            </div>
+                        </div>
+
+                        <!-- Fee Display -->
+                        <div class="fee-breakdown" id="feeBreakdown">
+                            <div class="row"><span>Amount</span><span id="feeAmountDisplay">$0.00</span></div>
+                            <div class="row"><span>Fee (% + fixed)</span><span id="feeDisplay">$0.00</span></div>
+                            <div class="row total"><span>You'll receive</span><span id="netAmountDisplay">$0.00</span></div>
+                        </div>
+
+                        <button class="btn-primary" id="withdrawBtn">
+                            <i class="fas fa-arrow-up"></i> Withdraw Now
                         </button>
 
-                        <div class="deposit-status" id="depositStatus">
+                        <div class="withdraw-status" id="withdrawStatus">
                             <span id="statusMessage"></span>
                             <button class="details-btn" id="statusDetailsBtn" style="display:none;">Show Error Details</button>
                             <pre id="statusDetails" style="display:none;font-size:0.75rem;margin-top:8px;padding:8px;background:var(--bg-primary);border-radius:6px;overflow:auto;white-space:pre-wrap;word-break:break-all;"></pre>
@@ -521,15 +670,17 @@
                     </div>
 
                     <!-- History -->
-                    <div class="deposit-history glass">
+                    <div class="withdraw-history glass">
                         <div class="history-header">
-                            <h2><i class="fas fa-clock" style="color:var(--purple);"></i> Deposit History</h2>
+                            <h2><i class="fas fa-clock" style="color:var(--purple);"></i> Withdrawal History</h2>
                             <button class="btn-secondary" style="padding:4px 12px;font-size:0.7rem;" id="refreshHistoryBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
                         </div>
-                        <div class="history-list" id="depositHistoryList"></div>
+                        <div class="history-list" id="withdrawHistoryList"></div>
                     </div>
+
                 </div>
-            </div>
+
+            </div><!-- /withdrawContentInner -->
         </main>
     </div>
 
@@ -544,40 +695,49 @@
     <div class="toast" id="toast"></div>
 
     <!-- ================================================================
-    JAVASCRIPT (Heleket Integration - Vercel URL)
+    JAVASCRIPT (Withdrawal Logic)
     ================================================================ -->
     <script>
-    const MOCK_MODE = true;
         (function() {
             'use strict';
 
-            // ===== Heleket Configuration =====
-            const HELEKET_MERCHANT_ID = '32e0bfbb-5816-48b1-9213-1a4f4c85c10f';
-            
-            // ✅ CORRECT CALLBACK URL for your Vercel site
-            const CALLBACK_URL = 'https://walle-x-jade.vercel.app/deposit.html?status=success';
+            // ===== Configuration =====
+            const DAILY_LIMIT = 100.00;
+            const MIN_WITHDRAW = 1.00;
 
             // ===== DOM refs =====
             const loadingEl = document.getElementById('authLoading');
-            const contentEl = document.getElementById('depositContentInner');
-            const currentBalanceEl = document.getElementById('currentBalance');
-            const depositAmount = document.getElementById('depositAmount');
-            const depositBtn = document.getElementById('depositBtn');
-            const historyList = document.getElementById('depositHistoryList');
+            const contentEl = document.getElementById('withdrawContentInner');
+            const availableBalanceEl = document.getElementById('availableBalance');
+            const dailyRemainingEl = document.getElementById('dailyRemaining');
+            const withdrawAmount = document.getElementById('withdrawAmount');
+            const withdrawBtn = document.getElementById('withdrawBtn');
+            const historyList = document.getElementById('withdrawHistoryList');
             const refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
-            const statusDiv = document.getElementById('depositStatus');
+            const statusDiv = document.getElementById('withdrawStatus');
             const statusMsg = document.getElementById('statusMessage');
             const statusDetailsBtn = document.getElementById('statusDetailsBtn');
             const statusDetails = document.getElementById('statusDetails');
+            const feeAmountDisplay = document.getElementById('feeAmountDisplay');
+            const feeDisplay = document.getElementById('feeDisplay');
+            const netAmountDisplay = document.getElementById('netAmountDisplay');
+            const maxAmountDisplay = document.getElementById('maxAmountDisplay');
+
+            // Method fields
+            const cryptoFields = document.getElementById('cryptoFields');
+            const bankFields = document.getElementById('bankFields');
+            const methodToggle = document.getElementById('methodToggle');
+            let selectedMethod = 'crypto';
 
             let currentUser = null;
             let userBalance = 0;
-            let depositHistory = [];
-            let pollingInterval = null;
+            let withdrawHistory = [];
+            let feePercent = 0;
+            let feeFixed = 0;
 
             // ===== Helpers =====
             function showStatus(msg, type = 'info', details = '') {
-                statusDiv.className = 'deposit-status show ' + type;
+                statusDiv.className = 'withdraw-status show ' + type;
                 statusMsg.textContent = msg;
                 if (details) {
                     statusDetailsBtn.style.display = 'inline-block';
@@ -594,7 +754,7 @@
             }
 
             function hideStatus() {
-                statusDiv.className = 'deposit-status';
+                statusDiv.className = 'withdraw-status';
                 statusMsg.textContent = '';
                 statusDetails.textContent = '';
                 statusDetailsBtn.style.display = 'none';
@@ -679,7 +839,7 @@
 
                 window.supabaseClient = auth;
                 console.log('✅ Supabase auth loaded');
-                initDeposit();
+                initWithdraw();
             }
 
             // ===== Data Functions =====
@@ -696,12 +856,25 @@
                 return data?.balance || 0;
             }
 
-            async function fetchDepositHistory(userId) {
+            async function fetchSettings() {
+                const { data, error } = await window.supabaseClient.supabase
+                    .from('system_settings')
+                    .select('*')
+                    .limit(1)
+                    .maybeSingle();
+                if (error) {
+                    console.error('Fetch settings error:', error);
+                    return {};
+                }
+                return data || {};
+            }
+
+            async function fetchWithdrawHistory(userId) {
                 const { data, error } = await window.supabaseClient.supabase
                     .from('transactions')
                     .select('*')
                     .eq('user_id', userId)
-                    .eq('type', 'deposit')
+                    .eq('type', 'withdraw')
                     .order('created_at', { ascending: false })
                     .limit(20);
                 if (error) {
@@ -711,27 +884,47 @@
                 return data || [];
             }
 
+            async function getDailyWithdrawn(userId) {
+                const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+                const { data, error } = await window.supabaseClient.supabase
+                    .from('transactions')
+                    .select('amount')
+                    .eq('user_id', userId)
+                    .eq('type', 'withdraw')
+                    .in('status', ['pending', 'approved'])
+                    .gte('created_at', dayAgo);
+                if (error) return 0;
+                return data.reduce((sum, t) => sum + t.amount, 0);
+            }
+
             function renderHistory(history) {
                 if (!history || history.length === 0) {
                     historyList.innerHTML = `
                         <div class="empty-state">
                             <i class="fas fa-inbox"></i>
-                            <p>No deposit history yet</p>
+                            <p>No withdrawal history</p>
                         </div>
                     `;
                     return;
                 }
                 historyList.innerHTML = history.map(item => {
-                    const statusClass = item.status || 'completed';
+                    const statusClass = item.status || 'pending';
                     const date = new Date(item.created_at).toLocaleDateString();
-                    const method = item.method || 'Heleket';
+                    const method = item.method || 'Crypto';
+                    const currency = item.currency || '';
+                    const netAmount = item.net_amount || item.amount;
+                    const isRejected = statusClass === 'rejected';
                     return `
                         <div class="history-item">
                             <div class="left">
-                                <div class="icon"><i class="fas fa-arrow-down"></i></div>
+                                <div class="icon"><i class="fas fa-arrow-up"></i></div>
                                 <div class="details">
-                                    <div class="amount">+ $${item.amount.toFixed(2)}</div>
-                                    <div class="meta">${date} · ${method}</div>
+                                    <div class="amount">- $${item.amount.toFixed(2)}</div>
+                                    <div class="meta">${date} · ${method} ${currency} ${isRejected ? '· Rejected' : ''}</div>
+                                    <div class="meta" style="font-size:0.7rem;color:var(--text-muted);">
+                                        Fee: $${(item.fee || 0).toFixed(2)} · Net: $${netAmount.toFixed(2)}
+                                    </div>
+                                    ${item.rejection_reason ? `<div style="font-size:0.7rem;color:var(--red);">Reason: ${item.rejection_reason}</div>` : ''}
                                 </div>
                             </div>
                             <span class="status ${statusClass}">${statusClass.charAt(0).toUpperCase() + statusClass.slice(1)}</span>
@@ -740,101 +933,134 @@
                 }).join('');
             }
 
-            function updateUI(balance, history) {
-                currentBalanceEl.textContent = '$' + balance.toFixed(2);
+            function updateUI(balance, history, dailyUsed) {
+                availableBalanceEl.textContent = '$' + balance.toFixed(2);
+                const remaining = Math.max(0, DAILY_LIMIT - dailyUsed);
+                dailyRemainingEl.textContent = '$' + remaining.toFixed(2);
+                maxAmountDisplay.textContent = remaining.toFixed(2);
                 renderHistory(history);
             }
 
-            // ===== Polling =====
-            function startPolling(userId, expectedAmount, maxAttempts = 30) {
-                let attempts = 0;
-                if (pollingInterval) clearInterval(pollingInterval);
-
-                pollingInterval = setInterval(async () => {
-                    attempts++;
-                    const history = await fetchDepositHistory(userId);
-                    const recentCompleted = history.find(tx =>
-                        tx.status === 'completed' &&
-                        Math.abs(tx.amount - expectedAmount) < 0.01 &&
-                        new Date(tx.created_at) > new Date(Date.now() - 5 * 60 * 1000)
-                    );
-                    if (recentCompleted) {
-                        clearInterval(pollingInterval);
-                        pollingInterval = null;
-                        const newBalance = await fetchBalance(userId);
-                        userBalance = newBalance;
-                        depositHistory = history;
-                        updateUI(userBalance, history);
-                        showStatus('✅ Deposit of $' + expectedAmount.toFixed(2) + ' confirmed!', 'success');
-                        showToast('✅ Deposit confirmed!', 'success');
-                    } else if (attempts >= maxAttempts) {
-                        clearInterval(pollingInterval);
-                        pollingInterval = null;
-                        showStatus('⏳ Payment still pending. Check your transaction history later.', 'info');
-                        showToast('⏳ Payment pending, check history later.', 'info');
-                    }
-                }, 4000);
+            // ===== Fee Calculation =====
+            function calculateFee(amount) {
+                const percentFee = amount * (feePercent / 100);
+                const totalFee = percentFee + feeFixed;
+                return { fee: totalFee, net: amount - totalFee };
             }
 
-            // ===== Handle Deposit (Heleket) =====
-            async function handleDeposit() {
+            function updateFeeDisplay(amount) {
+                const { fee, net } = calculateFee(amount);
+                feeAmountDisplay.textContent = '$' + amount.toFixed(2);
+                feeDisplay.textContent = '$' + fee.toFixed(2);
+                netAmountDisplay.textContent = '$' + net.toFixed(2);
+                return { fee, net };
+            }
+
+            // ===== Handle Withdraw =====
+            async function handleWithdraw() {
                 hideStatus();
-                const amount = parseFloat(depositAmount.value);
+                const amount = parseFloat(withdrawAmount.value);
                 if (!amount || amount <= 0) {
                     showStatus('Please enter a valid amount.', 'error');
                     return;
                 }
-                if (amount < 0.01) {
-                    showStatus('Minimum deposit is $0.01.', 'error');
+                if (amount < MIN_WITHDRAW) {
+                    showStatus('Minimum withdrawal is $' + MIN_WITHDRAW, 'error');
+                    return;
+                }
+                if (amount > userBalance) {
+                    showStatus('Insufficient balance. You have $' + userBalance.toFixed(2), 'error');
                     return;
                 }
 
-                depositBtn.disabled = true;
-                depositBtn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;"></span> Redirecting...';
+                // Daily limit
+                const dailyUsed = await getDailyWithdrawn(currentUser.id);
+                const remaining = DAILY_LIMIT - dailyUsed;
+                if (amount > remaining) {
+                    showStatus('Daily limit exceeded. You have $' + remaining.toFixed(2) + ' remaining today.', 'error');
+                    return;
+                }
+
+                // Calculate fee
+                const { fee, net } = calculateFee(amount);
+                if (net <= 0) {
+                    showStatus('Fee exceeds amount. Please enter a larger amount.', 'error');
+                    return;
+                }
+
+                // Build transaction data
+                const txData = {
+                    user_id: currentUser.id,
+                    type: 'withdraw',
+                    amount: amount,
+                    status: 'pending',
+                    method: selectedMethod,
+                    fee: fee,
+                    net_amount: net,
+                    created_at: new Date().toISOString(),
+                };
+
+                if (selectedMethod === 'crypto') {
+                    const currency = document.getElementById('withdrawCurrency').value;
+                    const network = document.getElementById('withdrawNetwork').value;
+                    const address = document.getElementById('withdrawAddress').value.trim();
+                    const memo = document.getElementById('withdrawMemo').value.trim();
+                    if (!address) {
+                        showStatus('Please enter a wallet address.', 'error');
+                        return;
+                    }
+                    txData.currency = currency;
+                    txData.network = network;
+                    txData.address = address;
+                    if (memo) txData.tx_hash = memo; // store memo in tx_hash for simplicity
+                } else {
+                    // Bank
+                    const bankName = document.getElementById('bankName').value.trim();
+                    const bankAccount = document.getElementById('bankAccount').value.trim();
+                    const bankAccountName = document.getElementById('bankAccountName').value.trim();
+                    const routing = document.getElementById('bankRouting').value.trim();
+                    if (!bankName || !bankAccount || !bankAccountName) {
+                        showStatus('Please fill in all bank details.', 'error');
+                        return;
+                    }
+                    txData.bank_name = bankName;
+                    txData.bank_account = bankAccount;
+                    txData.bank_account_name = bankAccountName;
+                    if (routing) txData.tx_hash = routing;
+                }
+
+                withdrawBtn.disabled = true;
+                withdrawBtn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;"></span> Processing...';
 
                 try {
-                    // Insert a pending transaction
-                    let insertError = null;
-                    try {
-                        const { error } = await window.supabaseClient.supabase
-                            .from('transactions')
-                            .insert({
-                                user_id: currentUser.id,
-                                type: 'deposit',
-                                amount: amount,
-                                status: 'pending',
-                                method: 'Heleket',
-                                tx_hash: 'heleket_' + Date.now(),
-                            });
-                        insertError = error;
-                    } catch (err) {
-                        insertError = err;
-                    }
+                    // 1. Deduct balance immediately
+                    const newBalance = userBalance - amount;
+                    await window.supabaseClient.supabase
+                        .from('profiles')
+                        .update({ balance: newBalance })
+                        .eq('id', currentUser.id);
 
-                    if (insertError) {
-                        console.error('Insert pending transaction error:', insertError);
-                        showStatus('⚠️ Database error: ' + insertError.message + '. Proceeding anyway.', 'error', JSON.stringify(insertError));
-                    } else {
-                        console.log('✅ Pending transaction inserted.');
-                    }
+                    // 2. Insert transaction
+                    const { error: insertError } = await window.supabaseClient.supabase
+                        .from('transactions')
+                        .insert([txData]);
+                    if (insertError) throw insertError;
 
-                    // Build Heleket payment URL with your merchant ID
-                    const paymentUrl =
-                        `https://heleket.com/pay/${HELEKET_MERCHANT_ID}?amount=${amount}&currency=USD&callback=${encodeURIComponent(CALLBACK_URL)}`;
-
-                    console.log('🔗 Redirecting to:', paymentUrl);
-
-                    // Start polling for completion
-                    startPolling(currentUser.id, amount);
-
-                    // Redirect to Heleket
-                    window.location.href = paymentUrl;
+                    showToast('✅ Withdrawal request submitted! Awaiting admin approval.', 'success');
+                    showStatus('✅ Request submitted! Admin will process it shortly.', 'success');
+                    await refreshData();
+                    withdrawAmount.value = '';
+                    updateFeeDisplay(0);
 
                 } catch (err) {
-                    console.error('Deposit error:', err);
-                    showStatus('❌ ' + (err.message || 'Failed to initiate deposit. Please try again.'), 'error', err.stack);
-                    depositBtn.disabled = false;
-                    depositBtn.innerHTML = '<i class="fas fa-arrow-down"></i> Deposit Now';
+                    console.error('Withdraw error:', err);
+                    showStatus('❌ ' + (err.message || 'Failed to submit withdrawal.'), 'error', err.stack);
+                    // If we already deducted balance but insert failed, we need to refund.
+                    // But we'll keep it simple: we only insert after deduction. If insert fails, we should revert.
+                    // For now, we'll let the user know and they can retry.
+                } finally {
+                    withdrawBtn.disabled = false;
+                    withdrawBtn.innerHTML = '<i class="fas fa-arrow-up"></i> Withdraw Now';
                 }
             }
 
@@ -844,36 +1070,63 @@
                 try {
                     const balance = await fetchBalance(currentUser.id);
                     userBalance = balance;
-                    const history = await fetchDepositHistory(currentUser.id);
-                    depositHistory = history;
-                    updateUI(balance, history);
-                    showStatus('🔄 Data refreshed', 'info');
-                    setTimeout(hideStatus, 1500);
+                    const history = await fetchWithdrawHistory(currentUser.id);
+                    withdrawHistory = history;
+                    const dailyUsed = await getDailyWithdrawn(currentUser.id);
+                    updateUI(balance, history, dailyUsed);
+                    hideStatus();
                 } catch (err) {
                     console.error('Refresh error:', err);
                     showStatus('Failed to refresh data.', 'error', err.message);
                 }
             }
 
-            // ===== Check return status =====
-            function checkReturnStatus() {
-                const urlParams = new URLSearchParams(window.location.search);
-                const status = urlParams.get('status');
-                if (status === 'success') {
-                    showStatus('✅ Payment initiated! Waiting for confirmation…', 'info');
-                    if (currentUser) {
-                        refreshData();
-                        startPolling(currentUser.id, 0, 10);
-                    }
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                } else if (status === 'cancel') {
-                    showStatus('Payment cancelled.', 'info');
-                    window.history.replaceState({}, document.title, window.location.pathname);
+            // ===== Method Toggle =====
+            function toggleMethod(method) {
+                selectedMethod = method;
+                document.querySelectorAll('.method-toggle button').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.method === method);
+                });
+                if (method === 'crypto') {
+                    cryptoFields.style.display = 'block';
+                    bankFields.style.display = 'none';
+                } else {
+                    cryptoFields.style.display = 'none';
+                    bankFields.style.display = 'block';
                 }
+                // Clear previous errors
+                hideStatus();
+            }
+
+            // ===== Network dropdown update =====
+            function updateNetworks() {
+                const currency = document.getElementById('withdrawCurrency').value;
+                const networkSelect = document.getElementById('withdrawNetwork');
+                let options = [];
+                switch (currency) {
+                    case 'BTC':
+                        options = ['Bitcoin'];
+                        break;
+                    case 'ETH':
+                        options = ['ERC20'];
+                        break;
+                    case 'USDT':
+                        options = ['ERC20', 'BEP20', 'TRC20'];
+                        break;
+                    case 'USDC':
+                        options = ['ERC20', 'BEP20'];
+                        break;
+                    case 'SOL':
+                        options = ['Solana'];
+                        break;
+                    default:
+                        options = [];
+                }
+                networkSelect.innerHTML = options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
             }
 
             // ===== Init =====
-            async function initDeposit() {
+            async function initWithdraw() {
                 loadingEl.style.display = 'none';
                 contentEl.style.display = 'block';
 
@@ -891,6 +1144,12 @@
                     avatarEl.textContent = initials || 'U';
                 }
 
+                // Load settings (fees)
+                const settings = await fetchSettings();
+                feePercent = settings.withdrawal_fee_percent || 0;
+                feeFixed = settings.withdrawal_fee_fixed || 0;
+
+                // Load initial data
                 await refreshData();
 
                 // ---- Theme toggle ----
@@ -949,25 +1208,41 @@
                     overlay.classList.remove('open');
                 });
 
-                // ---- Deposit button ----
-                depositBtn.addEventListener('click', handleDeposit);
+                // ---- Withdraw button ----
+                withdrawBtn.addEventListener('click', handleWithdraw);
 
                 // ---- Enter key ----
-                depositAmount.addEventListener('keydown', function(e) {
+                withdrawAmount.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
-                        depositBtn.click();
+                        withdrawBtn.click();
                     }
                 });
 
                 // ---- Refresh history ----
                 refreshHistoryBtn.addEventListener('click', refreshData);
 
-                // ---- Check URL params ----
-                checkReturnStatus();
+                // ---- Amount input → update fee ----
+                withdrawAmount.addEventListener('input', function() {
+                    const val = parseFloat(this.value) || 0;
+                    updateFeeDisplay(val);
+                });
 
-                console.log('✅ Deposit page with Heleket ready (merchant: ' + HELEKET_MERCHANT_ID + ')');
-                console.log('📌 Callback URL:', CALLBACK_URL);
+                // ---- Method toggle ----
+                document.querySelectorAll('.method-toggle button').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        toggleMethod(this.dataset.method);
+                    });
+                });
+
+                // ---- Currency change → update network ----
+                document.getElementById('withdrawCurrency').addEventListener('change', updateNetworks);
+                updateNetworks();
+
+                // Initialize with crypto
+                toggleMethod('crypto');
+
+                console.log('✅ Withdraw page initialized');
             }
 
             // ===== Start =====

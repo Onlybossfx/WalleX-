@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KYC Verification · WalleX</title>
+    <meta name="referrer" content="no-referrer" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        /* ===== THEME (identical to dashboard) ===== */
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-glass: rgba(255,255,255,0.7);
+            --bg-glass-hover: rgba(255,255,255,0.9);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: rgba(124,58,237,0.15);
+            --border-subtle: rgba(0,0,0,0.06);
+            --shadow: 0 4px 24px rgba(0,0,0,0.05);
+            --shadow-hover: 0 8px 40px rgba(0,0,0,0.09);
+            --purple: #7C3AED;
+            --purple-light: #8B5CF6;
+            --purple-dark: #5B21B6;
+            --green: #10b981;
+            --red: #ef4444;
+            --amber: #f59e0b;
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        [data-theme="dark"] {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-glass: rgba(20,20,20,0.75);
+            --bg-glass-hover: rgba(30,30,30,0.85);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: rgba(124,58,237,0.25);
+            --border-subtle: rgba(255,255,255,0.06);
+            --shadow: 0 4px 24px rgba(0,0,0,0.5);
+            --shadow-hover: 0 8px 40px rgba(0,0,0,0.7);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background 0.3s, color 0.3s;
+            overflow-x:hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background:var(--purple); border-radius:10px; }
+
+        .container { max-width:1200px; margin:0 auto; padding:0 24px; }
+
+        .glass {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .glass:hover {
+            background: var(--bg-glass-hover);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+            color: #fff; font-weight: 600; font-size: 0.95rem;
+            border: none; border-radius: 50px; cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 16px rgba(124,58,237,0.25);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124,58,237,0.35); }
+        .btn-primary:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+        .btn-secondary {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 28px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-weight: 600; font-size: 0.95rem;
+            border-radius: 50px; cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        .btn-secondary:hover { background: var(--bg-glass-hover); border-color: var(--purple); transform: translateY(-2px); }
+
+        .logo img { height:36px; width:auto; display:block; }
+
+        /* ===== NAVBAR (same as dashboard) ===== */
+        .navbar {
+            position: fixed; top:0; left:0; right:0; z-index:1000;
+            padding:12px 0;
+            background: var(--bg-glass);
+            backdrop-filter: blur(30px);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .navbar .container { display:flex; justify-content:space-between; align-items:center; max-width:1200px; margin:0 auto; padding:0 24px; }
+        .nav-links { display:flex; gap:28px; align-items:center; list-style:none; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight:500; font-size:0.9rem; display:flex; align-items:center; gap:6px; }
+        .nav-links a:hover, .nav-links a.active { color:var(--purple); }
+        @media (max-width:992px) { .nav-links { display:none !important; } }
+
+        .user-avatar-wrap { position:relative; cursor:pointer; }
+        .user-avatar { width:40px; height:40px; border-radius:50%; background: linear-gradient(135deg, var(--purple), var(--purple-light)); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1rem; color:#fff; transition:var(--transition); border:2px solid transparent; user-select:none; }
+        .user-avatar:hover { border-color:var(--purple-light); transform:scale(1.05); }
+        .avatar-dropdown { position:absolute; top:52px; right:0; min-width:200px; background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius); box-shadow:var(--shadow-hover); padding:8px 0; opacity:0; visibility:hidden; transform:translateY(-8px); transition:var(--transition); z-index:999; }
+        .avatar-dropdown.open { opacity:1; visibility:visible; transform:translateY(0); }
+        .avatar-dropdown .dropdown-item { display:flex; align-items:center; gap:12px; padding:10px 18px; color:var(--text-secondary); font-size:0.9rem; transition:var(--transition); cursor:pointer; border:none; background:none; width:100%; text-align:left; }
+        .avatar-dropdown .dropdown-item:hover { background:rgba(124,58,237,0.06); color:var(--purple); }
+        .avatar-dropdown .dropdown-divider { height:1px; background:var(--border-subtle); margin:4px 12px; }
+
+        .hamburger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px; margin-left:12px; }
+        .hamburger span { display:block; width:26px; height:2px; background:var(--text-primary); border-radius:4px; transition:var(--transition); }
+        @media (max-width:992px) { .hamburger { display:flex; } }
+
+        .nav-right { display:flex; align-items:center; gap:12px; }
+
+        /* ===== SIDEBAR ===== */
+        .dashboard { display:flex; min-height:100vh; padding-top:66px; background:var(--bg-primary); }
+        .dashboard-sidebar {
+            width:220px; flex-shrink:0; padding:20px 12px;
+            background:var(--bg-glass); backdrop-filter:blur(20px);
+            border-right:1px solid var(--border-subtle);
+            height:calc(100vh - 66px); position:sticky; top:66px; overflow-y:auto;
+            display:flex; flex-direction:column; gap:2px;
+        }
+        .sidebar-item { display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:10px; color:var(--text-secondary); font-weight:500; font-size:0.9rem; transition:var(--transition); cursor:pointer; border:none; background:none; width:100%; text-align:left; }
+        .sidebar-item:hover { background:rgba(124,58,237,0.08); color:var(--purple); }
+        .sidebar-item.active { background:rgba(124,58,237,0.1); color:var(--purple); border:1px solid rgba(124,58,237,0.15); }
+        .sidebar-item i { width:18px; text-align:center; }
+        .sidebar-divider { height:1px; background:var(--border-subtle); margin:8px 0; }
+        .sidebar-bottom { margin-top:auto; display:flex; flex-direction:column; gap:2px; }
+
+        .sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.3); z-index:98; }
+        .sidebar-overlay.open { display:block; }
+
+        @media (max-width:992px) {
+            .dashboard-sidebar { display:none; position:fixed; top:66px; left:0; bottom:0; width:280px; background:var(--bg-secondary); backdrop-filter:blur(30px); border-right:1px solid var(--border-subtle); z-index:99; padding:20px 16px; overflow-y:auto; }
+            .dashboard-sidebar.open { display:flex; }
+        }
+
+        .dashboard-main { flex:1; padding:24px 32px 100px; overflow-y:auto; }
+        .page-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:28px; }
+        .page-header h1 { font-size:1.6rem; font-weight:700; }
+        .page-header .sub { color:var(--text-secondary); font-size:0.9rem; }
+
+        /* ===== KYC FORM ===== */
+        .kyc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .kyc-status-card {
+            padding: 24px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+        .kyc-status-card .status-icon { font-size: 3rem; margin-bottom: 12px; }
+        .kyc-status-card .status-text { font-size: 1.2rem; font-weight: 600; }
+        .kyc-status-card .status-desc { color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px; }
+
+        .kyc-form-card {
+            padding: 24px;
+        }
+        .kyc-form-card .form-group { margin-bottom: 16px; }
+        .kyc-form-card .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            color: var(--text-secondary);
+        }
+        .kyc-form-card .form-group input,
+        .kyc-form-card .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            outline: none;
+        }
+        .kyc-form-card .form-group input:focus,
+        .kyc-form-card .form-group select:focus { border-color: var(--purple); }
+        .kyc-form-card .form-group input[type="file"] { padding: 8px 0; border: none; background: none; }
+        .kyc-form-card .form-group .file-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .kyc-form-card .form-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+
+        .toast {
+            position: fixed; bottom: 80px; left: 50%; transform:translateX(-50%);
+            padding: 12px 24px; border-radius: 12px;
+            background: var(--bg-secondary); border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-hover); z-index: 3000;
+            font-size:0.9rem; font-weight:500; display:none; max-width:90%; text-align:center;
+        }
+        .toast.show { display:block; animation:fadeInUp 0.3s ease; }
+        .toast.success { border-color:var(--green); color:var(--green); }
+        .toast.error { border-color:var(--red); color:var(--red); }
+        .toast.info { border-color:var(--purple); color:var(--purple); }
+        @keyframes fadeInUp { from { opacity:0; transform:translateX(-50%) translateY(10px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
+
+        .bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--bg-glass); backdrop-filter:blur(20px); border-top:1px solid var(--border-subtle); padding:6px 0 env(safe-area-inset-bottom); z-index:100; justify-content:space-around; }
+        .bottom-nav a { display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--text-secondary); text-decoration:none; font-size:0.6rem; padding:6px 12px; }
+        .bottom-nav a i { font-size:1.2rem; }
+        .bottom-nav a.active { color:var(--purple); }
+
+        @media (max-width:992px) {
+            .bottom-nav { display:flex; }
+            .dashboard-main { padding:16px 16px 90px; }
+            .kyc-grid { grid-template-columns:1fr; }
+        }
+
+        .auth-loading { display:flex; align-items:center; justify-content:center; min-height:60vh; flex-direction:column; gap:16px; }
+        .auth-loading .spinner { width:40px; height:40px; border:3px solid var(--border-subtle); border-top-color:var(--purple); border-radius:50%; animation:spin 0.8s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .auth-loading p { color:var(--text-secondary); font-size:0.95rem; }
+
+        /* File input preview */
+        .file-preview {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .file-preview i { color: var(--green); }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="dashboard.html" class="logo"><img src="logo.png" alt="WalleX" /></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="trading.html"><i class="fas fa-chart-line"></i> Trading</a></li>
+                <li><a href="staking.html"><i class="fas fa-coins"></i> Staking</a></li>
+                <li><a href="investment.html"><i class="fas fa-wallet"></i> Investment</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="user-avatar-wrap" id="avatarWrap">
+                    <div class="user-avatar" id="userAvatar"><span id="avatarInitials">U</span></div>
+                    <div class="avatar-dropdown" id="avatarDropdown">
+                        <a href="profile.html" class="dropdown-item"><i class="fas fa-user"></i> Profile</a>
+                        <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a>
+                        <a href="kyc.html" class="dropdown-item"><i class="fas fa-id-card"></i> KYC</a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item" id="logoutAvatar"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    </div>
+                </div>
+                <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== SIDEBAR OVERLAY ===== -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="dashboard">
+
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-item"><i class="fas fa-th-large"></i> Overview</div>
+            <div class="sidebar-item"><i class="fas fa-user"></i> Profile</div>
+            <div class="sidebar-item"><i class="fas fa-cog"></i> Settings</div>
+            <div class="sidebar-item active"><i class="fas fa-id-card"></i> KYC</div>
+            <div class="sidebar-item"><i class="fas fa-credit-card"></i> Fund</div>
+            <div class="sidebar-item"><i class="fas fa-history"></i> Transactions</div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-item"><i class="fas fa-coins"></i> Staking</div>
+            <div class="sidebar-item"><i class="fas fa-wallet"></i> Investment</div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-item"><i class="fas fa-shield-alt"></i> Security</div>
+            <div class="sidebar-item"><i class="fas fa-headset"></i> Support</div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-bottom">
+                <div class="sidebar-item" id="themeToggleSidebar"><i class="fas fa-adjust"></i> Dark Mode</div>
+                <div class="sidebar-item" id="logoutSidebar"><i class="fas fa-sign-out-alt"></i> Logout</div>
+            </div>
+        </aside>
+
+        <main class="dashboard-main" id="kycContent">
+            <div id="authLoading" class="auth-loading">
+                <div class="spinner"></div>
+                <p>Loading KYC data…</p>
+            </div>
+
+            <div id="kycContentInner" style="display:none;">
+                <div class="page-header">
+                    <div>
+                        <h1>🪪 KYC Verification</h1>
+                        <div class="sub">Verify your identity to unlock full platform features</div>
+                    </div>
+                </div>
+
+                <div class="kyc-grid">
+
+                    <!-- Status Panel -->
+                    <div class="kyc-status-card glass" id="statusPanel">
+                        <div class="status-icon" id="statusIcon"><i class="fas fa-clock"></i></div>
+                        <div class="status-text" id="statusText">Not Submitted</div>
+                        <div class="status-desc" id="statusDesc">Please submit your documents for verification.</div>
+                        <div id="statusReason" style="margin-top:8px;color:var(--red);font-size:0.85rem;display:none;"></div>
+                    </div>
+
+                    <!-- Form Panel -->
+                    <div class="kyc-form-card glass" id="formPanel">
+                        <form id="kycForm" novalidate>
+                            <div class="form-group">
+                                <label for="fullName">Full Name</label>
+                                <input type="text" id="fullName" placeholder="John Doe" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="dob">Date of Birth</label>
+                                <input type="date" id="dob" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="country">Country</label>
+                                <select id="country" required>
+                                    <option value="">Select country</option>
+                                    <option value="US">United States</option>
+                                    <option value="UK">United Kingdom</option>
+                                    <option value="NG">Nigeria</option>
+                                    <option value="DE">Germany</option>
+                                    <option value="FR">France</option>
+                                    <option value="AU">Australia</option>
+                                    <option value="CA">Canada</option>
+                                    <option value="IN">India</option>
+                                    <option value="SG">Singapore</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="idType">ID Type</label>
+                                <select id="idType" required>
+                                    <option value="">Select ID type</option>
+                                    <option value="passport">Passport</option>
+                                    <option value="driver_license">Driver's License</option>
+                                    <option value="national_id">National ID</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="idFront">ID Front</label>
+                                <input type="file" id="idFront" accept="image/*" required />
+                                <div class="file-hint">Upload a clear photo of the front of your ID.</div>
+                                <div class="file-preview" id="idFrontPreview" style="display:none;"><i class="fas fa-check-circle"></i> <span id="idFrontName"></span></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="idBack">ID Back</label>
+                                <input type="file" id="idBack" accept="image/*" required />
+                                <div class="file-hint">Upload a clear photo of the back of your ID.</div>
+                                <div class="file-preview" id="idBackPreview" style="display:none;"><i class="fas fa-check-circle"></i> <span id="idBackName"></span></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="selfie">Selfie</label>
+                                <input type="file" id="selfie" accept="image/*" required />
+                                <div class="file-hint">Take a selfie holding your ID (optional but recommended).</div>
+                                <div class="file-preview" id="selfiePreview" style="display:none;"><i class="fas fa-check-circle"></i> <span id="selfieName"></span></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="proofAddress">Proof of Address (optional)</label>
+                                <input type="file" id="proofAddress" accept="image/*" />
+                                <div class="file-hint">Utility bill or bank statement (PDF or image).</div>
+                                <div class="file-preview" id="proofAddressPreview" style="display:none;"><i class="fas fa-check-circle"></i> <span id="proofAddressName"></span></div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary" id="submitKycBtn">Submit Verification</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ===== BOTTOM NAV ===== -->
+    <div class="bottom-nav">
+        <a href="dashboard.html"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="trading.html"><i class="fas fa-chart-line"></i><span>Trading</span></a>
+        <a href="staking.html"><i class="fas fa-coins"></i><span>Staking</span></a>
+        <a href="investment.html"><i class="fas fa-wallet"></i><span>Investment</span></a>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ================================================================ JS ================================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            // === Supabase Loader ===
+            const loadingEl = document.getElementById('authLoading');
+            const contentEl = document.getElementById('kycContentInner');
+
+            function loadSupabase(callback, retries) {
+                retries = retries || 0;
+                if (typeof supabase !== 'undefined' || typeof window.supabase !== 'undefined') { callback(); return; }
+                var script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+                script.async = true;
+                script.onload = function() {
+                    setTimeout(function() {
+                        if (typeof supabase !== 'undefined' || typeof window.supabase !== 'undefined') { callback(); }
+                        else if (retries < 3) { loadSupabase(callback, retries + 1); }
+                        else { loadingEl.innerHTML = '<p style="color:red;">Failed to load authentication.</p>'; }
+                    }, 300);
+                };
+                script.onerror = function() {
+                    if (retries < 3) loadSupabase(callback, retries + 1);
+                    else loadingEl.innerHTML = '<p style="color:red;">Failed to load authentication.</p>';
+                };
+                document.head.appendChild(script);
+            }
+
+            // === Supabase Auth ===
+            function initSupabaseAuth() {
+                const SUPABASE_URL = 'https://agscnbiwmotspzjbosmr.supabase.co';
+                const SUPABASE_ANON_KEY =
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnc2NuYml3bW90c3B6amJvc21yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyODQxNzksImV4cCI6MjA5OTg2MDE3OX0.tsG16bCY-KX5fSH2JoLI9DtO0n7MOt49UdKBnLvD4e8';
+                const sb = typeof supabase !== 'undefined' ? supabase : window.supabase;
+                if (!sb) return loadingEl.innerHTML = '<p style="color:red;">Supabase unavailable.</p>';
+                const supabaseClient = sb.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+                const auth = {
+                    async signOut() { await supabaseClient.auth.signOut();
+                        sessionStorage.clear();
+                        window.location.href = 'login.html'; },
+                    storeSession(user) { sessionStorage.setItem('user', JSON.stringify(user)); },
+                    getSession() { const stored = sessionStorage.getItem('user'); return stored ? JSON.parse(stored) :
+                        null; },
+                    async requireAuth() {
+                        const session = this.getSession();
+                        if (session) return session;
+                        const { data } = await supabaseClient.auth.getSession();
+                        if (!data.session) { window.location.href = 'login.html'; return null; }
+                        this.storeSession(data.session.user);
+                        return data.session.user;
+                    },
+                    get supabase() { return supabaseClient; }
+                };
+                window.supabaseClient = auth;
+                console.log('✅ Supabase auth loaded');
+                initKyc();
+            }
+
+            // === KYC Logic ===
+            let currentUser = null;
+            let existingKyc = null;
+            const BUCKET_NAME = 'kyc-documents';
+
+            function showToast(msg, type = 'info') {
+                const t = document.getElementById('toast');
+                t.textContent = msg;
+                t.className = 'toast ' + type + ' show';
+                clearTimeout(t._timeout);
+                t._timeout = setTimeout(() => t.classList.remove('show'), 4000);
+            }
+
+            // Upload file to Supabase Storage
+            async function uploadFile(file, userId, fieldName) {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${userId}/${fieldName}_${Date.now()}.${fileExt}`;
+                const { data, error } = await window.supabaseClient.supabase.storage
+                    .from(BUCKET_NAME)
+                    .upload(fileName, file);
+                if (error) throw error;
+                // Get public URL
+                const { data: urlData } = window.supabaseClient.supabase.storage
+                    .from(BUCKET_NAME)
+                    .getPublicUrl(fileName);
+                return urlData.publicUrl;
+            }
+
+            async function initKyc() {
+                loadingEl.style.display = 'none';
+                contentEl.style.display = 'block';
+
+                const auth = window.supabaseClient;
+                const user = await auth.requireAuth();
+                if (!user) return;
+                currentUser = user;
+
+                // Avatar
+                const name = user.user_metadata?.name || user.email || 'User';
+                const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                document.getElementById('avatarInitials').textContent = initials || 'U';
+
+                // Theme toggle (same as other pages)
+                const themeIconSidebar = document.getElementById('themeIconSidebar');
+                const themeLabelSidebar = document.getElementById('themeLabelSidebar');
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                updateSidebarThemeUI(savedTheme);
+
+                function updateSidebarThemeUI(theme) {
+                    if (!themeIconSidebar || !themeLabelSidebar) return;
+                    if (theme === 'dark') {
+                        themeIconSidebar.className = 'fas fa-sun';
+                        themeLabelSidebar.textContent = 'Light Mode';
+                    } else {
+                        themeIconSidebar.className = 'fas fa-moon';
+                        themeLabelSidebar.textContent = 'Dark Mode';
+                    }
+                }
+
+                document.getElementById('themeToggleSidebar').addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    localStorage.setItem('theme', next);
+                    updateSidebarThemeUI(next);
+                });
+
+                // Sidebar toggle (mobile)
+                const hamburger = document.getElementById('hamburger');
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebarOverlay');
+                hamburger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    sidebar.classList.toggle('open');
+                    overlay.classList.toggle('open');
+                });
+                overlay.addEventListener('click', function() {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('open');
+                });
+
+                // Logout
+                function logout() { auth.signOut(); }
+                document.getElementById('logoutAvatar').addEventListener('click', logout);
+                document.getElementById('logoutSidebar').addEventListener('click', logout);
+
+                // Avatar dropdown
+                document.getElementById('avatarWrap').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    document.getElementById('avatarDropdown').classList.toggle('open');
+                });
+                document.addEventListener('click', function() {
+                    document.getElementById('avatarDropdown').classList.remove('open');
+                });
+
+                // Fetch existing KYC request
+                await loadKycStatus();
+
+                // File input previews
+                document.querySelectorAll('input[type="file"]').forEach(input => {
+                    input.addEventListener('change', function() {
+                        const previewId = this.id + 'Preview';
+                        const nameId = this.id + 'Name';
+                        const previewEl = document.getElementById(previewId);
+                        const nameEl = document.getElementById(nameId);
+                        if (this.files && this.files[0]) {
+                            previewEl.style.display = 'flex';
+                            nameEl.textContent = this.files[0].name;
+                        } else {
+                            previewEl.style.display = 'none';
+                        }
+                    });
+                });
+
+                // Form submission
+                document.getElementById('kycForm').addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    if (existingKyc && (existingKyc.status === 'pending' || existingKyc.status === 'approved')) {
+                        showToast('You already have a pending or approved KYC request.', 'error');
+                        return;
+                    }
+
+                    const btn = document.getElementById('submitKycBtn');
+                    btn.disabled = true;
+                    btn.textContent = 'Uploading...';
+
+                    try {
+                        const fullName = document.getElementById('fullName').value.trim();
+                        const dob = document.getElementById('dob').value;
+                        const country = document.getElementById('country').value;
+                        const idType = document.getElementById('idType').value;
+                        const idFrontFile = document.getElementById('idFront').files[0];
+                        const idBackFile = document.getElementById('idBack').files[0];
+                        const selfieFile = document.getElementById('selfie').files[0];
+                        const proofFile = document.getElementById('proofAddress').files[0];
+
+                        if (!fullName || !dob || !country || !idType || !idFrontFile || !idBackFile || !selfieFile) {
+                            showToast('Please fill in all required fields and upload required documents.', 'error');
+                            btn.disabled = false;
+                            btn.textContent = 'Submit Verification';
+                            return;
+                        }
+
+                        // Upload files
+                        const idFrontUrl = await uploadFile(idFrontFile, currentUser.id, 'id_front');
+                        const idBackUrl = await uploadFile(idBackFile, currentUser.id, 'id_back');
+                        const selfieUrl = await uploadFile(selfieFile, currentUser.id, 'selfie');
+                        let proofUrl = null;
+                        if (proofFile) {
+                            proofUrl = await uploadFile(proofFile, currentUser.id, 'proof_address');
+                        }
+
+                        // Insert KYC request
+                        const { data, error } = await window.supabaseClient.supabase
+                            .from('kyc_requests')
+                            .insert({
+                                user_id: currentUser.id,
+                                full_name: fullName,
+                                date_of_birth: dob,
+                                country: country,
+                                id_type: idType,
+                                id_front_url: idFrontUrl,
+                                id_back_url: idBackUrl,
+                                selfie_url: selfieUrl,
+                                proof_of_address_url: proofUrl,
+                                status: 'pending',
+                            })
+                            .select()
+                            .single();
+
+                        if (error) throw error;
+
+                        showToast('KYC submitted successfully! We will review it shortly.', 'success');
+                        existingKyc = data;
+                        updateStatusUI(data);
+                        // Disable form
+                        document.getElementById('kycForm').querySelectorAll('input, select, button').forEach(el => el.disabled =
+                            true);
+                        document.getElementById('submitKycBtn').textContent = 'Submitted';
+
+                    } catch (err) {
+                        console.error(err);
+                        showToast('Error: ' + err.message, 'error');
+                        btn.disabled = false;
+                        btn.textContent = 'Submit Verification';
+                    }
+                });
+
+                console.log('✅ KYC page initialized');
+            }
+
+            async function loadKycStatus() {
+                const { data, error } = await window.supabaseClient.supabase
+                    .from('kyc_requests')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('submitted_at', { ascending: false })
+                    .limit(1)
+                    .maybeSingle();
+
+                if (error) {
+                    console.error('Failed to load KYC status:', error);
+                    return;
+                }
+
+                if (data) {
+                    existingKyc = data;
+                    updateStatusUI(data);
+                    // If pending or approved, disable the form
+                    if (data.status === 'pending' || data.status === 'approved') {
+                        document.getElementById('kycForm').querySelectorAll('input, select, button').forEach(el => el.disabled =
+                            true);
+                        document.getElementById('submitKycBtn').textContent = 'Already Submitted';
+                    }
+                    // If rejected, allow re-submission but pre-fill fields? We'll just let them start fresh.
+                }
+            }
+
+            function updateStatusUI(kyc) {
+                const iconEl = document.getElementById('statusIcon');
+                const textEl = document.getElementById('statusText');
+                const descEl = document.getElementById('statusDesc');
+                const reasonEl = document.getElementById('statusReason');
+
+                switch (kyc.status) {
+                    case 'pending':
+                        iconEl.innerHTML = '<i class="fas fa-clock" style="color:var(--amber);"></i>';
+                        textEl.textContent = 'Pending Review';
+                        descEl.textContent = 'Your documents are being reviewed by our team. We\'ll notify you once complete.';
+                        reasonEl.style.display = 'none';
+                        break;
+                    case 'approved':
+                        iconEl.innerHTML = '<i class="fas fa-check-circle" style="color:var(--green);"></i>';
+                        textEl.textContent = 'Verified ✅';
+                        descEl.textContent = 'Your identity has been verified. You now have full access to all platform features.';
+                        reasonEl.style.display = 'none';
+                        break;
+                    case 'rejected':
+                        iconEl.innerHTML = '<i class="fas fa-times-circle" style="color:var(--red);"></i>';
+                        textEl.textContent = 'Rejected ❌';
+                        descEl.textContent = 'Your submission was not approved. Please review the reason and resubmit.';
+                        if (kyc.rejection_reason) {
+                            reasonEl.textContent = 'Reason: ' + kyc.rejection_reason;
+                            reasonEl.style.display = 'block';
+                        } else {
+                            reasonEl.style.display = 'none';
+                        }
+                        break;
+                    default:
+                        iconEl.innerHTML = '<i class="fas fa-file-alt"></i>';
+                        textEl.textContent = 'Not Submitted';
+                        descEl.textContent = 'Please submit your documents for verification.';
+                        reasonEl.style.display = 'none';
+                }
+            }
+
+            loadSupabase(initSupabaseAuth, 0);
+        })();
+    </script>
+</body>
+</html>

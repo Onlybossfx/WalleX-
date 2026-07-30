@@ -667,25 +667,24 @@
     <!-- ===== DASHBOARD ===== -->
     <div class="dashboard" id="tradingMain">
 
-        <aside class="dashboard-sidebar" id="sidebar">
-            <div class="sidebar-item"><i class="fas fa-th-large"></i> Overview</div>
-            <div class="sidebar-item"><i class="fas fa-user"></i> Account Settings</div>
-            <div class="sidebar-item"><i class="fas fa-credit-card"></i> Fund</div>
-            <div class="sidebar-item"><i class="fas fa-history"></i> Transactions</div>
-            <div class="sidebar-divider"></div>
-            <div class="sidebar-item active"><i class="fas fa-chart-line"></i> Trading</div>
-            <div class="sidebar-item"><i class="fas fa-coins"></i> Staking</div>
-            <div class="sidebar-item"><i class="fas fa-wallet"></i> Investment</div>
-            <div class="sidebar-divider"></div>
-            <div class="sidebar-item"><i class="fas fa-shield-alt"></i> Security</div>
-            <div class="sidebar-item"><i class="fas fa-headset"></i> Support</div>
-            <div class="sidebar-divider"></div>
-            <div class="sidebar-bottom">
-                <div class="sidebar-item" id="themeToggleSidebar"><i class="fas fa-moon" id="themeIconSidebar"></i><span id="themeLabelSidebar">Dark Mode</span></div>
-                <div class="sidebar-item" id="logoutSidebar"><i class="fas fa-sign-out-alt"></i> Logout</div>
-            </div>
-        </aside>
-
+        <!-- ===== SIDEBAR (trading.html) ===== -->
+<aside class="dashboard-sidebar" id="sidebar">
+    <div class="sidebar-item"><a href="dashboard.html" class="link-item"><i class="fas fa-th-large"></i> Overview</a></div>
+    <div class="sidebar-item"><a href="profile.html" class="link-item"><i class="fas fa-user"></i> Account Settings</a></div>
+    <a href="settings.html" class="sidebar-item"><i class="fas fa-cog"></i> Settings</a>
+    <div class="sidebar-item"><i class="fas fa-history"></i> Transactions</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-item"><i class="fas fa-coins"></i> Staking</div>
+    <div class="sidebar-item active"><i class="fas fa-wallet"></i> Investment</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-item"><i class="fas fa-shield-alt"></i> Security</div>
+    <div class="sidebar-item"><i class="fas fa-headset"></i> Support</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-bottom">
+        <div class="sidebar-item" id="themeToggleSidebar"><i class="fas fa-adjust"></i> Dark Mode</div>
+        <div class="sidebar-item" id="logoutSidebar"><i class="fas fa-sign-out-alt"></i> Logout</div>
+    </div>
+</aside>
         <main class="dashboard-main" id="tradingContent">
             <div id="authLoading" class="auth-loading">
                 <div class="spinner"></div>
@@ -1786,7 +1785,7 @@
 
                 function updateThemeUI(theme) {
                     const icon = document.getElementById('themeIconSidebar');
-                    const label = document.getElementById('themeLabelSidebar');
+                    const label = document.getElementById('themeLabel bar');
                     if (!icon || !label) return;
                     if (theme === 'dark') { icon.className = 'fas fa-sun';
                         label.textContent = 'Light Mode'; } else { icon.className = 'fas fa-moon';
