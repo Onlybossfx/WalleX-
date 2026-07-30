@@ -12,8 +12,8 @@
         :root {
             --bg-primary: #f8fafc;
             --bg-secondary: #ffffff;
-            --bg-glass: rgba(255,255,255,0.7);
-            --bg-glass-hover: rgba(255,255,255,0.9);
+            --bg-glass: rgba(255,255,255,0.6);
+            --bg-glass-hover: rgba(255,255,255,0.85);
             --text-primary: #0f172a;
             --text-secondary: #475569;
             --text-muted: #94a3b8;
@@ -95,10 +95,8 @@
             text-decoration: none;
         }
         .btn-secondary:hover { background: var(--bg-glass-hover); border-color: var(--purple); transform: translateY(-2px); }
-
         .btn-danger { background: var(--red); color: #fff; }
         .btn-danger:hover { background: #dc2626; }
-
         .btn-sm { padding: 4px 12px; font-size: 0.75rem; }
 
         .logo img { height:36px; width:auto; display:block; }
@@ -296,7 +294,6 @@
     <!-- ===== DASHBOARD ===== -->
     <div class="dashboard">
 
-        <!-- Sidebar -->
         <aside class="dashboard-sidebar" id="sidebar">
             <div class="sidebar-item active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</div>
             <div class="sidebar-item" data-tab="users"><i class="fas fa-users"></i> Users</div>
@@ -555,7 +552,6 @@
     <div class="toast" id="toast"></div>
 
     <!-- ===== MODALS ===== -->
-    <!-- User Modal -->
     <div class="modal-overlay" id="userModal">
         <div class="modal">
             <div class="modal-header">
@@ -569,7 +565,6 @@
         </div>
     </div>
 
-    <!-- Pool/Plan Modal -->
     <div class="modal-overlay" id="formModal">
         <div class="modal">
             <div class="modal-header">
@@ -586,7 +581,6 @@
         </div>
     </div>
 
-    <!-- KYC Review Modal -->
     <div class="modal-overlay" id="kycModal">
         <div class="modal">
             <div class="modal-header">
@@ -601,7 +595,6 @@
         </div>
     </div>
 
-    <!-- Withdrawal Action Modal -->
     <div class="modal-overlay" id="withdrawalModal">
         <div class="modal">
             <div class="modal-header">
@@ -622,7 +615,9 @@
         (function() {
             'use strict';
 
-            // ===== Supabase Loader =====
+            // ============================================================
+            //  0. SUPABASE LOADER
+            // ============================================================
             const loadingEl = document.getElementById('authLoading');
             const contentEl = document.getElementById('adminContentInner');
 
@@ -646,7 +641,9 @@
                 document.head.appendChild(script);
             }
 
-            // === Supabase Auth ===
+            // ============================================================
+            //  1. SUPABASE AUTH
+            // ============================================================
             function initSupabaseAuth() {
                 const SUPABASE_URL = 'https://agscnbiwmotspzjbosmr.supabase.co';
                 const SUPABASE_ANON_KEY =
@@ -677,9 +674,12 @@
                 initAdmin();
             }
 
-            // === Admin Logic ===
+            // ============================================================
+            //  2. ADMIN LOGIC (DIRECT SUPABASE QUERIES)
+            // ============================================================
             let currentUser = null;
             let activeTab = 'dashboard';
+            let userGrowthChart, revenueChart;
 
             function showToast(msg, type = 'info') {
                 const t = document.getElementById('toast');
@@ -690,10 +690,9 @@
             }
 
             function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
             function openModal(id) { document.getElementById(id).classList.add('open'); }
 
-            // ===== Tab Navigation =====
+            // ===== Tab Switching =====
             function switchTab(tab) {
                 activeTab = tab;
                 document.querySelectorAll('.tab-panel').forEach(el => el.style.display = 'none');
@@ -702,78 +701,57 @@
                 document.querySelector(`.sidebar-item[data-tab="${tab}"]`)?.classList.add('active');
                 document.querySelectorAll('.bottom-nav a').forEach(el => el.classList.remove('active'));
                 document.querySelector(`.bottom-nav a[data-tab="${tab}"]`)?.classList.add('active');
-                // Load data based on tab
+
                 switch (tab) {
-                    case 'dashboard':
-                        loadStats();
-                        break;
-                    case 'users':
-                        loadUsers();
-                        break;
-                    case 'deposits':
-                        loadDeposits();
-                        break;
-                    case 'withdrawals':
-                        loadWithdrawals();
-                        break;
-                    case 'transactions':
-                        loadTransactions();
-                        break;
-                    case 'staking':
-                        loadPools();
-                        break;
-                    case 'investment':
-                        loadPlans();
-                        break;
-                    case 'kyc':
-                        loadKyc();
-                        break;
-                    case 'settings':
-                        loadSettings();
-                        break;
-                    case 'audit':
-                        loadAudit();
-                        break;
+                    case 'dashboard': loadStats(); break;
+                    case 'users': loadUsers(); break;
+                    case 'deposits': loadDeposits(); break;
+                    case 'withdrawals': loadWithdrawals(); break;
+                    case 'transactions': loadTransactions(); break;
+                    case 'staking': loadPools(); break;
+                    case 'investment': loadPlans(); break;
+                    case 'kyc': loadKyc(); break;
+                    case 'settings': loadSettings(); break;
+                    case 'audit': loadAudit(); break;
                 }
             }
 
-            // ===== API Calls (FIXED: manually add Authorization header) =====
-            async function callAdminFunction(name, body) {
-                // Get the current session token
-                const { data: { session }, error: sessionError } = await window.supabaseClient.supabase.auth.getSession();
-                if (sessionError || !session) {
-                    throw new Error('Not authenticated. Please log in again.');
-                }
-
-                const { data, error } = await window.supabaseClient.supabase.functions.invoke(name, {
-                    body: body || {},
-                    headers: {
-                        'Authorization': `Bearer ${session.access_token}`,
-                    },
-                });
-                if (error) throw new Error(error.message);
-                return data;
-            }
-
-            // ===== Dashboard =====
+            // ============================================================
+            //  2.1 DASHBOARD STATS
+            // ============================================================
             async function loadStats() {
                 try {
-                    const stats = await callAdminFunction('admin-stats', {});
-                    document.getElementById('statUsers').textContent = stats.totalUsers || 0;
-                    document.getElementById('statDeposits').textContent = '$' + (stats.totalDeposits || 0).toFixed(2);
-                    document.getElementById('statWithdrawals').textContent = '$' + (stats.totalWithdrawals || 0).toFixed(2);
-                    document.getElementById('statRevenue').textContent = '$' + (stats.totalRevenue || 0).toFixed(2);
-                    document.getElementById('statStakes').textContent = stats.activeStakes || 0;
-                    document.getElementById('statInvestments').textContent = stats.activeInvestments || 0;
+                    const sb = window.supabaseClient.supabase;
+                    const [usersRes, depositsRes, withdrawalsRes, stakesRes, investmentsRes] = await Promise.all([
+                        sb.from('profiles').select('id', { count: 'exact', head: true }),
+                        sb.from('transactions').select('amount', { count: 'exact', head: true }).eq('type', 'deposit').eq('status', 'completed'),
+                        sb.from('transactions').select('amount', { count: 'exact', head: true }).eq('type', 'withdraw').eq('status', 'completed'),
+                        sb.from('user_stakes').select('id', { count: 'exact', head: true }).eq('status', 'active'),
+                        sb.from('investments').select('id', { count: 'exact', head: true }).eq('status', 'active'),
+                    ]);
+
+                    const [depositsData, withdrawalsData] = await Promise.all([
+                        sb.from('transactions').select('amount').eq('type', 'deposit').eq('status', 'completed'),
+                        sb.from('transactions').select('amount').eq('type', 'withdraw').eq('status', 'completed'),
+                    ]);
+
+                    const totalDeposits = depositsData.data?.reduce((sum, t) => sum + t.amount, 0) || 0;
+                    const totalWithdrawals = withdrawalsData.data?.reduce((sum, t) => sum + t.amount, 0) || 0;
+                    const revenue = totalDeposits - totalWithdrawals;
+
+                    document.getElementById('statUsers').textContent = usersRes.count || 0;
+                    document.getElementById('statDeposits').textContent = '$' + totalDeposits.toFixed(2);
+                    document.getElementById('statWithdrawals').textContent = '$' + totalWithdrawals.toFixed(2);
+                    document.getElementById('statRevenue').textContent = '$' + revenue.toFixed(2);
+                    document.getElementById('statStakes').textContent = stakesRes.count || 0;
+                    document.getElementById('statInvestments').textContent = investmentsRes.count || 0;
                     document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+
                     drawCharts();
                 } catch (err) {
                     showToast('Error loading stats: ' + err.message, 'error');
                 }
             }
-
-            let userGrowthChart = null,
-                revenueChart = null;
 
             function drawCharts() {
                 const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -799,14 +777,22 @@
                 });
             }
 
-            // ===== Users =====
+            // ============================================================
+            //  2.2 USERS
+            // ============================================================
             async function loadUsers() {
                 try {
-                    const users = await callAdminFunction('admin-users', { action: 'list' });
+                    const { data, error } = await window.supabaseClient.supabase
+                        .from('profiles')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+                    if (error) throw error;
                     const tbody = document.getElementById('usersTableBody');
-                    if (!users.length) { tbody.innerHTML =
-                            '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No users</td></tr>'; return; }
-                    tbody.innerHTML = users.map(u => `
+                    if (!data || data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No users</td></tr>';
+                        return;
+                    }
+                    tbody.innerHTML = data.map(u => `
                         <tr>
                             <td>${u.name || u.email}</td>
                             <td>${u.email}</td>
@@ -827,95 +813,187 @@
 
             window.viewUser = async function(userId) {
                 try {
-                    const users = await callAdminFunction('admin-users', { action: 'list' });
-                    const user = users.find(u => u.id === userId);
-                    if (!user) return;
-                    document.getElementById('userModalTitle').textContent = 'User: ' + (user.name || user.email);
+                    const { data, error } = await window.supabaseClient.supabase
+                        .from('profiles')
+                        .select('*')
+                        .eq('id', userId)
+                        .single();
+                    if (error) throw error;
+                    document.getElementById('userModalTitle').textContent = 'User: ' + (data.name || data.email);
                     document.getElementById('userModalBody').innerHTML = `
-                        <p><strong>Email:</strong> ${user.email}</p>
-                        <p><strong>Balance:</strong> $${(user.balance || 0).toFixed(2)}</p>
-                        <p><strong>Withdrawable:</strong> $${(user.withdrawable_balance || 0).toFixed(2)}</p>
-                        <p><strong>Joined:</strong> ${new Date(user.created_at).toLocaleString()}</p>
-                        <p><strong>2FA:</strong> ${user.two_factor_enabled ? 'Enabled' : 'Disabled'}</p>
-                        <p><strong>Suspended:</strong> ${user.suspended ? 'Yes' : 'No'}</p>
+                        <p><strong>Email:</strong> ${data.email}</p>
+                        <p><strong>Balance:</strong> $${(data.balance || 0).toFixed(2)}</p>
+                        <p><strong>Withdrawable:</strong> $${(data.withdrawable_balance || 0).toFixed(2)}</p>
+                        <p><strong>Joined:</strong> ${new Date(data.created_at).toLocaleString()}</p>
+                        <p><strong>2FA:</strong> ${data.two_factor_enabled ? 'Enabled' : 'Disabled'}</p>
+                        <p><strong>Suspended:</strong> ${data.suspended ? 'Yes' : 'No'}</p>
                     `;
                     openModal('userModal');
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
             };
 
             window.toggleSuspend = async function(userId, suspend) {
                 if (!confirm(suspend ? 'Suspend this user?' : 'Activate this user?')) return;
                 try {
-                    await callAdminFunction('admin-users', { action: suspend ? 'suspend' : 'activate', userId });
+                    const { error } = await window.supabaseClient.supabase
+                        .from('profiles')
+                        .update({ suspended: suspend })
+                        .eq('id', userId);
+                    if (error) throw error;
                     showToast('User ' + (suspend ? 'suspended' : 'activated'), 'success');
                     loadUsers();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
             };
 
             window.reset2FA = async function(userId) {
                 if (!confirm('Reset 2FA for this user?')) return;
                 try {
-                    await callAdminFunction('admin-users', { action: 'reset2fa', userId });
+                    const { error } = await window.supabaseClient.supabase
+                        .from('profiles')
+                        .update({ two_factor_enabled: false })
+                        .eq('id', userId);
+                    if (error) throw error;
                     showToast('2FA reset successfully', 'success');
                     loadUsers();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
             };
 
-            // ===== Deposits =====
+            // ============================================================
+            //  2.3 DEPOSITS (FIXED)
+            // ============================================================
             async function loadDeposits() {
                 try {
-                    const deposits = await callAdminFunction('admin-deposits', {});
+                    const { data, error } = await window.supabaseClient.supabase
+                        .from('transactions')
+                        .select('*')
+                        .eq('type', 'deposit')
+                        .order('created_at', { ascending: false });
+                    if (error) throw error;
                     const tbody = document.getElementById('depositsTableBody');
-                    if (!deposits.length) { tbody.innerHTML =
-                            '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);">No deposits</td></tr>'; return; }
-                    tbody.innerHTML = deposits.map(d => `
-                        <tr>
-                            <td>${d.user_email || d.user_id}</td>
-                            <td>$${d.amount.toFixed(2)}</td>
-                            <td>${d.method || 'Crypto'}</td>
-                            <td style="font-size:0.7rem;max-width:100px;overflow:hidden;text-overflow:ellipsis;">${d.tx_hash || '-'}</td>
-                            <td><span class="status-badge ${d.status}">${d.status}</span></td>
-                            <td>${new Date(d.created_at).toLocaleDateString()}</td>
-                            <td>
-                                ${d.status === 'pending' ? `<button class="btn-primary btn-sm" onclick="markDepositComplete('${d.id}')">Mark Complete</button>` : '-'}
-                            </td>
-                        </tr>
-                    `).join('');
-                } catch (err) { showToast('Error loading deposits: ' + err.message, 'error'); }
+                    if (!data || data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);">No deposits</td></tr>';
+                        return;
+                    }
+                    const userIds = [...new Set(data.map(d => d.user_id).filter(id => id))];
+                    let userMap = {};
+                    if (userIds.length) {
+                        const { data: users, error: userError } = await window.supabaseClient.supabase
+                            .from('profiles')
+                            .select('id, email, name')
+                            .in('id', userIds);
+                        if (!userError && users) {
+                            userMap = Object.fromEntries(users.map(u => [u.id, u]));
+                        }
+                    }
+                    tbody.innerHTML = data.map(d => {
+                        const user = userMap[d.user_id] || {};
+                        return `
+                            <tr>
+                                <td>${user.email || d.user_id}</td>
+                                <td>$${d.amount.toFixed(2)}</td>
+                                <td>${d.method || 'Crypto'}</td>
+                                <td style="font-size:0.7rem;max-width:100px;overflow:hidden;text-overflow:ellipsis;">${d.tx_hash || '-'}</td>
+                                <td><span class="status-badge ${d.status}">${d.status}</span></td>
+                                <td>${new Date(d.created_at).toLocaleDateString()}</td>
+                                <td>
+                                    ${d.status === 'pending' ? `<button class="btn-primary btn-sm" onclick="markDepositComplete('${d.id}')">Mark Complete</button>` : '-'}
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                } catch (err) {
+                    showToast('Error loading deposits: ' + err.message, 'error');
+                }
             }
 
             window.markDepositComplete = async function(depositId) {
                 if (!confirm('Mark this deposit as completed?')) return;
                 try {
-                    await callAdminFunction('admin-deposits', { action: 'complete', depositId });
-                    showToast('Deposit marked completed', 'success');
+                    const { data: tx, error: fetchError } = await window.supabaseClient.supabase
+                        .from('transactions')
+                        .select('user_id, amount')
+                        .eq('id', depositId)
+                        .single();
+                    if (fetchError) throw fetchError;
+
+                    await window.supabaseClient.supabase
+                        .from('transactions')
+                        .update({ status: 'completed' })
+                        .eq('id', depositId);
+
+                    const { data: profile } = await window.supabaseClient.supabase
+                        .from('profiles')
+                        .select('balance')
+                        .eq('id', tx.user_id)
+                        .single();
+                    if (profile) {
+                        await window.supabaseClient.supabase
+                            .from('profiles')
+                            .update({ balance: (profile.balance || 0) + tx.amount })
+                            .eq('id', tx.user_id);
+                    }
+
+                    showToast('Deposit marked completed and balance updated', 'success');
                     loadDeposits();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
             };
 
-            // ===== Withdrawals =====
+            // ============================================================
+            //  2.4 WITHDRAWALS (FIXED)
+            // ============================================================
             async function loadWithdrawals() {
                 try {
-                    const withdrawals = await callAdminFunction('admin-withdrawals', {});
+                    const { data, error } = await window.supabaseClient.supabase
+                        .from('transactions')
+                        .select('*')
+                        .eq('type', 'withdraw')
+                        .order('created_at', { ascending: false });
+                    if (error) throw error;
                     const tbody = document.getElementById('withdrawalsTableBody');
-                    if (!withdrawals.length) { tbody.innerHTML =
-                            '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No withdrawals</td></tr>'; return; }
-                    tbody.innerHTML = withdrawals.map(w => `
-                        <tr>
-                            <td>${w.user_email || w.user_id}</td>
-                            <td>$${w.amount.toFixed(2)}</td>
-                            <td style="font-size:0.7rem;max-width:100px;overflow:hidden;text-overflow:ellipsis;">${w.address || '-'}</td>
-                            <td><span class="status-badge ${w.status}">${w.status}</span></td>
-                            <td>${new Date(w.created_at).toLocaleDateString()}</td>
-                            <td>
-                                ${w.status === 'pending' ? `
-                                    <button class="btn-primary btn-sm" onclick="openWithdrawalAction('${w.id}','approve')">Approve</button>
-                                    <button class="btn-danger btn-sm" onclick="openWithdrawalAction('${w.id}','reject')">Reject</button>
-                                ` : '-'}
-                            </td>
-                        </tr>
-                    `).join('');
-                } catch (err) { showToast('Error loading withdrawals: ' + err.message, 'error'); }
+                    if (!data || data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No withdrawals</td></tr>';
+                        return;
+                    }
+                    const userIds = [...new Set(data.map(d => d.user_id).filter(id => id))];
+                    let userMap = {};
+                    if (userIds.length) {
+                        const { data: users, error: userError } = await window.supabaseClient.supabase
+                            .from('profiles')
+                            .select('id, email, name')
+                            .in('id', userIds);
+                        if (!userError && users) {
+                            userMap = Object.fromEntries(users.map(u => [u.id, u]));
+                        }
+                    }
+                    tbody.innerHTML = data.map(w => {
+                        const user = userMap[w.user_id] || {};
+                        return `
+                            <tr>
+                                <td>${user.email || w.user_id}</td>
+                                <td>$${w.amount.toFixed(2)}</td>
+                                <td style="font-size:0.7rem;max-width:100px;overflow:hidden;text-overflow:ellipsis;">${w.tx_hash || '-'}</td>
+                                <td><span class="status-badge ${w.status}">${w.status}</span></td>
+                                <td>${new Date(w.created_at).toLocaleDateString()}</td>
+                                <td>
+                                    ${w.status === 'pending' ? `
+                                        <button class="btn-primary btn-sm" onclick="openWithdrawalAction('${w.id}','approve')">Approve</button>
+                                        <button class="btn-danger btn-sm" onclick="openWithdrawalAction('${w.id}','reject')">Reject</button>
+                                    ` : '-'}
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                } catch (err) {
+                    showToast('Error loading withdrawals: ' + err.message, 'error');
+                }
             }
 
             let currentWithdrawalId = null;
@@ -940,44 +1018,105 @@
             async function processWithdrawal(action) {
                 const reason = document.getElementById('withdrawalReason').value.trim();
                 try {
-                    await callAdminFunction('admin-withdrawals', {
-                        action: action,
-                        withdrawalId: currentWithdrawalId,
-                        reason: reason
-                    });
-                    showToast('Withdrawal ' + action + 'd', 'success');
+                    if (action === 'approve') {
+                        await window.supabaseClient.supabase
+                            .from('transactions')
+                            .update({ status: 'approved' })
+                            .eq('id', currentWithdrawalId);
+                        showToast('Withdrawal approved', 'success');
+                    } else {
+                        const { data: tx, error: fetchError } = await window.supabaseClient.supabase
+                            .from('transactions')
+                            .select('user_id, amount')
+                            .eq('id', currentWithdrawalId)
+                            .single();
+                        if (fetchError) throw fetchError;
+
+                        await window.supabaseClient.supabase
+                            .from('transactions')
+                            .update({ status: 'rejected' })
+                            .eq('id', currentWithdrawalId);
+
+                        const { data: profile } = await window.supabaseClient.supabase
+                            .from('profiles')
+                            .select('balance')
+                            .eq('id', tx.user_id)
+                            .single();
+                        if (profile) {
+                            await window.supabaseClient.supabase
+                                .from('profiles')
+                                .update({ balance: (profile.balance || 0) + tx.amount })
+                                .eq('id', tx.user_id);
+                        }
+                        showToast('Withdrawal rejected and funds refunded', 'success');
+                    }
                     closeModal('withdrawalModal');
                     loadWithdrawals();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
             }
 
-            // ===== Transactions =====
+            // ============================================================
+            //  2.5 TRANSACTIONS (FIXED)
+            // ============================================================
             async function loadTransactions() {
                 try {
-                    const txs = await callAdminFunction('admin-transactions', {});
+                    const { data, error } = await window.supabaseClient.supabase
+                        .from('transactions')
+                        .select('*')
+                        .order('created_at', { ascending: false })
+                        .limit(100);
+                    if (error) throw error;
                     const tbody = document.getElementById('txTableBody');
-                    if (!txs.length) { tbody.innerHTML =
-                            '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No transactions</td></tr>'; return; }
-                    tbody.innerHTML = txs.map(t => `
-                        <tr>
-                            <td>${t.user_email || t.user_id}</td>
-                            <td><span class="status-badge" style="background:rgba(124,58,237,0.1);color:var(--purple);">${t.type}</span></td>
-                            <td>$${t.amount.toFixed(2)}</td>
-                            <td><span class="status-badge ${t.status}">${t.status}</span></td>
-                            <td>${new Date(t.created_at).toLocaleString()}</td>
-                        </tr>
-                    `).join('');
-                } catch (err) { showToast('Error loading transactions: ' + err.message, 'error'); }
+                    if (!data || data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No transactions</td></tr>';
+                        return;
+                    }
+                    const userIds = [...new Set(data.map(d => d.user_id).filter(id => id))];
+                    let userMap = {};
+                    if (userIds.length) {
+                        const { data: users, error: userError } = await window.supabaseClient.supabase
+                            .from('profiles')
+                            .select('id, email, name')
+                            .in('id', userIds);
+                        if (!userError && users) {
+                            userMap = Object.fromEntries(users.map(u => [u.id, u]));
+                        }
+                    }
+                    tbody.innerHTML = data.map(t => {
+                        const user = userMap[t.user_id] || {};
+                        return `
+                            <tr>
+                                <td>${user.email || t.user_id}</td>
+                                <td><span class="status-badge" style="background:rgba(124,58,237,0.1);color:var(--purple);">${t.type}</span></td>
+                                <td>$${t.amount.toFixed(2)}</td>
+                                <td><span class="status-badge ${t.status}">${t.status}</span></td>
+                                <td>${new Date(t.created_at).toLocaleString()}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } catch (err) {
+                    showToast('Error loading transactions: ' + err.message, 'error');
+                }
             }
 
-            // ===== Staking Pools =====
+            // ============================================================
+            //  2.6 STAKING POOLS
+            // ============================================================
             async function loadPools() {
                 try {
-                    const pools = await callAdminFunction('admin-pools', { action: 'list' });
+                    const { data, error } = await window.supabaseClient.supabase
+                        .from('staking_pools')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+                    if (error) throw error;
                     const tbody = document.getElementById('poolsTableBody');
-                    if (!pools.length) { tbody.innerHTML =
-                            '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No pools</td></tr>'; return; }
-                    tbody.innerHTML = pools.map(p => `
+                    if (!data || data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No pools</td></tr>';
+                        return;
+                    }
+                    tbody.innerHTML = data.map(p => `
                         <tr>
                             <td>${p.name}</td>
                             <td>${p.apy}%</td>
@@ -991,7 +1130,9 @@
                             </td>
                         </tr>
                     `).join('');
-                } catch (err) { showToast('Error loading pools: ' + err.message, 'error'); }
+                } catch (err) {
+                    showToast('Error loading pools: ' + err.message, 'error');
+                }
             }
 
             document.getElementById('addPoolBtn').addEventListener('click', function() {
@@ -999,36 +1140,66 @@
             });
 
             window.editPool = function(id) {
-                callAdminFunction('admin-pools', { action: 'get', poolId: id }).then(pool => {
-                    openFormModal('pool', pool);
-                }).catch(err => showToast(err.message, 'error'));
+                window.supabaseClient.supabase
+                    .from('staking_pools')
+                    .select('*')
+                    .eq('id', id)
+                    .single()
+                    .then(({ data, error }) => {
+                        if (error) throw error;
+                        openFormModal('pool', data);
+                    })
+                    .catch(err => showToast(err.message, 'error'));
             };
 
             window.togglePool = async function(id) {
                 try {
-                    await callAdminFunction('admin-pools', { action: 'toggle', poolId: id });
+                    const { data } = await window.supabaseClient.supabase
+                        .from('staking_pools')
+                        .select('is_active')
+                        .eq('id', id)
+                        .single();
+                    await window.supabaseClient.supabase
+                        .from('staking_pools')
+                        .update({ is_active: !data.is_active })
+                        .eq('id', id);
                     showToast('Pool toggled', 'success');
                     loadPools();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
             };
 
             window.deletePool = async function(id) {
                 if (!confirm('Delete this pool?')) return;
                 try {
-                    await callAdminFunction('admin-pools', { action: 'delete', poolId: id });
+                    await window.supabaseClient.supabase
+                        .from('staking_pools')
+                        .delete()
+                        .eq('id', id);
                     showToast('Pool deleted', 'success');
                     loadPools();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
             };
 
-            // ===== Investment Plans =====
+            // ============================================================
+            //  2.7 INVESTMENT PLANS
+            // ============================================================
             async function loadPlans() {
                 try {
-                    const plans = await callAdminFunction('admin-plans', { action: 'list' });
+                    const { data, error } = await window.supabaseClient.supabase
+                        .from('investment_plans')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+                    if (error) throw error;
                     const tbody = document.getElementById('plansTableBody');
-                    if (!plans.length) { tbody.innerHTML =
-                            '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No plans</td></tr>'; return; }
-                    tbody.innerHTML = plans.map(p => `
+                    if (!data || data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No plans</td></tr>';
+                        return;
+                    }
+                    tbody.innerHTML = data.map(p => `
                         <tr>
                             <td>${p.name}</td>
                             <td>${p.daily_roi}%</td>
@@ -1042,7 +1213,9 @@
                             </td>
                         </tr>
                     `).join('');
-                } catch (err) { showToast('Error loading plans: ' + err.message, 'error'); }
+                } catch (err) {
+                    showToast('Error loading plans: ' + err.message, 'error');
+                }
             }
 
             document.getElementById('addPlanBtn').addEventListener('click', function() {
@@ -1050,29 +1223,53 @@
             });
 
             window.editPlan = function(id) {
-                callAdminFunction('admin-plans', { action: 'get', planId: id }).then(plan => {
-                    openFormModal('plan', plan);
-                }).catch(err => showToast(err.message, 'error'));
+                window.supabaseClient.supabase
+                    .from('investment_plans')
+                    .select('*')
+                    .eq('id', id)
+                    .single()
+                    .then(({ data, error }) => {
+                        if (error) throw error;
+                        openFormModal('plan', data);
+                    })
+                    .catch(err => showToast(err.message, 'error'));
             };
 
             window.togglePlan = async function(id) {
                 try {
-                    await callAdminFunction('admin-plans', { action: 'toggle', planId: id });
+                    const { data } = await window.supabaseClient.supabase
+                        .from('investment_plans')
+                        .select('is_active')
+                        .eq('id', id)
+                        .single();
+                    await window.supabaseClient.supabase
+                        .from('investment_plans')
+                        .update({ is_active: !data.is_active })
+                        .eq('id', id);
                     showToast('Plan toggled', 'success');
                     loadPlans();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
             };
 
             window.deletePlan = async function(id) {
                 if (!confirm('Delete this plan?')) return;
                 try {
-                    await callAdminFunction('admin-plans', { action: 'delete', planId: id });
+                    await window.supabaseClient.supabase
+                        .from('investment_plans')
+                        .delete()
+                        .eq('id', id);
                     showToast('Plan deleted', 'success');
                     loadPlans();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
             };
 
-            // ===== Form Modal (Pool / Plan) =====
+            // ============================================================
+            //  2.8 FORM MODAL (Pool / Plan)
+            // ============================================================
             function openFormModal(type, data) {
                 const isEdit = !!data;
                 const title = isEdit ? 'Edit ' + (type === 'pool' ? 'Pool' : 'Plan') : 'Add ' + (type === 'pool' ? 'Pool' :
@@ -1124,75 +1321,117 @@
                     data.max_invest = parseFloat(document.getElementById('planMax').value);
                 }
                 try {
-                    const action = id ? 'update' : 'create';
-                    const payload = { action, ...data };
-                    if (id) payload.id = id;
-                    const endpoint = type === 'pool' ? 'admin-pools' : 'admin-plans';
-                    await callAdminFunction(endpoint, payload);
+                    const table = type === 'pool' ? 'staking_pools' : 'investment_plans';
+                    if (id) {
+                        await window.supabaseClient.supabase
+                            .from(table)
+                            .update(data)
+                            .eq('id', id);
+                    } else {
+                        await window.supabaseClient.supabase
+                            .from(table)
+                            .insert([data]);
+                    }
                     showToast('Saved successfully', 'success');
                     closeModal('formModal');
                     if (type === 'pool') loadPools();
                     else loadPlans();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
             });
 
-            // ===== KYC =====
+            // ============================================================
+            //  2.9 KYC (FIXED)
+            // ============================================================
             async function loadKyc() {
                 try {
-                    const requests = await callAdminFunction('admin-kyc', {});
+                    const { data, error } = await window.supabaseClient.supabase
+                        .from('kyc_requests')
+                        .select('*')
+                        .order('submitted_at', { ascending: false });
+                    if (error) throw error;
                     const tbody = document.getElementById('kycTableBody');
-                    if (!requests.length) { tbody.innerHTML =
-                            '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No KYC requests</td></tr>'; return; }
-                    tbody.innerHTML = requests.map(k => `
-                        <tr>
-                            <td>${k.user_email || k.user_id}</td>
-                            <td>${k.full_name || '-'}</td>
-                            <td>${k.country || '-'}</td>
-                            <td><span class="status-badge ${k.status}">${k.status}</span></td>
-                            <td>${new Date(k.submitted_at).toLocaleDateString()}</td>
-                            <td>
-                                ${k.status === 'pending' ? `<button class="btn-secondary btn-sm" onclick="reviewKyc('${k.id}')">Review</button>` : '-'}
-                            </td>
-                        </tr>
-                    `).join('');
-                } catch (err) { showToast('Error loading KYC: ' + err.message, 'error'); }
+                    if (!data || data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No KYC requests</td></tr>';
+                        return;
+                    }
+                    const userIds = [...new Set(data.map(d => d.user_id).filter(id => id))];
+                    let userMap = {};
+                    if (userIds.length) {
+                        const { data: users, error: userError } = await window.supabaseClient.supabase
+                            .from('profiles')
+                            .select('id, email, name')
+                            .in('id', userIds);
+                        if (!userError && users) {
+                            userMap = Object.fromEntries(users.map(u => [u.id, u]));
+                        }
+                    }
+                    tbody.innerHTML = data.map(k => {
+                        const user = userMap[k.user_id] || {};
+                        return `
+                            <tr>
+                                <td>${user.email || k.user_id}</td>
+                                <td>${k.full_name || '-'}</td>
+                                <td>${k.country || '-'}</td>
+                                <td><span class="status-badge ${k.status}">${k.status}</span></td>
+                                <td>${new Date(k.submitted_at).toLocaleDateString()}</td>
+                                <td>
+                                    ${k.status === 'pending' ? `<button class="btn-secondary btn-sm" onclick="reviewKyc('${k.id}')">Review</button>` : '-'}
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                } catch (err) {
+                    showToast('Error loading KYC: ' + err.message, 'error');
+                }
             }
 
             window.reviewKyc = async function(id) {
                 try {
-                    const requests = await callAdminFunction('admin-kyc', {});
-                    const kyc = requests.find(k => k.id === id);
-                    if (!kyc) return;
+                    const { data, error } = await window.supabaseClient.supabase
+                        .from('kyc_requests')
+                        .select('*')
+                        .eq('id', id)
+                        .single();
+                    if (error) throw error;
                     let html = `
-                        <p><strong>Full Name:</strong> ${kyc.full_name || '-'}</p>
-                        <p><strong>Date of Birth:</strong> ${kyc.date_of_birth || '-'}</p>
-                        <p><strong>Country:</strong> ${kyc.country || '-'}</p>
-                        <p><strong>ID Type:</strong> ${kyc.id_type || '-'}</p>
+                        <p><strong>Full Name:</strong> ${data.full_name || '-'}</p>
+                        <p><strong>Date of Birth:</strong> ${data.date_of_birth || '-'}</p>
+                        <p><strong>Country:</strong> ${data.country || '-'}</p>
+                        <p><strong>ID Type:</strong> ${data.id_type || '-'}</p>
                     `;
-                    if (kyc.id_front_url) html +=
-                        `<p><strong>ID Front:</strong> <a href="${kyc.id_front_url}" target="_blank">View</a></p>`;
-                    if (kyc.id_back_url) html +=
-                        `<p><strong>ID Back:</strong> <a href="${kyc.id_back_url}" target="_blank">View</a></p>`;
-                    if (kyc.selfie_url) html +=
-                        `<p><strong>Selfie:</strong> <a href="${kyc.selfie_url}" target="_blank">View</a></p>`;
-                    if (kyc.proof_of_address_url) html +=
-                        `<p><strong>Proof of Address:</strong> <a href="${kyc.proof_of_address_url}" target="_blank">View</a></p>`;
+                    if (data.id_front_url) html +=
+                        `<p><strong>ID Front:</strong> <a href="${data.id_front_url}" target="_blank">View</a></p>`;
+                    if (data.id_back_url) html +=
+                        `<p><strong>ID Back:</strong> <a href="${data.id_back_url}" target="_blank">View</a></p>`;
+                    if (data.selfie_url) html +=
+                        `<p><strong>Selfie:</strong> <a href="${data.selfie_url}" target="_blank">View</a></p>`;
+                    if (data.proof_of_address_url) html +=
+                        `<p><strong>Proof of Address:</strong> <a href="${data.proof_of_address_url}" target="_blank">View</a></p>`;
                     document.getElementById('kycModalBody').innerHTML = html;
                     document.getElementById('kycApproveBtn').dataset.id = id;
                     document.getElementById('kycRejectBtn').dataset.id = id;
                     openModal('kycModal');
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
             };
 
             document.getElementById('kycApproveBtn').addEventListener('click', async function() {
                 const id = this.dataset.id;
                 if (!confirm('Approve this KYC?')) return;
                 try {
-                    await callAdminFunction('admin-kyc', { action: 'approve', kycId: id });
+                    await window.supabaseClient.supabase
+                        .from('kyc_requests')
+                        .update({ status: 'approved' })
+                        .eq('id', id);
                     showToast('KYC approved', 'success');
                     closeModal('kycModal');
                     loadKyc();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
             });
 
             document.getElementById('kycRejectBtn').addEventListener('click', async function() {
@@ -1200,69 +1439,108 @@
                 const reason = prompt('Reason for rejection:');
                 if (reason === null) return;
                 try {
-                    await callAdminFunction('admin-kyc', { action: 'reject', kycId: id, reason });
+                    await window.supabaseClient.supabase
+                        .from('kyc_requests')
+                        .update({ status: 'rejected', rejection_reason: reason })
+                        .eq('id', id);
                     showToast('KYC rejected', 'success');
                     closeModal('kycModal');
                     loadKyc();
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
             });
 
-            // ===== Settings =====
+            // ============================================================
+            //  2.10 SETTINGS
+            // ============================================================
             async function loadSettings() {
                 try {
-                    const settings = await callAdminFunction('admin-settings', {});
-                    document.getElementById('maintenanceToggle').checked = settings.maintenance_mode?.enabled || false;
-                    document.getElementById('maintenanceMessage').value = settings.maintenance_mode?.message || '';
-                    document.getElementById('withdrawalFeePct').value = settings.withdrawal_fee?.percentage || 0;
-                    document.getElementById('withdrawalFeeFixed').value = settings.withdrawal_fee?.fixed || 0;
-                    document.getElementById('minWithdrawal').value = settings.min_withdrawal?.amount || 0;
-                    document.getElementById('maxWithdrawal').value = settings.max_withdrawal?.amount || 0;
-                    document.getElementById('kycThreshold').value = settings.kyc_required?.min_amount || 0;
-                } catch (err) { showToast('Error loading settings: ' + err.message, 'error'); }
+                    const { data, error } = await window.supabaseClient.supabase
+                        .from('system_settings')
+                        .select('*')
+                        .limit(1)
+                        .maybeSingle();
+                    if (error) throw error;
+                    const s = data || {};
+                    document.getElementById('maintenanceToggle').checked = s.maintenance_enabled || false;
+                    document.getElementById('maintenanceMessage').value = s.maintenance_message || '';
+                    document.getElementById('withdrawalFeePct').value = s.withdrawal_fee_percent || 0;
+                    document.getElementById('withdrawalFeeFixed').value = s.withdrawal_fee_fixed || 0;
+                    document.getElementById('minWithdrawal').value = s.min_withdrawal || 0;
+                    document.getElementById('maxWithdrawal').value = s.max_withdrawal || 0;
+                    document.getElementById('kycThreshold').value = s.kyc_threshold || 0;
+                } catch (err) {
+                    showToast('Error loading settings: ' + err.message, 'error');
+                }
             }
 
             document.getElementById('settingsForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const settings = {
-                    maintenance_mode: {
-                        enabled: document.getElementById('maintenanceToggle').checked,
-                        message: document.getElementById('maintenanceMessage').value.trim()
-                    },
-                    withdrawal_fee: {
-                        percentage: parseFloat(document.getElementById('withdrawalFeePct').value) || 0,
-                        fixed: parseFloat(document.getElementById('withdrawalFeeFixed').value) || 0
-                    },
-                    min_withdrawal: { amount: parseFloat(document.getElementById('minWithdrawal').value) || 0 },
-                    max_withdrawal: { amount: parseFloat(document.getElementById('maxWithdrawal').value) || 0 },
-                    kyc_required: { enabled: true, min_amount: parseFloat(document.getElementById('kycThreshold')
-                            .value) || 0 }
+                    maintenance_enabled: document.getElementById('maintenanceToggle').checked,
+                    maintenance_message: document.getElementById('maintenanceMessage').value.trim(),
+                    withdrawal_fee_percent: parseFloat(document.getElementById('withdrawalFeePct').value) || 0,
+                    withdrawal_fee_fixed: parseFloat(document.getElementById('withdrawalFeeFixed').value) || 0,
+                    min_withdrawal: parseFloat(document.getElementById('minWithdrawal').value) || 0,
+                    max_withdrawal: parseFloat(document.getElementById('maxWithdrawal').value) || 0,
+                    kyc_threshold: parseFloat(document.getElementById('kycThreshold').value) || 0,
                 };
                 try {
-                    await callAdminFunction('admin-settings', { settings });
+                    const { data, error } = await window.supabaseClient.supabase
+                        .from('system_settings')
+                        .select('id')
+                        .limit(1)
+                        .maybeSingle();
+                    if (data) {
+                        await window.supabaseClient.supabase
+                            .from('system_settings')
+                            .update(settings)
+                            .eq('id', data.id);
+                    } else {
+                        await window.supabaseClient.supabase
+                            .from('system_settings')
+                            .insert([settings]);
+                    }
                     showToast('Settings saved', 'success');
-                } catch (err) { showToast(err.message, 'error'); }
+                } catch (err) {
+                    showToast(err.message, 'error');
+                }
             });
 
-            // ===== Audit Log =====
+            // ============================================================
+            //  2.11 AUDIT LOG
+            // ============================================================
             async function loadAudit() {
                 try {
-                    const logs = await callAdminFunction('admin-audit', {});
+                    const { data, error } = await window.supabaseClient.supabase
+                        .from('audit_logs')
+                        .select('*, profiles!inner(email)')
+                        .order('created_at', { ascending: false })
+                        .limit(50);
+                    if (error) throw error;
                     const tbody = document.getElementById('auditTableBody');
-                    if (!logs.length) { tbody.innerHTML =
-                            '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No logs</td></tr>'; return; }
-                    tbody.innerHTML = logs.map(l => `
+                    if (!data || data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No logs</td></tr>';
+                        return;
+                    }
+                    tbody.innerHTML = data.map(l => `
                         <tr>
-                            <td>${l.admin_email || l.admin_id}</td>
+                            <td>${l.profiles?.email || l.admin_id}</td>
                             <td>${l.action}</td>
                             <td>${l.target_id || '-'}</td>
                             <td style="max-width:150px;font-size:0.75rem;">${l.details ? JSON.stringify(l.details) : '-'}</td>
                             <td>${new Date(l.created_at).toLocaleString()}</td>
                         </tr>
                     `).join('');
-                } catch (err) { showToast('Error loading audit: ' + err.message, 'error'); }
+                } catch (err) {
+                    showToast('Error loading audit: ' + err.message, 'error');
+                }
             }
 
-            // ===== Init =====
+            // ============================================================
+            //  2.12 INIT
+            // ============================================================
             async function initAdmin() {
                 loadingEl.style.display = 'none';
                 contentEl.style.display = 'block';
@@ -1272,24 +1550,21 @@
                 if (!user) return;
                 currentUser = user;
 
-                // Check admin role
-                const { data: profile } = await auth.supabase
+                const { data: profile, error: profileError } = await auth.supabase
                     .from('profiles')
                     .select('is_admin')
                     .eq('id', user.id)
                     .single();
 
-                if (!profile?.is_admin) {
+                if (profileError || !profile?.is_admin) {
                     showToast('You do not have admin access.', 'error');
                     setTimeout(() => window.location.href = 'dashboard.html', 2000);
                     return;
                 }
 
-                // Avatar
                 const name = user.user_metadata?.name || user.email || 'Admin';
                 document.getElementById('avatarInitials').textContent = name.charAt(0).toUpperCase();
 
-                // Theme
                 const savedTheme = localStorage.getItem('theme') || 'light';
                 document.documentElement.setAttribute('data-theme', savedTheme);
                 updateThemeUI(savedTheme);
@@ -1315,7 +1590,6 @@
                     updateThemeUI(next);
                 });
 
-                // Sidebar toggle (mobile)
                 const hamburger = document.getElementById('hamburger');
                 const sidebar = document.getElementById('sidebar');
                 const overlay = document.getElementById('sidebarOverlay');
@@ -1329,12 +1603,10 @@
                     overlay.classList.remove('open');
                 });
 
-                // Logout
                 function logout() { auth.signOut(); }
                 document.getElementById('logoutAvatar').addEventListener('click', logout);
                 document.getElementById('logoutSidebar').addEventListener('click', logout);
 
-                // Avatar dropdown
                 document.getElementById('avatarWrap').addEventListener('click', function(e) {
                     e.stopPropagation();
                     document.getElementById('avatarDropdown').classList.toggle('open');
@@ -1343,7 +1615,6 @@
                     document.getElementById('avatarDropdown').classList.remove('open');
                 });
 
-                // Tab switching
                 document.querySelectorAll('.sidebar-item[data-tab]').forEach(item => {
                     item.addEventListener('click', function() {
                         switchTab(this.dataset.tab);
@@ -1356,18 +1627,16 @@
                     });
                 });
 
-                // Load default tab (dashboard)
+                document.getElementById('refreshUsersBtn').addEventListener('click', loadUsers);
+                document.getElementById('refreshDepositsBtn').addEventListener('click', loadDeposits);
+                document.getElementById('refreshWithdrawalsBtn').addEventListener('click', loadWithdrawals);
+                document.getElementById('refreshTxBtn').addEventListener('click', loadTransactions);
+                document.getElementById('refreshKycBtn').addEventListener('click', loadKyc);
+                document.getElementById('refreshAuditBtn').addEventListener('click', loadAudit);
+
                 switchTab('dashboard');
 
-                // Refresh buttons
-                document.getElementById('refreshUsersBtn').addEventListener('click', () => loadUsers());
-                document.getElementById('refreshDepositsBtn').addEventListener('click', () => loadDeposits());
-                document.getElementById('refreshWithdrawalsBtn').addEventListener('click', () => loadWithdrawals());
-                document.getElementById('refreshTxBtn').addEventListener('click', () => loadTransactions());
-                document.getElementById('refreshKycBtn').addEventListener('click', () => loadKyc());
-                document.getElementById('refreshAuditBtn').addEventListener('click', () => loadAudit());
-
-                console.log('✅ Admin panel initialized');
+                console.log('✅ Admin panel initialized (direct Supabase queries)');
             }
 
             loadSupabase(initSupabaseAuth, 0);
