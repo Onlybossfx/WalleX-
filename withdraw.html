@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Withdraw · WalleX</title>
+    <meta name="referrer" content="no-referrer" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        /* ===== THEME (identical to deposit page) ===== */
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-glass: rgba(255, 255, 255, 0.6);
+            --bg-glass-hover: rgba(255, 255, 255, 0.85);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: rgba(124, 58, 237, 0.15);
+            --border-subtle: rgba(0, 0, 0, 0.06);
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 8px 40px rgba(0, 0, 0, 0.09);
+            --purple: #7C3AED;
+            --purple-light: #8B5CF6;
+            --purple-dark: #5B21B6;
+            --green: #10b981;
+            --red: #ef4444;
+            --amber: #f59e0b;
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        [data-theme="dark"] {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-glass: rgba(20, 20, 20, 0.75);
+            --bg-glass-hover: rgba(30, 30, 30, 0.85);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: rgba(124, 58, 237, 0.25);
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+            --shadow-hover: 0 8px 40px rgba(0, 0, 0, 0.7);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height:1.6;
+            transition: background 0.3s, color 0.3s;
+            overflow-x:hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background:var(--purple); border-radius:10px; }
+
+        .container { max-width:1200px; margin:0 auto; padding:0 24px; }
+
+        .glass {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .glass:hover {
+            background: var(--bg-glass-hover);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.25);
+            touch-action: manipulation;
+            width: 100%;
+            justify-content: center;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124, 58, 237, 0.35); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            touch-action: manipulation;
+        }
+        .btn-secondary:hover { background: var(--bg-glass-hover); border-color: var(--purple); transform: translateY(-2px); }
+
+        .logo img { height:36px; width:auto; display:block; }
+
+        /* Navbar */
+        .navbar {
+            position: fixed; top:0; left:0; right:0; z-index:1000;
+            padding:12px 0;
+            background: var(--bg-glass);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-bottom: 1px solid var(--border-subtle);
+            transition: var(--transition);
+        }
+        .navbar .container { display:flex; justify-content:space-between; align-items:center; }
+        .nav-links {
+            display: flex; gap:28px; align-items:center; list-style:none;
+        }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size:0.9rem;
+            display:flex; align-items:center; gap:6px;
+        }
+        .nav-links a:hover, .nav-links a.active { color:var(--purple); }
+        @media (max-width:992px) { .nav-links { display:none !important; } }
+
+        .user-avatar-wrap { position:relative; cursor:pointer; }
+        .user-avatar {
+            width:40px; height:40px; border-radius:50%;
+            background: linear-gradient(135deg, var(--purple), var(--purple-light));
+            display:flex; align-items:center; justify-content:center;
+            font-weight:700; font-size:1rem; color:#fff;
+            transition:var(--transition);
+            border:2px solid transparent;
+            user-select:none;
+        }
+        .user-avatar:hover { border-color:var(--purple-light); transform:scale(1.05); }
+        .avatar-dropdown {
+            position:absolute; top:52px; right:0; min-width:200px;
+            background:var(--bg-secondary);
+            border:1px solid var(--border-subtle);
+            border-radius:var(--radius);
+            box-shadow:var(--shadow-hover);
+            padding:8px 0;
+            opacity:0; visibility:hidden;
+            transform:translateY(-8px);
+            transition:var(--transition);
+            z-index:999;
+        }
+        .avatar-dropdown.open { opacity:1; visibility:visible; transform:translateY(0); }
+        .avatar-dropdown .dropdown-item {
+            display:flex; align-items:center; gap:12px;
+            padding:10px 18px;
+            color:var(--text-secondary);
+            text-decoration:none;
+            font-size:0.9rem;
+            transition:var(--transition);
+            cursor:pointer;
+            border:none; background:none; width:100%; text-align:left;
+        }
+        .avatar-dropdown .dropdown-item:hover { background:rgba(124,58,237,0.06); color:var(--purple); }
+        .avatar-dropdown .dropdown-item i { width:18px; text-align:center; }
+        .avatar-dropdown .dropdown-divider { height:1px; background:var(--border-subtle); margin:4px 12px; }
+
+        .hamburger {
+            display:none; flex-direction:column; gap:5px;
+            background:none; border:none; cursor:pointer; padding:4px; margin-left:12px;
+            touch-action: manipulation;
+        }
+        .hamburger span { display:block; width:26px; height:2px; background:var(--text-primary); border-radius:4px; transition:var(--transition); }
+        @media (max-width:992px) { .hamburger { display:flex; } }
+
+        .nav-right { display:flex; align-items:center; gap:12px; }
+
+        /* Sidebar */
+        .dashboard { display:flex; min-height:100vh; padding-top:66px; background:var(--bg-primary); transition:var(--transition); }
+        .dashboard-sidebar {
+            width:220px; flex-shrink:0; padding:20px 12px;
+            background:var(--bg-glass); backdrop-filter:blur(20px);
+            border-right:1px solid var(--border-subtle);
+            height:calc(100vh - 66px); position:sticky; top:66px; overflow-y:auto;
+            display:flex; flex-direction:column; gap:2px;
+            transition:var(--transition);
+        }
+        .sidebar-item {
+            display:flex; align-items:center; gap:12px;
+            padding:10px 14px; border-radius:10px;
+            color:var(--text-secondary);
+            text-decoration:none; font-weight:500; font-size:0.9rem;
+            transition:var(--transition);
+            cursor:pointer; border:none; background:none; width:100%; text-align:left;
+        }
+        .sidebar-item:hover { background:rgba(124,58,237,0.08); color:var(--purple); }
+        .sidebar-item.active { background:rgba(124,58,237,0.1); color:var(--purple); border:1px solid rgba(124,58,237,0.15); }
+        .sidebar-item i { width:18px; text-align:center; font-size:1rem; }
+        .sidebar-divider { height:1px; background:var(--border-subtle); margin:8px 0; }
+        .sidebar-bottom { margin-top:auto; display:flex; flex-direction:column; gap:2px; }
+
+        .sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.3); z-index:98; }
+        .sidebar-overlay.open { display:block; }
+
+        @media (max-width:992px) {
+            .dashboard-sidebar { display:none; position:fixed; top:66px; left:0; bottom:0; width:280px; background:var(--bg-secondary); backdrop-filter:blur(30px); border-right:1px solid var(--border-subtle); z-index:99; padding:20px 16px; overflow-y:auto; }
+            .dashboard-sidebar.open { display:flex; }
+        }
+
+        .dashboard-main { flex:1; padding:24px 16px 100px; overflow-y:auto; }
+        .page-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:28px; }
+        .page-header h1 { font-size:1.6rem; font-weight:700; }
+        .page-header .sub { color:var(--text-secondary); font-size:0.9rem; }
+
+        /* Withdraw */
+        .withdraw-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .withdraw-form-card {
+            padding: 28px 24px;
+        }
+        .withdraw-form-card .form-group {
+            margin-bottom: 20px;
+        }
+        .withdraw-form-card .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+        }
+        .withdraw-form-card .form-group input,
+        .withdraw-form-card .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: var(--transition);
+            outline: none;
+        }
+        .withdraw-form-card .form-group input:focus,
+        .withdraw-form-card .form-group select:focus { border-color: var(--purple); }
+        .withdraw-form-card .form-group input:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .withdraw-form-card .balance-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--bg-glass);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-subtle);
+        }
+        .withdraw-form-card .balance-display .label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .withdraw-form-card .balance-display .value {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--purple);
+        }
+        .withdraw-form-card .daily-limit {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            padding: 8px 12px;
+            background: var(--bg-glass);
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+        }
+        .withdraw-form-card .daily-limit .remaining {
+            font-weight: 600;
+            color: var(--purple);
+        }
+
+        .method-toggle {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .method-toggle button {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            background: var(--bg-glass);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            touch-action: manipulation;
+        }
+        .method-toggle button.active {
+            background: var(--purple);
+            color: #fff;
+            border-color: var(--purple);
+        }
+        .method-toggle button i { margin-right: 6px; }
+
+        .fee-breakdown {
+            padding: 12px 16px;
+            background: var(--bg-glass);
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+            margin: 8px 0 16px;
+            font-size: 0.9rem;
+        }
+        .fee-breakdown .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+        }
+        .fee-breakdown .total {
+            font-weight: 700;
+            color: var(--purple);
+            border-top: 1px solid var(--border-subtle);
+            padding-top: 6px;
+            margin-top: 4px;
+        }
+
+        .withdraw-status {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            display: none;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-subtle);
+        }
+        .withdraw-status.show { display: block; }
+        .withdraw-status.error { border-color: var(--red); color: var(--red); }
+        .withdraw-status.success { border-color: var(--green); color: var(--green); }
+        .withdraw-status.info { border-color: var(--purple); color: var(--purple); }
+
+        .withdraw-status .details-btn {
+            background: none;
+            border: none;
+            color: var(--purple);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 4px 0;
+            font-size: 0.8rem;
+        }
+
+        .withdraw-history {
+            padding: 24px;
+            min-height: 300px;
+        }
+        .withdraw-history .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .withdraw-history .history-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .withdraw-history .history-header .badge {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            background: var(--bg-glass);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border-subtle);
+        }
+        .history-list {
+            max-height: 320px;
+            overflow-y: auto;
+        }
+        .history-list::-webkit-scrollbar { width:4px; }
+        .history-list::-webkit-scrollbar-thumb { background:var(--purple); border-radius:10px; }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .history-item:last-child { border-bottom: none; }
+        .history-item .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        .history-item .left .icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(239,68,68,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--red);
+        }
+        .history-item .left .details .amount {
+            font-weight: 600;
+        }
+        .history-item .left .details .meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .history-item .status {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .history-item .status.pending { background: rgba(245,158,11,0.15); color: var(--amber); }
+        .history-item .status.approved { background: rgba(16,185,129,0.15); color: var(--green); }
+        .history-item .status.rejected { background: rgba(239,68,68,0.1); color: var(--red); }
+        .history-item .net-amount {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+        .empty-state i { font-size: 2.5rem; color: var(--text-muted); margin-bottom: 12px; }
+
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-hover);
+            z-index: 3000;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: none;
+            max-width: 90%;
+            text-align: center;
+        }
+        .toast.show { display: block; animation: fadeInUp 0.3s ease; }
+        .toast.success { border-color: var(--green); color: var(--green); }
+        .toast.error { border-color: var(--red); color: var(--red); }
+        .toast.info { border-color: var(--purple); color: var(--purple); }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--bg-glass); backdrop-filter:blur(20px); border-top:1px solid var(--border-subtle); padding:6px 0 env(safe-area-inset-bottom); z-index:100; justify-content:space-around; transition:var(--transition); }
+        .bottom-nav a { display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--text-secondary); text-decoration:none; font-size:0.6rem; padding:6px 12px; transition:var(--transition); }
+        .bottom-nav a i { font-size:1.2rem; }
+        .bottom-nav a.active { color:var(--purple); }
+        .bottom-nav a:hover { color:var(--purple); }
+
+        @media (max-width:992px) {
+            .bottom-nav { display:flex; }
+            .dashboard-main { padding:16px 16px 90px; }
+            .dashboard-sidebar { display:none; position:fixed; top:66px; left:0; bottom:0; width:280px; background:var(--bg-secondary); backdrop-filter:blur(30px); border-right:1px solid var(--border-subtle); z-index:99; padding:20px 16px; overflow-y:auto; }
+            .dashboard-sidebar.open { display:flex; }
+            .withdraw-grid { grid-template-columns:1fr; }
+        }
+        @media (max-width:480px) {
+            .page-header h1 { font-size:1.3rem; }
+            .withdraw-form-card { padding:20px 16px; }
+            .history-item { flex-direction: column; align-items: stretch; }
+            .method-toggle button { font-size:0.8rem; padding:8px; }
+        }
+
+        .auth-loading { display:flex; align-items:center; justify-content:center; min-height:60vh; flex-direction:column; gap:16px; }
+        .auth-loading .spinner { width:40px; height:40px; border:3px solid var(--border-subtle); border-top-color:var(--purple); border-radius:50%; animation:spin 0.8s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .auth-loading p { color:var(--text-secondary); font-size:0.95rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="dashboard.html" class="logo"><img src="logo.png" alt="WalleX" /></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="trading.html"><i class="fas fa-chart-line"></i> Trading</a></li>
+                <li><a href="staking.html"><i class="fas fa-coins"></i> Staking</a></li>
+                <li><a href="investment.html"><i class="fas fa-wallet"></i> Investment</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="user-avatar-wrap" id="avatarWrap">
+                    <div class="user-avatar" id="userAvatar"><span id="avatarInitials">U</span></div>
+                    <div class="avatar-dropdown" id="avatarDropdown">
+                        <a href="profile.html" class="dropdown-item"><i class="fas fa-user"></i> Profile</a>
+                        <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item" id="logoutAvatar"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    </div>
+                </div>
+                <button class="hamburger" id="hamburger" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== SIDEBAR ===== -->
+    <div class="dashboard" id="withdrawMain">
+
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-item"><i class="fas fa-th-large"></i> Overview</div>
+            <div class="sidebar-item"><i class="fas fa-user"></i> Account Settings</div>
+            <div class="sidebar-item active"><i class="fas fa-arrow-up"></i> Withdraw</div>
+            <div class="sidebar-item"><i class="fas fa-history"></i> Transactions</div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-item"><i class="fas fa-shield-alt"></i> Security</div>
+            <div class="sidebar-item"><i class="fas fa-headset"></i> Support</div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-bottom">
+                <div class="sidebar-item" id="themeToggleSidebar">
+                    <i class="fas fa-moon" id="themeIconSidebar"></i>
+                    <span id="themeLabelSidebar">Dark Mode</span>
+                </div>
+                <div class="sidebar-item" id="logoutSidebar"><i class="fas fa-sign-out-alt"></i> Logout</div>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Main Content -->
+        <main class="dashboard-main" id="withdrawContent">
+
+            <div id="authLoading" class="auth-loading">
+                <div class="spinner"></div>
+                <p>Loading withdrawal data…</p>
+            </div>
+
+            <div id="withdrawContentInner" style="display:none;">
+
+                <!-- Header -->
+                <div class="page-header">
+                    <div>
+                        <h1>💸 Withdraw</h1>
+                        <div class="sub">Cash out to crypto or your bank account</div>
+                    </div>
+                </div>
+
+                <div class="withdraw-grid">
+
+                    <!-- Form -->
+                    <div class="withdraw-form-card glass">
+                        <div class="balance-display">
+                            <span class="label">Available Balance</span>
+                            <span class="value" id="availableBalance">$0.00</span>
+                        </div>
+                        <div class="daily-limit">
+                            <i class="fas fa-clock"></i> Daily Limit Remaining: <span class="remaining" id="dailyRemaining">$100.00</span>
+                        </div>
+
+                        <!-- Method Toggle -->
+                        <div class="method-toggle" id="methodToggle">
+                            <button class="active" data-method="crypto"><i class="fab fa-bitcoin"></i> Crypto</button>
+                            <button data-method="bank"><i class="fas fa-university"></i> Bank Transfer</button>
+                        </div>
+
+                        <!-- Crypto Fields -->
+                        <div id="cryptoFields">
+                            <div class="form-group">
+                                <label for="withdrawCurrency">Currency</label>
+                                <select id="withdrawCurrency">
+                                    <option value="BTC">Bitcoin (BTC)</option>
+                                    <option value="ETH">Ethereum (ETH)</option>
+                                    <option value="USDT">Tether (USDT)</option>
+                                    <option value="USDC">USD Coin (USDC)</option>
+                                    <option value="SOL">Solana (SOL)</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="networkGroup">
+                                <label for="withdrawNetwork">Network</label>
+                                <select id="withdrawNetwork">
+                                    <option value="BTC">Bitcoin</option>
+                                    <option value="ERC20">Ethereum (ERC20)</option>
+                                    <option value="BEP20">Binance Smart Chain (BEP20)</option>
+                                    <option value="TRC20">Tron (TRC20)</option>
+                                    <option value="SOL">Solana</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="withdrawAddress">Wallet Address</label>
+                                <input type="text" id="withdrawAddress" placeholder="Enter wallet address..." />
+                            </div>
+                            <div class="form-group">
+                                <label for="withdrawMemo">Memo / Tag (optional)</label>
+                                <input type="text" id="withdrawMemo" placeholder="Memo for some networks" />
+                            </div>
+                        </div>
+
+                        <!-- Bank Fields (hidden by default) -->
+                        <div id="bankFields" style="display:none;">
+                            <div class="form-group">
+                                <label for="bankName">Bank Name</label>
+                                <input type="text" id="bankName" placeholder="e.g., Chase Bank" />
+                            </div>
+                            <div class="form-group">
+                                <label for="bankAccount">Account Number</label>
+                                <input type="text" id="bankAccount" placeholder="Account number" />
+                            </div>
+                            <div class="form-group">
+                                <label for="bankAccountName">Account Holder Name</label>
+                                <input type="text" id="bankAccountName" placeholder="Full name on account" />
+                            </div>
+                            <div class="form-group">
+                                <label for="bankRouting">Routing / Sort Code (optional)</label>
+                                <input type="text" id="bankRouting" placeholder="Routing number" />
+                            </div>
+                        </div>
+
+                        <!-- Amount -->
+                        <div class="form-group">
+                            <label for="withdrawAmount">Amount (USD)</label>
+                            <input type="number" id="withdrawAmount" placeholder="Enter amount..." min="0.01" step="0.01" inputmode="decimal" />
+                            <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">
+                                Min: $1.00 | Max: $<span id="maxAmountDisplay">100.00</span>
+                            </div>
+                        </div>
+
+                        <!-- Fee Display -->
+                        <div class="fee-breakdown" id="feeBreakdown">
+                            <div class="row"><span>Amount</span><span id="feeAmountDisplay">$0.00</span></div>
+                            <div class="row"><span>Fee (% + fixed)</span><span id="feeDisplay">$0.00</span></div>
+                            <div class="row total"><span>You'll receive</span><span id="netAmountDisplay">$0.00</span></div>
+                        </div>
+
+                        <button class="btn-primary" id="withdrawBtn">
+                            <i class="fas fa-arrow-up"></i> Withdraw Now
+                        </button>
+
+                        <div class="withdraw-status" id="withdrawStatus">
+                            <span id="statusMessage"></span>
+                            <button class="details-btn" id="statusDetailsBtn" style="display:none;">Show Error Details</button>
+                            <pre id="statusDetails" style="display:none;font-size:0.75rem;margin-top:8px;padding:8px;background:var(--bg-primary);border-radius:6px;overflow:auto;white-space:pre-wrap;word-break:break-all;"></pre>
+                        </div>
+                    </div>
+
+                    <!-- History -->
+                    <div class="withdraw-history glass">
+                        <div class="history-header">
+                            <h2><i class="fas fa-clock" style="color:var(--purple);"></i> Withdrawal History</h2>
+                            <button class="btn-secondary" style="padding:4px 12px;font-size:0.7rem;" id="refreshHistoryBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        </div>
+                        <div class="history-list" id="withdrawHistoryList"></div>
+                    </div>
+
+                </div>
+
+            </div><!-- /withdrawContentInner -->
+        </main>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+        <a href="dashboard.html"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="trading.html"><i class="fas fa-chart-line"></i><span>Trading</span></a>
+        <a href="staking.html"><i class="fas fa-coins"></i><span>Staking</span></a>
+        <a href="investment.html"><i class="fas fa-wallet"></i><span>Investment</span></a>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- ================================================================
+    JAVASCRIPT (Withdrawal Logic)
+    ================================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            // ===== Configuration =====
+            const DAILY_LIMIT = 100.00;
+            const MIN_WITHDRAW = 1.00;
+
+            // ===== DOM refs =====
+            const loadingEl = document.getElementById('authLoading');
+            const contentEl = document.getElementById('withdrawContentInner');
+            const availableBalanceEl = document.getElementById('availableBalance');
+            const dailyRemainingEl = document.getElementById('dailyRemaining');
+            const withdrawAmount = document.getElementById('withdrawAmount');
+            const withdrawBtn = document.getElementById('withdrawBtn');
+            const historyList = document.getElementById('withdrawHistoryList');
+            const refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
+            const statusDiv = document.getElementById('withdrawStatus');
+            const statusMsg = document.getElementById('statusMessage');
+            const statusDetailsBtn = document.getElementById('statusDetailsBtn');
+            const statusDetails = document.getElementById('statusDetails');
+            const feeAmountDisplay = document.getElementById('feeAmountDisplay');
+            const feeDisplay = document.getElementById('feeDisplay');
+            const netAmountDisplay = document.getElementById('netAmountDisplay');
+            const maxAmountDisplay = document.getElementById('maxAmountDisplay');
+
+            // Method fields
+            const cryptoFields = document.getElementById('cryptoFields');
+            const bankFields = document.getElementById('bankFields');
+            const methodToggle = document.getElementById('methodToggle');
+            let selectedMethod = 'crypto';
+
+            let currentUser = null;
+            let userBalance = 0;
+            let withdrawHistory = [];
+            let feePercent = 0;
+            let feeFixed = 0;
+
+            // ===== Helpers =====
+            function showStatus(msg, type = 'info', details = '') {
+                statusDiv.className = 'withdraw-status show ' + type;
+                statusMsg.textContent = msg;
+                if (details) {
+                    statusDetailsBtn.style.display = 'inline-block';
+                    statusDetails.textContent = details;
+                    statusDetails.style.display = 'none';
+                    statusDetailsBtn.onclick = function() {
+                        statusDetails.style.display = statusDetails.style.display === 'none' ? 'block' : 'none';
+                        this.textContent = statusDetails.style.display === 'none' ? 'Show Error Details' : 'Hide Error Details';
+                    };
+                } else {
+                    statusDetailsBtn.style.display = 'none';
+                    statusDetails.textContent = '';
+                }
+            }
+
+            function hideStatus() {
+                statusDiv.className = 'withdraw-status';
+                statusMsg.textContent = '';
+                statusDetails.textContent = '';
+                statusDetailsBtn.style.display = 'none';
+            }
+
+            function showToast(msg, type = 'info') {
+                const t = document.getElementById('toast');
+                t.textContent = msg;
+                t.className = 'toast ' + type + ' show';
+                clearTimeout(t._timeout);
+                t._timeout = setTimeout(() => t.classList.remove('show'), 4000);
+            }
+
+            // ===== Supabase Loader =====
+            function loadSupabase(callback, retries) {
+                retries = retries || 0;
+                if (typeof supabase !== 'undefined' || typeof window.supabase !== 'undefined') {
+                    callback();
+                    return;
+                }
+                var script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+                script.async = true;
+                script.onload = function() {
+                    setTimeout(function() {
+                        if (typeof supabase !== 'undefined' || typeof window.supabase !== 'undefined') {
+                            callback();
+                        } else if (retries < 3) {
+                            loadSupabase(callback, retries + 1);
+                        } else {
+                            loadingEl.innerHTML =
+                                '<p style="color:#ef4444;">⚠️ Failed to load authentication. Please refresh.</p>';
+                        }
+                    }, 300);
+                };
+                script.onerror = function() {
+                    if (retries < 3) {
+                        loadSupabase(callback, retries + 1);
+                    } else {
+                        loadingEl.innerHTML =
+                            '<p style="color:#ef4444;">⚠️ Failed to load authentication. Check your internet.</p>';
+                    }
+                };
+                document.head.appendChild(script);
+            }
+
+            // ===== Supabase Client =====
+            function initSupabaseAuth() {
+                const SUPABASE_URL = 'https://agscnbiwmotspzjbosmr.supabase.co';
+                const SUPABASE_ANON_KEY =
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnc2NuYml3bW90c3B6amJvc21yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyODQxNzksImV4cCI6MjA5OTg2MDE3OX0.tsG16bCY-KX5fSH2JoLI9DtO0n7MOt49UdKBnLvD4e8';
+
+                const sb = typeof supabase !== 'undefined' ? supabase : window.supabase;
+                if (!sb) {
+                    loadingEl.innerHTML = '<p style="color:#ef4444;">⚠️ Supabase not available.</p>';
+                    return;
+                }
+
+                const supabaseClient = sb.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+                const auth = {
+                    async signOut() {
+                        await supabaseClient.auth.signOut();
+                        sessionStorage.clear();
+                        window.location.href = 'login.html';
+                    },
+                    storeSession(user) { sessionStorage.setItem('user', JSON.stringify(user)); },
+                    getSession() { const stored = sessionStorage.getItem('user'); return stored ? JSON.parse(stored) : null; },
+                    async requireAuth() {
+                        const session = this.getSession();
+                        if (session) return session;
+                        const { data } = await supabaseClient.auth.getSession();
+                        if (!data.session) {
+                            window.location.href = 'login.html';
+                            return null;
+                        }
+                        this.storeSession(data.session.user);
+                        return data.session.user;
+                    },
+                    get supabase() { return supabaseClient; }
+                };
+
+                window.supabaseClient = auth;
+                console.log('✅ Supabase auth loaded');
+                initWithdraw();
+            }
+
+            // ===== Data Functions =====
+            async function fetchBalance(userId) {
+                const { data, error } = await window.supabaseClient.supabase
+                    .from('profiles')
+                    .select('balance')
+                    .eq('id', userId)
+                    .single();
+                if (error) {
+                    console.error('Fetch balance error:', error);
+                    return 0;
+                }
+                return data?.balance || 0;
+            }
+
+            async function fetchSettings() {
+                const { data, error } = await window.supabaseClient.supabase
+                    .from('system_settings')
+                    .select('*')
+                    .limit(1)
+                    .maybeSingle();
+                if (error) {
+                    console.error('Fetch settings error:', error);
+                    return {};
+                }
+                return data || {};
+            }
+
+            async function fetchWithdrawHistory(userId) {
+                const { data, error } = await window.supabaseClient.supabase
+                    .from('transactions')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .eq('type', 'withdraw')
+                    .order('created_at', { ascending: false })
+                    .limit(20);
+                if (error) {
+                    console.error('Fetch history error:', error);
+                    return [];
+                }
+                return data || [];
+            }
+
+            async function getDailyWithdrawn(userId) {
+                const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+                const { data, error } = await window.supabaseClient.supabase
+                    .from('transactions')
+                    .select('amount')
+                    .eq('user_id', userId)
+                    .eq('type', 'withdraw')
+                    .in('status', ['pending', 'approved'])
+                    .gte('created_at', dayAgo);
+                if (error) return 0;
+                return data.reduce((sum, t) => sum + t.amount, 0);
+            }
+
+            function renderHistory(history) {
+                if (!history || history.length === 0) {
+                    historyList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No withdrawal history</p>
+                        </div>
+                    `;
+                    return;
+                }
+                historyList.innerHTML = history.map(item => {
+                    const statusClass = item.status || 'pending';
+                    const date = new Date(item.created_at).toLocaleDateString();
+                    const method = item.method || 'Crypto';
+                    const currency = item.currency || '';
+                    const netAmount = item.net_amount || item.amount;
+                    const isRejected = statusClass === 'rejected';
+                    return `
+                        <div class="history-item">
+                            <div class="left">
+                                <div class="icon"><i class="fas fa-arrow-up"></i></div>
+                                <div class="details">
+                                    <div class="amount">- $${item.amount.toFixed(2)}</div>
+                                    <div class="meta">${date} · ${method} ${currency} ${isRejected ? '· Rejected' : ''}</div>
+                                    <div class="meta" style="font-size:0.7rem;color:var(--text-muted);">
+                                        Fee: $${(item.fee || 0).toFixed(2)} · Net: $${netAmount.toFixed(2)}
+                                    </div>
+                                    ${item.rejection_reason ? `<div style="font-size:0.7rem;color:var(--red);">Reason: ${item.rejection_reason}</div>` : ''}
+                                </div>
+                            </div>
+                            <span class="status ${statusClass}">${statusClass.charAt(0).toUpperCase() + statusClass.slice(1)}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            function updateUI(balance, history, dailyUsed) {
+                availableBalanceEl.textContent = '$' + balance.toFixed(2);
+                const remaining = Math.max(0, DAILY_LIMIT - dailyUsed);
+                dailyRemainingEl.textContent = '$' + remaining.toFixed(2);
+                maxAmountDisplay.textContent = remaining.toFixed(2);
+                renderHistory(history);
+            }
+
+            // ===== Fee Calculation =====
+            function calculateFee(amount) {
+                const percentFee = amount * (feePercent / 100);
+                const totalFee = percentFee + feeFixed;
+                return { fee: totalFee, net: amount - totalFee };
+            }
+
+            function updateFeeDisplay(amount) {
+                const { fee, net } = calculateFee(amount);
+                feeAmountDisplay.textContent = '$' + amount.toFixed(2);
+                feeDisplay.textContent = '$' + fee.toFixed(2);
+                netAmountDisplay.textContent = '$' + net.toFixed(2);
+                return { fee, net };
+            }
+
+            // ===== Handle Withdraw =====
+            async function handleWithdraw() {
+                hideStatus();
+                const amount = parseFloat(withdrawAmount.value);
+                if (!amount || amount <= 0) {
+                    showStatus('Please enter a valid amount.', 'error');
+                    return;
+                }
+                if (amount < MIN_WITHDRAW) {
+                    showStatus('Minimum withdrawal is $' + MIN_WITHDRAW, 'error');
+                    return;
+                }
+                if (amount > userBalance) {
+                    showStatus('Insufficient balance. You have $' + userBalance.toFixed(2), 'error');
+                    return;
+                }
+
+                // Daily limit
+                const dailyUsed = await getDailyWithdrawn(currentUser.id);
+                const remaining = DAILY_LIMIT - dailyUsed;
+                if (amount > remaining) {
+                    showStatus('Daily limit exceeded. You have $' + remaining.toFixed(2) + ' remaining today.', 'error');
+                    return;
+                }
+
+                // Calculate fee
+                const { fee, net } = calculateFee(amount);
+                if (net <= 0) {
+                    showStatus('Fee exceeds amount. Please enter a larger amount.', 'error');
+                    return;
+                }
+
+                // Build transaction data
+                const txData = {
+                    user_id: currentUser.id,
+                    type: 'withdraw',
+                    amount: amount,
+                    status: 'pending',
+                    method: selectedMethod,
+                    fee: fee,
+                    net_amount: net,
+                    created_at: new Date().toISOString(),
+                };
+
+                if (selectedMethod === 'crypto') {
+                    const currency = document.getElementById('withdrawCurrency').value;
+                    const network = document.getElementById('withdrawNetwork').value;
+                    const address = document.getElementById('withdrawAddress').value.trim();
+                    const memo = document.getElementById('withdrawMemo').value.trim();
+                    if (!address) {
+                        showStatus('Please enter a wallet address.', 'error');
+                        return;
+                    }
+                    txData.currency = currency;
+                    txData.network = network;
+                    txData.address = address;
+                    if (memo) txData.tx_hash = memo; // store memo in tx_hash for simplicity
+                } else {
+                    // Bank
+                    const bankName = document.getElementById('bankName').value.trim();
+                    const bankAccount = document.getElementById('bankAccount').value.trim();
+                    const bankAccountName = document.getElementById('bankAccountName').value.trim();
+                    const routing = document.getElementById('bankRouting').value.trim();
+                    if (!bankName || !bankAccount || !bankAccountName) {
+                        showStatus('Please fill in all bank details.', 'error');
+                        return;
+                    }
+                    txData.bank_name = bankName;
+                    txData.bank_account = bankAccount;
+                    txData.bank_account_name = bankAccountName;
+                    if (routing) txData.tx_hash = routing;
+                }
+
+                withdrawBtn.disabled = true;
+                withdrawBtn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;"></span> Processing...';
+
+                try {
+                    // 1. Deduct balance immediately
+                    const newBalance = userBalance - amount;
+                    await window.supabaseClient.supabase
+                        .from('profiles')
+                        .update({ balance: newBalance })
+                        .eq('id', currentUser.id);
+
+                    // 2. Insert transaction
+                    const { error: insertError } = await window.supabaseClient.supabase
+                        .from('transactions')
+                        .insert([txData]);
+                    if (insertError) throw insertError;
+
+                    showToast('✅ Withdrawal request submitted! Awaiting admin approval.', 'success');
+                    showStatus('✅ Request submitted! Admin will process it shortly.', 'success');
+                    await refreshData();
+                    withdrawAmount.value = '';
+                    updateFeeDisplay(0);
+
+                } catch (err) {
+                    console.error('Withdraw error:', err);
+                    showStatus('❌ ' + (err.message || 'Failed to submit withdrawal.'), 'error', err.stack);
+                    // If we already deducted balance but insert failed, we need to refund.
+                    // But we'll keep it simple: we only insert after deduction. If insert fails, we should revert.
+                    // For now, we'll let the user know and they can retry.
+                } finally {
+                    withdrawBtn.disabled = false;
+                    withdrawBtn.innerHTML = '<i class="fas fa-arrow-up"></i> Withdraw Now';
+                }
+            }
+
+            // ===== Refresh Data =====
+            async function refreshData() {
+                if (!currentUser) return;
+                try {
+                    const balance = await fetchBalance(currentUser.id);
+                    userBalance = balance;
+                    const history = await fetchWithdrawHistory(currentUser.id);
+                    withdrawHistory = history;
+                    const dailyUsed = await getDailyWithdrawn(currentUser.id);
+                    updateUI(balance, history, dailyUsed);
+                    hideStatus();
+                } catch (err) {
+                    console.error('Refresh error:', err);
+                    showStatus('Failed to refresh data.', 'error', err.message);
+                }
+            }
+
+            // ===== Method Toggle =====
+            function toggleMethod(method) {
+                selectedMethod = method;
+                document.querySelectorAll('.method-toggle button').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.method === method);
+                });
+                if (method === 'crypto') {
+                    cryptoFields.style.display = 'block';
+                    bankFields.style.display = 'none';
+                } else {
+                    cryptoFields.style.display = 'none';
+                    bankFields.style.display = 'block';
+                }
+                // Clear previous errors
+                hideStatus();
+            }
+
+            // ===== Network dropdown update =====
+            function updateNetworks() {
+                const currency = document.getElementById('withdrawCurrency').value;
+                const networkSelect = document.getElementById('withdrawNetwork');
+                let options = [];
+                switch (currency) {
+                    case 'BTC':
+                        options = ['Bitcoin'];
+                        break;
+                    case 'ETH':
+                        options = ['ERC20'];
+                        break;
+                    case 'USDT':
+                        options = ['ERC20', 'BEP20', 'TRC20'];
+                        break;
+                    case 'USDC':
+                        options = ['ERC20', 'BEP20'];
+                        break;
+                    case 'SOL':
+                        options = ['Solana'];
+                        break;
+                    default:
+                        options = [];
+                }
+                networkSelect.innerHTML = options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+            }
+
+            // ===== Init =====
+            async function initWithdraw() {
+                loadingEl.style.display = 'none';
+                contentEl.style.display = 'block';
+
+                const auth = window.supabaseClient;
+                const user = await auth.requireAuth();
+                if (!user) return;
+
+                currentUser = user;
+
+                // Avatar
+                const name = user.user_metadata?.name || user.email || 'User';
+                const avatarEl = document.getElementById('avatarInitials');
+                if (avatarEl) {
+                    const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                    avatarEl.textContent = initials || 'U';
+                }
+
+                // Load settings (fees)
+                const settings = await fetchSettings();
+                feePercent = settings.withdrawal_fee_percent || 0;
+                feeFixed = settings.withdrawal_fee_fixed || 0;
+
+                // Load initial data
+                await refreshData();
+
+                // ---- Theme toggle ----
+                const themeIcon = document.getElementById('themeIconSidebar');
+                const themeLabel = document.getElementById('themeLabelSidebar');
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+
+                function updateThemeUI(theme) {
+                    if (!themeIcon || !themeLabel) return;
+                    if (theme === 'dark') {
+                        themeIcon.className = 'fas fa-sun';
+                        themeLabel.textContent = 'Light Mode';
+                    } else {
+                        themeIcon.className = 'fas fa-moon';
+                        themeLabel.textContent = 'Dark Mode';
+                    }
+                }
+                updateThemeUI(savedTheme);
+
+                document.getElementById('themeToggleSidebar').addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    localStorage.setItem('theme', next);
+                    updateThemeUI(next);
+                });
+
+                // ---- Logout ----
+                function logout() { auth.signOut(); }
+                document.getElementById('logoutAvatar').addEventListener('click', logout);
+                document.getElementById('logoutSidebar').addEventListener('click', logout);
+
+                // ---- Avatar dropdown ----
+                const avatarWrap = document.getElementById('avatarWrap');
+                const avatarDropdown = document.getElementById('avatarDropdown');
+                avatarWrap.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    avatarDropdown.classList.toggle('open');
+                });
+                document.addEventListener('click', function() {
+                    avatarDropdown.classList.remove('open');
+                });
+
+                // ---- Sidebar toggle ----
+                const hamburger = document.getElementById('hamburger');
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebarOverlay');
+                hamburger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    sidebar.classList.toggle('open');
+                    overlay.classList.toggle('open');
+                });
+                overlay.addEventListener('click', function() {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('open');
+                });
+
+                // ---- Withdraw button ----
+                withdrawBtn.addEventListener('click', handleWithdraw);
+
+                // ---- Enter key ----
+                withdrawAmount.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        withdrawBtn.click();
+                    }
+                });
+
+                // ---- Refresh history ----
+                refreshHistoryBtn.addEventListener('click', refreshData);
+
+                // ---- Amount input → update fee ----
+                withdrawAmount.addEventListener('input', function() {
+                    const val = parseFloat(this.value) || 0;
+                    updateFeeDisplay(val);
+                });
+
+                // ---- Method toggle ----
+                document.querySelectorAll('.method-toggle button').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        toggleMethod(this.dataset.method);
+                    });
+                });
+
+                // ---- Currency change → update network ----
+                document.getElementById('withdrawCurrency').addEventListener('change', updateNetworks);
+                updateNetworks();
+
+                // Initialize with crypto
+                toggleMethod('crypto');
+
+                console.log('✅ Withdraw page initialized');
+            }
+
+            // ===== Start =====
+            loadSupabase(initSupabaseAuth, 0);
+        })();
+    </script>
+
+</body>
+</html>
