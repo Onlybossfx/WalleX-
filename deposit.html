@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Deposit · WalleX</title>
-    <!-- Heleket merchant verification -->
-    <meta name="heleket" content="32e0bfbb-5816-48b1-9213-1a4f4c85c10f" />
     <meta name="referrer" content="no-referrer" />
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- QR Code Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
     <style>
         /* ===== THEME ===== */
@@ -283,6 +283,50 @@
             color: var(--purple);
         }
 
+        /* BTC Payment Info */
+        .btc-payment-info {
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--bg-glass);
+            border-radius: 10px;
+            border: 1px solid var(--border-subtle);
+            display: none;
+        }
+        .btc-payment-info .qr-container {
+            text-align: center;
+            margin: 8px auto;
+            width: 160px;
+            height: 160px;
+            background: white;
+            padding: 8px;
+            border-radius: 8px;
+        }
+        .btc-payment-info .qr-container canvas,
+        .btc-payment-info .qr-container img {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        .btc-payment-info .address-display {
+            font-family: monospace;
+            font-size: 0.7rem;
+            word-break: break-all;
+            background: var(--bg-primary);
+            padding: 8px;
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+        .btc-payment-info .btc-amount {
+            font-size: 0.85rem;
+            margin-top: 4px;
+            font-weight: 600;
+            color: var(--purple);
+        }
+        .btc-payment-info .pending-status {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
         .deposit-status {
             margin-top: 16px;
             padding: 12px;
@@ -342,12 +386,15 @@
             align-items: center;
             padding: 12px 0;
             border-bottom: 1px solid var(--border-subtle);
+            flex-wrap: wrap;
+            gap: 4px;
         }
         .history-item:last-child { border-bottom: none; }
         .history-item .left {
             display: flex;
             align-items: center;
             gap: 12px;
+            flex: 1;
         }
         .history-item .left .icon {
             width: 36px;
@@ -425,8 +472,8 @@
         @media (max-width:480px) {
             .page-header h1 { font-size:1.3rem; }
             .deposit-form-card { padding:20px 16px; }
-            .history-item { flex-wrap: wrap; gap: 8px; }
-            .btn-primary { padding: 16px; font-size: 1.1rem; }
+            .history-item { flex-direction: column; align-items: stretch; }
+            .btc-payment-info .qr-container { width: 120px; height: 120px; }
         }
 
         .auth-loading { display:flex; align-items:center; justify-content:center; min-height:60vh; flex-direction:column; gap:16px; }
@@ -457,13 +504,16 @@
                         <button class="dropdown-item" id="logoutAvatar"><i class="fas fa-sign-out-alt"></i> Logout</button>
                     </div>
                 </div>
-                <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+                <button class="hamburger" id="hamburger" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
         </div>
     </nav>
 
     <!-- Sidebar & Main -->
     <div class="dashboard" id="depositMain">
+
         <aside class="dashboard-sidebar" id="sidebar">
             <div class="sidebar-item"><i class="fas fa-th-large"></i> Overview</div>
             <div class="sidebar-item"><i class="fas fa-user"></i> Account Settings</div>
@@ -474,27 +524,36 @@
             <div class="sidebar-item"><i class="fas fa-headset"></i> Support</div>
             <div class="sidebar-divider"></div>
             <div class="sidebar-bottom">
-                <div class="sidebar-item" id="themeToggleSidebar"><i class="fas fa-moon" id="themeIconSidebar"></i><span id="themeLabelSidebar">Dark Mode</span></div>
+                <div class="sidebar-item" id="themeToggleSidebar">
+                    <i class="fas fa-moon" id="themeIconSidebar"></i>
+                    <span id="themeLabelSidebar">Dark Mode</span>
+                </div>
                 <div class="sidebar-item" id="logoutSidebar"><i class="fas fa-sign-out-alt"></i> Logout</div>
             </div>
         </aside>
+
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
+        <!-- Main Content -->
         <main class="dashboard-main" id="depositContent">
+
             <div id="authLoading" class="auth-loading">
                 <div class="spinner"></div>
                 <p>Loading your deposit data…</p>
             </div>
 
             <div id="depositContentInner" style="display:none;">
+
+                <!-- Header -->
                 <div class="page-header">
                     <div>
                         <h1>💳 Deposit</h1>
-                        <div class="sub">Add funds via Heleket (low fees, instant)</div>
+                        <div class="sub">Add funds via Bitcoin (BTC)</div>
                     </div>
                 </div>
 
                 <div class="deposit-grid">
+
                     <!-- Form -->
                     <div class="deposit-form-card glass">
                         <div class="balance-display">
@@ -506,12 +565,25 @@
                             <label for="depositAmount">Amount (USD)</label>
                             <input type="number" id="depositAmount" placeholder="Enter amount..." min="0.01" step="0.01" inputmode="decimal" />
                             <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">
-                                You'll be redirected to Heleket to complete the payment.
+                                You'll receive a BTC address to send your payment.
                             </div>
                         </div>
+
                         <button class="btn-primary" id="depositBtn">
                             <i class="fas fa-arrow-down"></i> Deposit Now
                         </button>
+
+                        <!-- BTC Payment Info -->
+                        <div class="btc-payment-info" id="btcPaymentInfo">
+                            <div style="text-align:center;">
+                                <div class="qr-container" id="qrCodeContainer"></div>
+                                <p style="font-size:0.8rem;color:var(--text-secondary);">Scan to pay with BTC</p>
+                                <div class="address-display" id="btcAddressDisplay">BTC address</div>
+                                <div class="btc-amount">Amount: <span id="btcAmountDisplay">0.00000000</span> BTC</div>
+                                <div class="pending-status">Waiting for payment... <span id="pendingStatus">⏳</span></div>
+                                <button class="btn-secondary" style="margin-top:8px;padding:6px 12px;font-size:0.75rem;" id="cancelDepositBtn">Cancel</button>
+                            </div>
+                        </div>
 
                         <div class="deposit-status" id="depositStatus">
                             <span id="statusMessage"></span>
@@ -528,8 +600,10 @@
                         </div>
                         <div class="history-list" id="depositHistoryList"></div>
                     </div>
+
                 </div>
-            </div>
+
+            </div><!-- /depositContentInner -->
         </main>
     </div>
 
@@ -544,18 +618,11 @@
     <div class="toast" id="toast"></div>
 
     <!-- ================================================================
-    JAVASCRIPT (Heleket Integration - Vercel URL)
+    JAVASCRIPT (CoinRemitter BTC Integration)
     ================================================================ -->
     <script>
-    const MOCK_MODE = true;
         (function() {
             'use strict';
-
-            // ===== Heleket Configuration =====
-            const HELEKET_MERCHANT_ID = '32e0bfbb-5816-48b1-9213-1a4f4c85c10f';
-            
-            // ✅ CORRECT CALLBACK URL for your Vercel site
-            const CALLBACK_URL = 'https://walle-x-jade.vercel.app/deposit.html?status=success';
 
             // ===== DOM refs =====
             const loadingEl = document.getElementById('authLoading');
@@ -569,11 +636,19 @@
             const statusMsg = document.getElementById('statusMessage');
             const statusDetailsBtn = document.getElementById('statusDetailsBtn');
             const statusDetails = document.getElementById('statusDetails');
+            const btcPaymentInfo = document.getElementById('btcPaymentInfo');
+            const btcAddressDisplay = document.getElementById('btcAddressDisplay');
+            const btcAmountDisplay = document.getElementById('btcAmountDisplay');
+            const qrContainer = document.getElementById('qrCodeContainer');
+            const pendingStatus = document.getElementById('pendingStatus');
+            const cancelDepositBtn = document.getElementById('cancelDepositBtn');
 
             let currentUser = null;
             let userBalance = 0;
             let depositHistory = [];
             let pollingInterval = null;
+            let qrCodeInstance = null;
+            let currentTransactionId = null;
 
             // ===== Helpers =====
             function showStatus(msg, type = 'info', details = '') {
@@ -722,15 +797,16 @@
                     return;
                 }
                 historyList.innerHTML = history.map(item => {
-                    const statusClass = item.status || 'completed';
+                    const statusClass = item.status || 'pending';
                     const date = new Date(item.created_at).toLocaleDateString();
-                    const method = item.method || 'Heleket';
+                    const method = item.method || 'BTC';
+                    const amount = item.amount || 0;
                     return `
                         <div class="history-item">
                             <div class="left">
                                 <div class="icon"><i class="fas fa-arrow-down"></i></div>
                                 <div class="details">
-                                    <div class="amount">+ $${item.amount.toFixed(2)}</div>
+                                    <div class="amount">+ $${amount.toFixed(2)}</div>
                                     <div class="meta">${date} · ${method}</div>
                                 </div>
                             </div>
@@ -746,37 +822,47 @@
             }
 
             // ===== Polling =====
-            function startPolling(userId, expectedAmount, maxAttempts = 30) {
+            function startPolling(userId, expectedAmount, transactionId, maxAttempts = 60) {
                 let attempts = 0;
                 if (pollingInterval) clearInterval(pollingInterval);
 
+                pendingStatus.textContent = '⏳ Waiting for confirmation...';
+
                 pollingInterval = setInterval(async () => {
                     attempts++;
-                    const history = await fetchDepositHistory(userId);
-                    const recentCompleted = history.find(tx =>
-                        tx.status === 'completed' &&
-                        Math.abs(tx.amount - expectedAmount) < 0.01 &&
-                        new Date(tx.created_at) > new Date(Date.now() - 5 * 60 * 1000)
-                    );
-                    if (recentCompleted) {
+                    const { data, error } = await window.supabaseClient.supabase
+                        .from('transactions')
+                        .select('status')
+                        .eq('id', transactionId)
+                        .single();
+
+                    if (error) {
+                        console.error('Polling error:', error);
+                        return;
+                    }
+
+                    if (data && data.status === 'completed') {
                         clearInterval(pollingInterval);
                         pollingInterval = null;
+                        pendingStatus.textContent = '✅ Confirmed!';
                         const newBalance = await fetchBalance(userId);
                         userBalance = newBalance;
+                        const history = await fetchDepositHistory(userId);
                         depositHistory = history;
                         updateUI(userBalance, history);
+                        btcPaymentInfo.style.display = 'none';
                         showStatus('✅ Deposit of $' + expectedAmount.toFixed(2) + ' confirmed!', 'success');
                         showToast('✅ Deposit confirmed!', 'success');
                     } else if (attempts >= maxAttempts) {
                         clearInterval(pollingInterval);
                         pollingInterval = null;
-                        showStatus('⏳ Payment still pending. Check your transaction history later.', 'info');
-                        showToast('⏳ Payment pending, check history later.', 'info');
+                        pendingStatus.textContent = '⏳ Still pending...';
+                        showStatus('⏳ Payment still pending. Please check your transaction history later.', 'info');
                     }
-                }, 4000);
+                }, 5000);
             }
 
-            // ===== Handle Deposit (Heleket) =====
+            // ===== Handle Deposit =====
             async function handleDeposit() {
                 hideStatus();
                 const amount = parseFloat(depositAmount.value);
@@ -790,52 +876,66 @@
                 }
 
                 depositBtn.disabled = true;
-                depositBtn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;"></span> Redirecting...';
+                depositBtn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;"></span> Creating invoice...';
 
                 try {
-                    // Insert a pending transaction
-                    let insertError = null;
-                    try {
-                        const { error } = await window.supabaseClient.supabase
-                            .from('transactions')
-                            .insert({
-                                user_id: currentUser.id,
-                                type: 'deposit',
-                                amount: amount,
-                                status: 'pending',
-                                method: 'Heleket',
-                                tx_hash: 'heleket_' + Date.now(),
-                            });
-                        insertError = error;
-                    } catch (err) {
-                        insertError = err;
-                    }
+                    const { data, error } = await window.supabaseClient.supabase.functions.invoke('create-deposit', {
+                        body: {
+                            userId: currentUser.id,
+                            amount: amount,
+                        },
+                    });
 
-                    if (insertError) {
-                        console.error('Insert pending transaction error:', insertError);
-                        showStatus('⚠️ Database error: ' + insertError.message + '. Proceeding anyway.', 'error', JSON.stringify(insertError));
+                    if (error) throw new Error(error.message);
+                    if (!data.success) throw new Error(data.error || 'Failed to create invoice');
+
+                    const { btcAddress, btcAmount, transactionId } = data;
+                    currentTransactionId = transactionId;
+
+                    // Display BTC payment info
+                    btcPaymentInfo.style.display = 'block';
+                    btcAddressDisplay.textContent = btcAddress;
+                    btcAmountDisplay.textContent = btcAmount;
+
+                    // Generate QR Code
+                    qrContainer.innerHTML = '';
+                    if (typeof QRCode !== 'undefined') {
+                        qrCodeInstance = new QRCode(qrContainer, {
+                            text: btcAddress,
+                            width: 150,
+                            height: 150,
+                            colorDark: '#000000',
+                            colorLight: '#ffffff',
+                            correctLevel: QRCode.CorrectLevel.H,
+                        });
                     } else {
-                        console.log('✅ Pending transaction inserted.');
+                        qrContainer.innerHTML = '<p style="font-size:0.7rem;color:var(--text-muted);">QR code library not loaded</p>';
                     }
 
-                    // Build Heleket payment URL with your merchant ID
-                    const paymentUrl =
-                        `https://heleket.com/pay/${HELEKET_MERCHANT_ID}?amount=${amount}&currency=USD&callback=${encodeURIComponent(CALLBACK_URL)}`;
+                    // Start polling
+                    startPolling(currentUser.id, amount, transactionId);
 
-                    console.log('🔗 Redirecting to:', paymentUrl);
-
-                    // Start polling for completion
-                    startPolling(currentUser.id, amount);
-
-                    // Redirect to Heleket
-                    window.location.href = paymentUrl;
+                    showStatus('⏳ Waiting for payment... Send BTC to the address above.', 'info');
+                    depositBtn.disabled = false;
+                    depositBtn.innerHTML = '<i class="fas fa-arrow-down"></i> Deposit Now';
 
                 } catch (err) {
                     console.error('Deposit error:', err);
-                    showStatus('❌ ' + (err.message || 'Failed to initiate deposit. Please try again.'), 'error', err.stack);
+                    showStatus('❌ ' + (err.message || 'Failed to initiate deposit.'), 'error', err.stack);
                     depositBtn.disabled = false;
                     depositBtn.innerHTML = '<i class="fas fa-arrow-down"></i> Deposit Now';
                 }
+            }
+
+            // ===== Cancel Deposit =====
+            function cancelDeposit() {
+                if (pollingInterval) {
+                    clearInterval(pollingInterval);
+                    pollingInterval = null;
+                }
+                btcPaymentInfo.style.display = 'none';
+                pendingStatus.textContent = '⏳';
+                showStatus('Deposit cancelled.', 'info');
             }
 
             // ===== Refresh Data =====
@@ -847,28 +947,10 @@
                     const history = await fetchDepositHistory(currentUser.id);
                     depositHistory = history;
                     updateUI(balance, history);
-                    showStatus('🔄 Data refreshed', 'info');
-                    setTimeout(hideStatus, 1500);
+                    hideStatus();
                 } catch (err) {
                     console.error('Refresh error:', err);
                     showStatus('Failed to refresh data.', 'error', err.message);
-                }
-            }
-
-            // ===== Check return status =====
-            function checkReturnStatus() {
-                const urlParams = new URLSearchParams(window.location.search);
-                const status = urlParams.get('status');
-                if (status === 'success') {
-                    showStatus('✅ Payment initiated! Waiting for confirmation…', 'info');
-                    if (currentUser) {
-                        refreshData();
-                        startPolling(currentUser.id, 0, 10);
-                    }
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                } else if (status === 'cancel') {
-                    showStatus('Payment cancelled.', 'info');
-                    window.history.replaceState({}, document.title, window.location.pathname);
                 }
             }
 
@@ -952,6 +1034,9 @@
                 // ---- Deposit button ----
                 depositBtn.addEventListener('click', handleDeposit);
 
+                // ---- Cancel button ----
+                cancelDepositBtn.addEventListener('click', cancelDeposit);
+
                 // ---- Enter key ----
                 depositAmount.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter') {
@@ -963,11 +1048,7 @@
                 // ---- Refresh history ----
                 refreshHistoryBtn.addEventListener('click', refreshData);
 
-                // ---- Check URL params ----
-                checkReturnStatus();
-
-                console.log('✅ Deposit page with Heleket ready (merchant: ' + HELEKET_MERCHANT_ID + ')');
-                console.log('📌 Callback URL:', CALLBACK_URL);
+                console.log('✅ Deposit page with CoinRemitter BTC integration ready');
             }
 
             // ===== Start =====
