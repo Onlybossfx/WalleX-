@@ -8,11 +8,10 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <!-- QR Code Library -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
     <style>
-        /* ===== THEME ===== */
+        /* ===== THEME (unchanged) ===== */
         :root {
             --bg-primary: #f8fafc;
             --bg-secondary: #ffffff;
@@ -283,7 +282,6 @@
             color: var(--purple);
         }
 
-        /* BTC Payment Info */
         .btc-payment-info {
             margin-top: 16px;
             padding: 16px;
@@ -616,27 +614,10 @@
     </div>
 
     <div class="toast" id="toast"></div>
-<div id="debugOutput" style="position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,0.9);color:#0f0;padding:10px;font-size:12px;max-height:200px;overflow-y:auto;z-index:9999;font-family:monospace;display:none;"></div>
 
-<script>
-  // Show debug output on page
-  const debugEl = document.getElementById('debugOutput');
-  console.log = function(...args) {
-    debugEl.style.display = 'block';
-    debugEl.innerHTML += args.join(' ') + '<br>';
-  };
-  console.error = function(...args) {
-    debugEl.style.display = 'block';
-    debugEl.innerHTML += '❌ ' + args.join(' ') + '<br>';
-  };
-  window.onerror = function(msg, url, line, col, error) {
-    debugEl.style.display = 'block';
-    debugEl.innerHTML += '💥 ' + msg + ' at ' + line + ':' + col + '<br>';
-  };
-</script>
-    <!-- ================================================================
-    JAVASCRIPT (CoinRemitter BTC Integration)
-    ================================================================ -->
+    <!-- ================================================================ -->
+    <!-- JAVASCRIPT – Updated with better error handling & debug overlay -->
+    <!-- ================================================================ -->
     <script>
         (function() {
             'use strict';
@@ -879,7 +860,7 @@
                 }, 5000);
             }
 
-            // ===== Handle Deposit =====
+            // ===== Handle Deposit – Updated with better error handling =====
             async function handleDeposit() {
                 hideStatus();
                 const amount = parseFloat(depositAmount.value);
@@ -896,6 +877,8 @@
                 depositBtn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;"></span> Creating invoice...';
 
                 try {
+                    console.log('📤 Calling Edge Function create-deposit with:', { userId: currentUser.id, amount });
+
                     const { data, error } = await window.supabaseClient.supabase.functions.invoke('create-deposit', {
                         body: {
                             userId: currentUser.id,
@@ -903,28 +886,54 @@
                         },
                     });
 
-                    if (error) throw new Error(error.message);
-                    if (!data.success) throw new Error(data.error || 'Failed to create invoice');
+                    // Log the full response for debugging
+                    console.log('📥 Edge Function response:', { data, error });
+
+                    if (error) {
+                        console.error('❌ Function error object:', error);
+                        // Extract the error details
+                        let errorMsg = error.message || 'Edge Function error';
+                        if (error.status) errorMsg += ` (Status: ${error.status})`;
+                        if (error.details) errorMsg += ` - ${error.details}`;
+                        throw new Error(errorMsg);
+                    }
+
+                    if (!data) {
+                        throw new Error('No response data from Edge Function');
+                    }
+
+                    if (!data.success) {
+                        throw new Error(data.error || 'Unknown error from function');
+                    }
 
                     const { btcAddress, btcAmount, transactionId } = data;
+                    if (!btcAddress) {
+                        throw new Error('No BTC address returned from function');
+                    }
+
                     currentTransactionId = transactionId;
 
                     // Display BTC payment info
                     btcPaymentInfo.style.display = 'block';
                     btcAddressDisplay.textContent = btcAddress;
-                    btcAmountDisplay.textContent = btcAmount;
+                    btcAmountDisplay.textContent = btcAmount || '0.00000000';
 
                     // Generate QR Code
                     qrContainer.innerHTML = '';
                     if (typeof QRCode !== 'undefined') {
-                        qrCodeInstance = new QRCode(qrContainer, {
-                            text: btcAddress,
-                            width: 150,
-                            height: 150,
-                            colorDark: '#000000',
-                            colorLight: '#ffffff',
-                            correctLevel: QRCode.CorrectLevel.H,
-                        });
+                        try {
+                            qrCodeInstance = new QRCode(qrContainer, {
+                                text: btcAddress,
+                                width: 150,
+                                height: 150,
+                                colorDark: '#000000',
+                                colorLight: '#ffffff',
+                                correctLevel: QRCode.CorrectLevel.H,
+                            });
+                        } catch (qrErr) {
+                            console.warn('QR code generation failed:', qrErr);
+                            qrContainer.innerHTML = '<p style="font-size:0.7rem;color:var(--text-muted);">Could not generate QR code</p>';
+                        }
                     } else {
                         qrContainer.innerHTML = '<p style="font-size:0.7rem;color:var(--text-muted);">QR code library not loaded</p>';
                     }
@@ -937,7 +946,7 @@
                     depositBtn.innerHTML = '<i class="fas fa-arrow-down"></i> Deposit Now';
 
                 } catch (err) {
-                    console.error('Deposit error:', err);
+                    console.error('❌ Deposit error:', err);
                     showStatus('❌ ' + (err.message || 'Failed to initiate deposit.'), 'error', err.stack);
                     depositBtn.disabled = false;
                     depositBtn.innerHTML = '<i class="fas fa-arrow-down"></i> Deposit Now';
@@ -1073,5 +1082,62 @@
         })();
     </script>
 
+    <!-- ===== DEBUG OVERLAY ===== -->
+    <div id="debugOverlay" style="position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,0.95);color:#00ff00;padding:12px;font-size:11px;max-height:250px;overflow-y:auto;z-index:99999;font-family:monospace;display:none;border-top:2px solid #7C3AED;"></div>
+    <button id="debugToggle" style="position:fixed;bottom:10px;right:10px;z-index:99999;background:#7C3AED;color:#fff;border:none;border-radius:50px;padding:8px 16px;font-size:12px;cursor:pointer;font-weight:bold;">🐛 Debug</button>
+    <script>
+        (function() {
+            const overlay = document.getElementById('debugOverlay');
+            const toggleBtn = document.getElementById('debugToggle');
+            let logs = [];
+
+            function addLog(msg, type = 'log') {
+                const timestamp = new Date().toLocaleTimeString();
+                const prefix = type === 'error' ? '❌' : type === 'warn' ? '⚠️' : '📝';
+                const line = `[${timestamp}] ${prefix} ${msg}`;
+                logs.push(line);
+                if (logs.length > 50) logs.shift();
+                overlay.innerHTML = logs.join('<br>');
+                overlay.scrollTop = overlay.scrollHeight;
+            }
+
+            // Override console methods
+            const origLog = console.log;
+            const origError = console.error;
+            const origWarn = console.warn;
+
+            console.log = function(...args) {
+                origLog.apply(console, args);
+                addLog(args.join(' '), 'log');
+            };
+
+            console.error = function(...args) {
+                origError.apply(console, args);
+                addLog(args.join(' '), 'error');
+            };
+
+            console.warn = function(...args) {
+                origWarn.apply(console, args);
+                addLog(args.join(' '), 'warn');
+            };
+
+            window.onerror = function(msg, url, line, col, error) {
+                addLog(`💥 ${msg} at ${url}:${line}:${col}`, 'error');
+                if (error && error.stack) addLog(`Stack: ${error.stack}`, 'error');
+                return false;
+            };
+
+            window.onunhandledrejection = function(event) {
+                addLog(`💥 Unhandled rejection: ${event.reason}`, 'error');
+            };
+
+            toggleBtn.onclick = function() {
+                overlay.style.display = overlay.style.display === 'none' ? 'block' : 'none';
+            };
+
+            addLog('🐛 Debug overlay active!');
+            addLog(`📍 URL: ${window.location.href}`);
+        })();
+    </script>
 </body>
 </html>
