@@ -252,6 +252,11 @@
 
         /* ===== MAIN CONTENT ===== */
         .dashboard-main { flex:1; padding:24px 32px 100px; overflow-y:auto; }
+        /* Mobile padding fix */
+        @media (max-width:480px) {
+            .dashboard-main { padding:16px 12px 90px; }
+        }
+
         .page-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:28px; }
         .page-header h1 { font-size:1.6rem; font-weight:700; }
         .page-header .sub { color:var(--text-secondary); font-size:0.9rem; }
@@ -616,23 +621,25 @@
     <div class="dashboard" id="investmentMain">
 
         <!-- Sidebar -->
-       <aside class="dashboard-sidebar" id="sidebar">
-    <div class="sidebar-item"><a href="dashboard.html" class="link-item"><i class="fas fa-th-large"></i> Overview</a></div>
-    <div class="sidebar-item"><a href="profile.html" class="link-item"><i class="fas fa-user"></i> Account Settings</a></div>
-    <a href="settings.html" class="sidebar-item"><i class="fas fa-cog"></i> Settings</a>
-    <div class="sidebar-item"><i class="fas fa-history"></i> Transactions</div>
-    <div class="sidebar-divider"></div>
-    <div class="sidebar-item"><i class="fas fa-coins"></i> Staking</div>
-    <div class="sidebar-item active"><i class="fas fa-wallet"></i> Investment</div>
-    <div class="sidebar-divider"></div>
-    <div class="sidebar-item"><i class="fas fa-shield-alt"></i> Security</div>
-    <div class="sidebar-item"><i class="fas fa-headset"></i> Support</div>
-    <div class="sidebar-divider"></div>
-    <div class="sidebar-bottom">
-        <div class="sidebar-item" id="themeToggleSidebar"><i class="fas fa-adjust"></i> Dark Mode</div>
-        <div class="sidebar-item" id="logoutSidebar"><i class="fas fa-sign-out-alt"></i> Logout</div>
-    </div>
-</aside>
+        <aside class="dashboard-sidebar" id="sidebar">
+            <a href="dashboard.html" class="sidebar-item"><i class="fas fa-th-large"></i> Overview</a>
+            <a href="profile.html" class="sidebar-item"><i class="fas fa-user"></i> Profile</a>
+            <a href="settings.html" class="sidebar-item"><i class="fas fa-cog"></i> Settings</a>
+            <a href="kyc.html" class="sidebar-item"><i class="fas fa-id-card"></i> KYC</a>
+            <a href="deposit.html" class="sidebar-item"><i class="fas fa-credit-card"></i> Deposit</a>
+            <a href="withdraw.html" class="sidebar-item"><i class="fas fa-arrow-up"></i> Withdraw</a>
+            <a href="transactions.html" class="sidebar-item"><i class="fas fa-history"></i> Transactions</a>
+            <div class="sidebar-divider"></div>
+            <a href="trading.html" class="sidebar-item"><i class="fas fa-chart-line"></i> Trading</a>
+            <a href="staking.html" class="sidebar-item"><i class="fas fa-coins"></i> Staking</a>
+            <a href="investment.html" class="sidebar-item active"><i class="fas fa-wallet"></i> Investment</a>
+            <div class="sidebar-divider"></div>
+            <a href="#" class="sidebar-item"><i class="fas fa-shield-alt"></i> Security</a>
+            <a href="#" class="sidebar-item"><i class="fas fa-headset"></i> Support</a>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-item" id="themeToggleSidebar"><i class="fas fa-adjust"></i> Dark Mode</div>
+            <div class="sidebar-item" id="logoutSidebar"><i class="fas fa-sign-out-alt"></i> Logout</div>
+        </aside>
 
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
@@ -649,7 +656,7 @@
                 <!-- Header -->
                 <div class="page-header">
                     <div>
-                        <h1>Investments</h1>
+                        <h1><i class="fas fa-wallet"></i> Investments</h1>
                         <div class="sub">Grow your wealth with AI-optimized investment plans</div>
                     </div>
                 </div>
@@ -1071,8 +1078,8 @@
                 plansGrid.innerHTML = plans.map(plan => {
                     const badgeClass = plan.daily_roi >= 3.0 ? 'premium' : plan.daily_roi >= 2.0 ? 'popular' :
                     '';
-                    const badgeLabel = plan.daily_roi >= 3.0 ? '🔥 Premium' : plan.daily_roi >= 2.0 ?
-                        '⭐ Popular' : '';
+                    const badgeLabel = plan.daily_roi >= 3.0 ? 'Premium' : plan.daily_roi >= 2.0 ?
+                        'Popular' : '';
                     const totalReturn = plan.min_invest + (plan.min_invest * (plan.daily_roi / 100) * plan
                     .duration_days);
                     return `
@@ -1228,7 +1235,7 @@
                 try {
                     const currentBalance = await fetchUserBalance(currentUser.id);
                     if (amount > currentBalance) {
-                        showToast('❌ Insufficient balance. You have $' + currentBalance.toFixed(2), 'error');
+                        showToast('Insufficient balance. You have $' + currentBalance.toFixed(2), 'error');
                         return;
                     }
 
@@ -1275,13 +1282,13 @@
                             tx_hash: 'INV_' + Date.now(),
                         }]);
 
-                    showToast('✅ Successfully invested $' + amount.toFixed(2) + ' in ' + plan.name, 'success');
+                    showToast('Successfully invested $' + amount.toFixed(2) + ' in ' + plan.name, 'success');
                     closeModal();
                     await refreshData();
 
                 } catch (err) {
                     console.error('Invest error:', err);
-                    showToast('❌ ' + (err.message || 'Failed to invest. Please try again.'), 'error');
+                    showToast('Failed to invest. Please try again.', 'error');
                 } finally {
                     modalConfirm.disabled = false;
                     modalConfirm.innerHTML = 'Invest Now';
@@ -1304,7 +1311,7 @@
                     // Check if investment is completed (end_date passed)
                     const endDate = new Date(inv.end_date);
                     if (endDate > new Date()) {
-                        showToast('❌ This investment is still active. Ends on ' + endDate.toLocaleDateString(),
+                        showToast('This investment is still active. Ends on ' + endDate.toLocaleDateString(),
                         'error');
                         return;
                     }
@@ -1338,12 +1345,12 @@
                             tx_hash: 'WITHDRAW_INV_' + Date.now(),
                         }]);
 
-                    showToast('✅ Withdrew $' + totalReturn.toFixed(2) + ' (Principal + Profit)', 'success');
+                    showToast('Withdrew $' + totalReturn.toFixed(2) + ' (Principal + Profit)', 'success');
                     await refreshData();
 
                 } catch (err) {
                     console.error('Withdraw error:', err);
-                    showToast('❌ ' + (err.message || 'Failed to withdraw. Please try again.'), 'error');
+                    showToast('Failed to withdraw. Please try again.', 'error');
                 }
             }
 
@@ -1389,12 +1396,12 @@
                             tx_hash: 'PROFIT_' + Date.now(),
                         }]);
 
-                    showToast('✅ Claimed $' + profit.toFixed(2) + ' in profit!', 'success');
+                    showToast('Claimed $' + profit.toFixed(2) + ' in profit!', 'success');
                     await refreshData();
 
                 } catch (err) {
                     console.error('Claim profit error:', err);
-                    showToast('❌ ' + (err.message || 'Failed to claim profit. Please try again.'), 'error');
+                    showToast('Failed to claim profit. Please try again.', 'error');
                 }
             }
 
@@ -1488,6 +1495,21 @@
                     avatarDropdown.classList.remove('open');
                 });
 
+                // ---- Sidebar toggle (mobile) ----
+                const hamburger = document.getElementById('hamburger');
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebarOverlay');
+                if (hamburger) {
+                    hamburger.addEventListener('click', function() {
+                        sidebar.classList.toggle('open');
+                        overlay.classList.toggle('open');
+                    });
+                }
+                overlay.addEventListener('click', function() {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('open');
+                });
+
                 // ---- Modal events ----
                 modalClose.addEventListener('click', closeModal);
                 modalCancel.addEventListener('click', closeModal);
@@ -1525,7 +1547,7 @@
                     if (e.key === 'Escape') closeModal();
                 });
 
-                console.log('✅ Investment page initialized');
+                console.log('Investment page initialized');
             }
 
             // ============================================================

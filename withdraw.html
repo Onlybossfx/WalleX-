@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
     <style>
-        /* ===== THEME (identical to deposit page) ===== */
+        /* ===== THEME ===== */
         :root {
             --bg-primary: #f8fafc;
             --bg-secondary: #ffffff;
@@ -225,6 +225,11 @@
         }
 
         .dashboard-main { flex:1; padding:24px 16px 100px; overflow-y:auto; }
+        /* Mobile padding fix */
+        @media (max-width:480px) {
+            .dashboard-main { padding:16px 12px 90px; }
+        }
+
         .page-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:28px; }
         .page-header h1 { font-size:1.6rem; font-weight:700; }
         .page-header .sub { color:var(--text-secondary); font-size:0.9rem; }
@@ -535,21 +540,26 @@
     <div class="dashboard" id="withdrawMain">
 
         <aside class="dashboard-sidebar" id="sidebar">
-            <div class="sidebar-item"><i class="fas fa-th-large"></i> Overview</div>
-            <div class="sidebar-item"><i class="fas fa-user"></i> Account Settings</div>
-            <div class="sidebar-item active"><i class="fas fa-arrow-up"></i> Withdraw</div>
-            <div class="sidebar-item"><i class="fas fa-history"></i> Transactions</div>
+            <a href="dashboard.html" class="sidebar-item"><i class="fas fa-th-large"></i> Overview</a>
+            <a href="profile.html" class="sidebar-item"><i class="fas fa-user"></i> Profile</a>
+            <a href="settings.html" class="sidebar-item"><i class="fas fa-cog"></i> Settings</a>
+            <a href="kyc.html" class="sidebar-item"><i class="fas fa-id-card"></i> KYC</a>
+            <a href="deposit.html" class="sidebar-item"><i class="fas fa-credit-card"></i> Deposit</a>
+            <a href="withdraw.html" class="sidebar-item active"><i class="fas fa-arrow-up"></i> Withdraw</a>
+            <a href="transactions.html" class="sidebar-item"><i class="fas fa-history"></i> Transactions</a>
             <div class="sidebar-divider"></div>
-            <div class="sidebar-item"><i class="fas fa-shield-alt"></i> Security</div>
-            <div class="sidebar-item"><i class="fas fa-headset"></i> Support</div>
+            <a href="trading.html" class="sidebar-item"><i class="fas fa-chart-line"></i> Trading</a>
+            <a href="staking.html" class="sidebar-item"><i class="fas fa-coins"></i> Staking</a>
+            <a href="investment.html" class="sidebar-item"><i class="fas fa-wallet"></i> Investment</a>
             <div class="sidebar-divider"></div>
-            <div class="sidebar-bottom">
-                <div class="sidebar-item" id="themeToggleSidebar">
-                    <i class="fas fa-moon" id="themeIconSidebar"></i>
-                    <span id="themeLabelSidebar">Dark Mode</span>
-                </div>
-                <div class="sidebar-item" id="logoutSidebar"><i class="fas fa-sign-out-alt"></i> Logout</div>
+            <a href="#" class="sidebar-item"><i class="fas fa-shield-alt"></i> Security</a>
+            <a href="#" class="sidebar-item"><i class="fas fa-headset"></i> Support</a>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-item" id="themeToggleSidebar">
+                <i class="fas fa-moon" id="themeIconSidebar"></i>
+                <span id="themeLabelSidebar">Dark Mode</span>
             </div>
+            <div class="sidebar-item" id="logoutSidebar"><i class="fas fa-sign-out-alt"></i> Logout</div>
         </aside>
 
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -567,7 +577,7 @@
                 <!-- Header -->
                 <div class="page-header">
                     <div>
-                        <h1>💸 Withdraw</h1>
+                        <h1><i class="fas fa-arrow-up"></i> Withdraw</h1>
                         <div class="sub">Cash out to crypto or your bank account</div>
                     </div>
                 </div>
@@ -1012,9 +1022,8 @@
                     txData.currency = currency;
                     txData.network = network;
                     txData.address = address;
-                    if (memo) txData.tx_hash = memo; // store memo in tx_hash for simplicity
+                    if (memo) txData.tx_hash = memo;
                 } else {
-                    // Bank
                     const bankName = document.getElementById('bankName').value.trim();
                     const bankAccount = document.getElementById('bankAccount').value.trim();
                     const bankAccountName = document.getElementById('bankAccountName').value.trim();
@@ -1033,14 +1042,12 @@
                 withdrawBtn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;"></span> Processing...';
 
                 try {
-                    // 1. Deduct balance immediately
                     const newBalance = userBalance - amount;
                     await window.supabaseClient.supabase
                         .from('profiles')
                         .update({ balance: newBalance })
                         .eq('id', currentUser.id);
 
-                    // 2. Insert transaction
                     const { error: insertError } = await window.supabaseClient.supabase
                         .from('transactions')
                         .insert([txData]);
@@ -1055,9 +1062,6 @@
                 } catch (err) {
                     console.error('Withdraw error:', err);
                     showStatus('❌ ' + (err.message || 'Failed to submit withdrawal.'), 'error', err.stack);
-                    // If we already deducted balance but insert failed, we need to refund.
-                    // But we'll keep it simple: we only insert after deduction. If insert fails, we should revert.
-                    // For now, we'll let the user know and they can retry.
                 } finally {
                     withdrawBtn.disabled = false;
                     withdrawBtn.innerHTML = '<i class="fas fa-arrow-up"></i> Withdraw Now';
@@ -1094,7 +1098,6 @@
                     cryptoFields.style.display = 'none';
                     bankFields.style.display = 'block';
                 }
-                // Clear previous errors
                 hideStatus();
             }
 
@@ -1136,7 +1139,6 @@
 
                 currentUser = user;
 
-                // Avatar
                 const name = user.user_metadata?.name || user.email || 'User';
                 const avatarEl = document.getElementById('avatarInitials');
                 if (avatarEl) {
@@ -1144,12 +1146,10 @@
                     avatarEl.textContent = initials || 'U';
                 }
 
-                // Load settings (fees)
                 const settings = await fetchSettings();
                 feePercent = settings.withdrawal_fee_percent || 0;
                 feeFixed = settings.withdrawal_fee_fixed || 0;
 
-                // Load initial data
                 await refreshData();
 
                 // ---- Theme toggle ----
@@ -1239,7 +1239,6 @@
                 document.getElementById('withdrawCurrency').addEventListener('change', updateNetworks);
                 updateNetworks();
 
-                // Initialize with crypto
                 toggleMethod('crypto');
 
                 console.log('✅ Withdraw page initialized');
