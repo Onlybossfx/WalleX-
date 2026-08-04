@@ -10,244 +10,243 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- ===== CSS WILL GO HERE ===== -->
     <style>
-        /* ===== THEME (unchanged) ===== */
-        :root {
-            --bg-primary: #f8fafc;
-            --bg-secondary: #ffffff;
-            --bg-glass: rgba(255, 255, 255, 0.6);
-            --bg-glass-hover: rgba(255, 255, 255, 0.85);
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #94a3b8;
-            --border-color: rgba(124, 58, 237, 0.15);
-            --border-subtle: rgba(0, 0, 0, 0.06);
-            --shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
-            --shadow-hover: 0 8px 40px rgba(0, 0, 0, 0.09);
-            --purple: #7C3AED;
-            --purple-light: #8B5CF6;
-            --purple-dark: #5B21B6;
-            --radius: 16px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        [data-theme="dark"] {
-            --bg-primary: #000000;
-            --bg-secondary: #0a0a0a;
-            --bg-glass: rgba(20, 20, 20, 0.75);
-            --bg-glass-hover: rgba(30, 30, 30, 0.85);
-            --text-primary: #ffffff;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --border-color: rgba(124, 58, 237, 0.25);
-            --border-subtle: rgba(255, 255, 255, 0.06);
-            --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
-            --shadow-hover: 0 8px 40px rgba(0, 0, 0, 0.7);
-        }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        html { scroll-behavior:smooth; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height:1.6;
-            transition: background 0.3s, color 0.3s;
-            overflow-x:hidden;
-        }
-        ::-webkit-scrollbar { width:6px; }
-        ::-webkit-scrollbar-track { background:var(--bg-primary); }
-        ::-webkit-scrollbar-thumb { background:var(--purple); border-radius:10px; }
+        /* CSS goes here – see Part 2 */
+    /* ===== THEME ===== */
+:root {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #ffffff;
+    --bg-glass: rgba(255, 255, 255, 0.6);
+    --bg-glass-hover: rgba(255, 255, 255, 0.85);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --border-color: rgba(124, 58, 237, 0.15);
+    --border-subtle: rgba(0, 0, 0, 0.06);
+    --shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 8px 40px rgba(0, 0, 0, 0.09);
+    --purple: #7C3AED;
+    --purple-light: #8B5CF6;
+    --purple-dark: #5B21B6;
+    --radius: 16px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+[data-theme="dark"] {
+    --bg-primary: #000000;
+    --bg-secondary: #0a0a0a;
+    --bg-glass: rgba(20, 20, 20, 0.75);
+    --bg-glass-hover: rgba(30, 30, 30, 0.85);
+    --text-primary: #ffffff;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --border-color: rgba(124, 58, 237, 0.25);
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+    --shadow-hover: 0 8px 40px rgba(0, 0, 0, 0.7);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height:1.6;
+    transition: background 0.3s, color 0.3s;
+    overflow-x:hidden;
+}
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:var(--bg-primary); }
+::-webkit-scrollbar-thumb { background:var(--purple); border-radius:10px; }
 
-        .container { max-width:1200px; margin:0 auto; padding:0 24px; }
+.container { max-width:1200px; margin:0 auto; padding:0 24px; }
 
-        .glass {
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-        }
-        .glass:hover {
-            background: var(--bg-glass-hover);
-            box-shadow: var(--shadow-hover);
-        }
+.glass {
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+.glass:hover {
+    background: var(--bg-glass-hover);
+    box-shadow: var(--shadow-hover);
+}
 
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 28px;
-            background: linear-gradient(135deg, var(--purple), var(--purple-dark));
-            color: #fff;
-            font-weight: 600;
-            font-size: 0.95rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.25);
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124, 58, 237, 0.35); }
-        .btn-secondary {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 28px;
-            background: var(--bg-glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            font-weight: 600;
-            font-size: 0.95rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-        }
-        .btn-secondary:hover { background: var(--bg-glass-hover); border-color: var(--purple); transform: translateY(-2px); }
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.25);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124, 58, 237, 0.35); }
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+}
+.btn-secondary:hover { background: var(--bg-glass-hover); border-color: var(--purple); transform: translateY(-2px); }
 
-        .logo img { height:36px; width:auto; display:block; }
+.logo img { height:36px; width:auto; display:block; }
 
-        /* Navbar */
-        .navbar {
-            position: fixed; top:0; left:0; right:0; z-index:1000;
-            padding:12px 0;
-            background: var(--bg-glass);
-            backdrop-filter: blur(30px);
-            border-bottom: 1px solid var(--border-subtle);
-        }
-        .navbar .container { display:flex; justify-content:space-between; align-items:center; max-width:1200px; margin:0 auto; padding:0 24px; }
-        .nav-links { display:flex; gap:28px; align-items:center; list-style:none; }
-        .nav-links a { color: var(--text-secondary); text-decoration: none; font-weight:500; font-size:0.9rem; display:flex; align-items:center; gap:6px; }
-        .nav-links a:hover, .nav-links a.active { color:var(--purple); }
-        @media (max-width:992px) { .nav-links { display:none !important; } }
+/* Navbar */
+.navbar {
+    position: fixed; top:0; left:0; right:0; z-index:1000;
+    padding:12px 0;
+    background: var(--bg-glass);
+    backdrop-filter: blur(30px);
+    border-bottom: 1px solid var(--border-subtle);
+}
+.navbar .container { display:flex; justify-content:space-between; align-items:center; max-width:1200px; margin:0 auto; padding:0 24px; }
+.nav-links { display:flex; gap:28px; align-items:center; list-style:none; }
+.nav-links a { color: var(--text-secondary); text-decoration: none; font-weight:500; font-size:0.9rem; display:flex; align-items:center; gap:6px; }
+.nav-links a:hover, .nav-links a.active { color:var(--purple); }
+@media (max-width:992px) { .nav-links { display:none !important; } }
 
-        .user-avatar-wrap { position:relative; cursor:pointer; }
-        .user-avatar { width:40px; height:40px; border-radius:50%; background: linear-gradient(135deg, var(--purple), var(--purple-light)); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1rem; color:#fff; transition:var(--transition); border:2px solid transparent; user-select:none; }
-        .user-avatar:hover { border-color:var(--purple-light); transform:scale(1.05); }
-        .avatar-dropdown { position:absolute; top:52px; right:0; min-width:200px; background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius); box-shadow:var(--shadow-hover); padding:8px 0; opacity:0; visibility:hidden; transform:translateY(-8px); transition:var(--transition); z-index:999; }
-        .avatar-dropdown.open { opacity:1; visibility:visible; transform:translateY(0); }
-        .avatar-dropdown .dropdown-item { display:flex; align-items:center; gap:12px; padding:10px 18px; color:var(--text-secondary); text-decoration:none; font-size:0.9rem; transition:var(--transition); cursor:pointer; border:none; background:none; width:100%; text-align:left; }
-        .avatar-dropdown .dropdown-item:hover { background:rgba(124,58,237,0.06); color:var(--purple); }
-        .avatar-dropdown .dropdown-divider { height:1px; background:var(--border-subtle); margin:4px 12px; }
+.user-avatar-wrap { position:relative; cursor:pointer; }
+.user-avatar { width:40px; height:40px; border-radius:50%; background: linear-gradient(135deg, var(--purple), var(--purple-light)); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1rem; color:#fff; transition:var(--transition); border:2px solid transparent; user-select:none; }
+.user-avatar:hover { border-color:var(--purple-light); transform:scale(1.05); }
+.avatar-dropdown { position:absolute; top:52px; right:0; min-width:200px; background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius); box-shadow:var(--shadow-hover); padding:8px 0; opacity:0; visibility:hidden; transform:translateY(-8px); transition:var(--transition); z-index:999; }
+.avatar-dropdown.open { opacity:1; visibility:visible; transform:translateY(0); }
+.avatar-dropdown .dropdown-item { display:flex; align-items:center; gap:12px; padding:10px 18px; color:var(--text-secondary); text-decoration:none; font-size:0.9rem; transition:var(--transition); cursor:pointer; border:none; background:none; width:100%; text-align:left; }
+.avatar-dropdown .dropdown-item:hover { background:rgba(124,58,237,0.06); color:var(--purple); }
+.avatar-dropdown .dropdown-divider { height:1px; background:var(--border-subtle); margin:4px 12px; }
 
-        .hamburger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px; margin-left:12px; }
-        .hamburger span { display:block; width:26px; height:2px; background:var(--text-primary); border-radius:4px; transition:var(--transition); }
-        @media (max-width:992px) { .hamburger { display:flex; } }
+.hamburger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px; margin-left:12px; }
+.hamburger span { display:block; width:26px; height:2px; background:var(--text-primary); border-radius:4px; transition:var(--transition); }
+@media (max-width:992px) { .hamburger { display:flex; } }
 
-        .nav-right { display:flex; align-items:center; gap:12px; }
+.nav-right { display:flex; align-items:center; gap:12px; }
 
-        /* Sidebar */
-        .dashboard { display:flex; min-height:100vh; padding-top:66px; background:var(--bg-primary); transition:var(--transition); }
-        .dashboard-sidebar {
-            width:220px; flex-shrink:0; padding:20px 12px;
-            background:var(--bg-glass); backdrop-filter:blur(20px);
-            border-right:1px solid var(--border-subtle);
-            height:calc(100vh - 66px); position:sticky; top:66px; overflow-y:auto;
-            display:flex; flex-direction:column; gap:2px;
-            transition:var(--transition);
-        }
-        .sidebar-item {
-            display:flex; align-items:center; gap:12px;
-            padding:10px 14px; border-radius:10px;
-            color:var(--text-secondary);
-            text-decoration:none;
-            font-weight:500; font-size:0.9rem;
-            transition:var(--transition);
-            cursor:pointer;
-            border:none; background:none; width:100%; text-align:left;
-        }
-        .sidebar-item:hover { background:rgba(124,58,237,0.08); color:var(--purple); }
-        .sidebar-item.active { background:rgba(124,58,237,0.1); color:var(--purple); border:1px solid rgba(124,58,237,0.15); }
-        .sidebar-item i { width:18px; text-align:center; font-size:1rem; }
-        .sidebar-divider { height:1px; background:var(--border-subtle); margin:8px 0; }
-        .sidebar-bottom { margin-top:auto; display:flex; flex-direction:column; gap:2px; }
+/* Sidebar */
+.dashboard { display:flex; min-height:100vh; padding-top:66px; background:var(--bg-primary); transition:var(--transition); }
+.dashboard-sidebar {
+    width:220px; flex-shrink:0; padding:20px 12px;
+    background:var(--bg-glass); backdrop-filter:blur(20px);
+    border-right:1px solid var(--border-subtle);
+    height:calc(100vh - 66px); position:sticky; top:66px; overflow-y:auto;
+    display:flex; flex-direction:column; gap:2px;
+    transition:var(--transition);
+}
+.sidebar-item {
+    display:flex; align-items:center; gap:12px;
+    padding:10px 14px; border-radius:10px;
+    color:var(--text-secondary);
+    text-decoration:none;
+    font-weight:500; font-size:0.9rem;
+    transition:var(--transition);
+    cursor:pointer;
+    border:none; background:none; width:100%; text-align:left;
+}
+.sidebar-item:hover { background:rgba(124,58,237,0.08); color:var(--purple); }
+.sidebar-item.active { background:rgba(124,58,237,0.1); color:var(--purple); border:1px solid rgba(124,58,237,0.15); }
+.sidebar-item i { width:18px; text-align:center; font-size:1rem; }
+.sidebar-divider { height:1px; background:var(--border-subtle); margin:8px 0; }
+.sidebar-bottom { margin-top:auto; display:flex; flex-direction:column; gap:2px; }
 
-        .sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.3); z-index:98; }
-        .sidebar-overlay.open { display:block; }
+.sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.3); z-index:98; }
+.sidebar-overlay.open { display:block; }
 
-        @media (max-width:992px) {
-            .dashboard-sidebar { display:none; position:fixed; top:66px; left:0; bottom:0; width:280px; background:var(--bg-secondary); backdrop-filter:blur(30px); border-right:1px solid var(--border-subtle); z-index:99; padding:20px 16px; overflow-y:auto; }
-            .dashboard-sidebar.open { display:flex; }
-        }
+@media (max-width:992px) {
+    .dashboard-sidebar { display:none; position:fixed; top:66px; left:0; bottom:0; width:280px; background:var(--bg-secondary); backdrop-filter:blur(30px); border-right:1px solid var(--border-subtle); z-index:99; padding:20px 16px; overflow-y:auto; }
+    .dashboard-sidebar.open { display:flex; }
+}
 
-        .dashboard-main { flex:1; padding:24px 32px 100px; overflow-y:auto; }
-        /* Mobile padding fix – only addition */
-        @media (max-width:480px) {
-            .dashboard-main { padding:16px 12px 90px; }
-        }
+.dashboard-main { flex:1; padding:24px 32px 100px; overflow-y:auto; }
+@media (max-width:480px) { .dashboard-main { padding:16px 12px 90px; } }
 
-        .dashboard-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:28px; }
-        .dashboard-header h1 { font-size:1.6rem; font-weight:700; }
-        .dashboard-header .sub { color:var(--text-secondary); font-size:0.9rem; }
+.dashboard-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:28px; }
+.dashboard-header h1 { font-size:1.6rem; font-weight:700; }
+.dashboard-header .sub { color:var(--text-secondary); font-size:0.9rem; }
 
-        .stats-slider-wrap { position:relative; margin-bottom:16px; overflow:hidden; }
-        .stats-slider-track { display:flex; transition:transform 0.5s cubic-bezier(0.4,0,0.2,1); gap:16px; }
-        .stats-slide { min-width:calc(25% - 12px); flex:0 0 auto; }
-        .stat-card { padding:20px 24px; text-align:left; min-height:120px; display:flex; flex-direction:column; justify-content:center; }
-        .stat-card .label { font-size:0.8rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px; font-weight:500; }
-        .stat-card .value { font-size:2rem; font-weight:700; color:var(--purple); margin-top:4px; }
-        .stat-card .change { font-size:0.8rem; margin-top:4px; }
-        .stat-card .change.up { color:#10b981; }
-        .stat-card .change.down { color:#ef4444; }
-        .slider-controls { display:flex; justify-content:center; gap:12px; margin-top:16px; }
-        .slider-dot { width:10px; height:10px; border-radius:50%; background:var(--text-muted); border:none; cursor:pointer; transition:var(--transition); padding:0; }
-        .slider-dot.active { background:var(--purple); transform:scale(1.2); }
-        .slider-dot:hover { background:var(--purple-light); }
+.stats-slider-wrap { position:relative; margin-bottom:16px; overflow:hidden; }
+.stats-slider-track { display:flex; transition:transform 0.5s cubic-bezier(0.4,0,0.2,1); gap:16px; }
+.stats-slide { min-width:calc(25% - 12px); flex:0 0 auto; }
+.stat-card { padding:20px 24px; text-align:left; min-height:120px; display:flex; flex-direction:column; justify-content:center; }
+.stat-card .label { font-size:0.8rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px; font-weight:500; }
+.stat-card .value { font-size:2rem; font-weight:700; color:var(--purple); margin-top:4px; }
+.stat-card .change { font-size:0.8rem; margin-top:4px; }
+.stat-card .change.up { color:#10b981; }
+.stat-card .change.down { color:#ef4444; }
+.slider-controls { display:flex; justify-content:center; gap:12px; margin-top:16px; }
+.slider-dot { width:10px; height:10px; border-radius:50%; background:var(--text-muted); border:none; cursor:pointer; transition:var(--transition); padding:0; }
+.slider-dot.active { background:var(--purple); transform:scale(1.2); }
+.slider-dot:hover { background:var(--purple-light); }
 
-        .action-bar { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:32px; padding:4px 0; }
-        .action-bar .btn-primary, .action-bar .btn-secondary { padding:10px 24px; font-size:0.9rem; }
+.action-bar { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:32px; padding:4px 0; }
+.action-bar .btn-primary, .action-bar .btn-secondary { padding:10px 24px; font-size:0.9rem; }
 
-        .dashboard-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:32px; }
-        .dashboard-grid .glass { padding:20px; min-height:300px; }
-        .chart-container { height:260px; position:relative; }
-        .chart-container canvas { width:100% !important; height:100% !important; }
+.dashboard-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:32px; }
+.dashboard-grid .glass { padding:20px; min-height:300px; }
+.chart-container { height:260px; position:relative; }
+.chart-container canvas { width:100% !important; height:100% !important; }
 
-        .coin-feed { overflow:hidden; }
-        .coin-feed .feed-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-        .coin-feed .feed-header h3 { font-size:1rem; font-weight:600; }
-        .coin-feed .feed-header .badge { font-size:0.7rem; color:var(--text-secondary); background:var(--bg-glass); padding:4px 12px; border-radius:20px; border:1px solid var(--border-subtle); }
-        .coin-table-wrap { max-height:fit-content; overflow-y:auto; }
-        .coin-table-wrap::-webkit-scrollbar { width:4px; }
-        .coin-table-wrap::-webkit-scrollbar-thumb { background:var(--purple); border-radius:10px; }
-        .coin-table { width:100%; border-collapse:collapse; font-size:0.85rem; }
-        .coin-table th { text-align:left; padding:8px 12px; color:var(--text-muted); font-weight:500; border-bottom:1px solid var(--border-subtle); position:sticky; top:0; background:var(--bg-secondary); z-index:2; }
-        .coin-table td { padding:8px 12px; border-bottom:1px solid var(--border-subtle); }
-        .coin-table .coin-name { display:flex; align-items:center; gap:10px; }
-        .coin-table .coin-icon { width:28px; height:28px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.6rem; color:var(--purple); background:rgba(124,58,237,0.08); overflow:hidden; }
-        .coin-table .coin-icon img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
-        .coin-table .price-up { color:#10b981; }
-        .coin-table .price-down { color:#ef4444; }
-        .coin-table .coin-symbol { color:var(--text-muted); font-size:0.7rem; }
+.coin-feed { overflow:hidden; }
+.coin-feed .feed-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.coin-feed .feed-header h3 { font-size:1rem; font-weight:600; }
+.coin-feed .feed-header .badge { font-size:0.7rem; color:var(--text-secondary); background:var(--bg-glass); padding:4px 12px; border-radius:20px; border:1px solid var(--border-subtle); }
+.coin-table-wrap { max-height:fit-content; overflow-y:auto; }
+.coin-table-wrap::-webkit-scrollbar { width:4px; }
+.coin-table-wrap::-webkit-scrollbar-thumb { background:var(--purple); border-radius:10px; }
+.coin-table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+.coin-table th { text-align:left; padding:8px 12px; color:var(--text-muted); font-weight:500; border-bottom:1px solid var(--border-subtle); position:sticky; top:0; background:var(--bg-secondary); z-index:2; }
+.coin-table td { padding:8px 12px; border-bottom:1px solid var(--border-subtle); }
+.coin-table .coin-name { display:flex; align-items:center; gap:10px; }
+.coin-table .coin-icon { width:28px; height:28px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.6rem; color:var(--purple); background:rgba(124,58,237,0.08); overflow:hidden; }
+.coin-table .coin-icon img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.coin-table .price-up { color:#10b981; }
+.coin-table .price-down { color:#ef4444; }
+.coin-table .coin-symbol { color:var(--text-muted); font-size:0.7rem; }
 
-        .bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--bg-glass); backdrop-filter:blur(20px); border-top:1px solid var(--border-subtle); padding:6px 0 env(safe-area-inset-bottom); z-index:100; justify-content:space-around; transition:var(--transition); }
-        .bottom-nav a { display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--text-secondary); text-decoration:none; font-size:0.6rem; padding:6px 12px; transition:var(--transition); }
-        .bottom-nav a i { font-size:1.2rem; }
-        .bottom-nav a.active { color:var(--purple); }
-        .bottom-nav a:hover { color:var(--purple); }
+.bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--bg-glass); backdrop-filter:blur(20px); border-top:1px solid var(--border-subtle); padding:6px 0 env(safe-area-inset-bottom); z-index:100; justify-content:space-around; transition:var(--transition); }
+.bottom-nav a { display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--text-secondary); text-decoration:none; font-size:0.6rem; padding:6px 12px; transition:var(--transition); }
+.bottom-nav a i { font-size:1.2rem; }
+.bottom-nav a.active { color:var(--purple); }
+.bottom-nav a:hover { color:var(--purple); }
 
-        @media (max-width:992px) {
-            .bottom-nav { display:flex; }
-            .dashboard-main { padding:16px 16px 90px; }
-            .dashboard-grid { grid-template-columns:1fr; }
-            .stats-slide { min-width:calc(50% - 8px); }
-        }
-        @media (max-width:480px) {
-            .stats-slide { min-width:100%; }
-            .dashboard-header h1 { font-size:1.2rem; }
-            .stat-card .value { font-size:1.5rem; }
-            .dashboard-grid .glass { padding:14px; min-height:240px; }
-            .chart-container { height:200px; }
-            .action-bar .btn-primary, .action-bar .btn-secondary { padding:8px 16px; font-size:0.8rem; }
-            .user-avatar { width:34px; height:34px; font-size:0.8rem; }
-        }
+@media (max-width:992px) {
+    .bottom-nav { display:flex; }
+    .dashboard-main { padding:16px 16px 90px; }
+    .dashboard-grid { grid-template-columns:1fr; }
+    .stats-slide { min-width:calc(50% - 8px); }
+}
+@media (max-width:480px) {
+    .stats-slide { min-width:100%; }
+    .dashboard-header h1 { font-size:1.2rem; }
+    .stat-card .value { font-size:1.5rem; }
+    .dashboard-grid .glass { padding:14px; min-height:240px; }
+    .chart-container { height:200px; }
+    .action-bar .btn-primary, .action-bar .btn-secondary { padding:8px 16px; font-size:0.8rem; }
+    .user-avatar { width:34px; height:34px; font-size:0.8rem; }
+}
 
-        .auth-loading { display:flex; align-items:center; justify-content:center; min-height:60vh; flex-direction:column; gap:16px; }
-        .auth-loading .spinner { width:40px; height:40px; border:3px solid var(--border-subtle); border-top-color:var(--purple); border-radius:50%; animation:spin 0.8s linear infinite; }
-        @keyframes spin { to { transform:rotate(360deg); } }
-        .auth-loading p { color:var(--text-secondary); font-size:0.95rem; }
+.auth-loading { display:flex; align-items:center; justify-content:center; min-height:60vh; flex-direction:column; gap:16px; }
+.auth-loading .spinner { width:40px; height:40px; border:3px solid var(--border-subtle); border-top-color:var(--purple); border-radius:50%; animation:spin 0.8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.auth-loading p { color:var(--text-secondary); font-size:0.95rem; }
     </style>
 </head>
 <body>
@@ -255,22 +254,16 @@
     <!-- ===== NAVBAR ===== -->
     <nav class="navbar" id="navbar">
         <div class="container">
-            <a href="dashboard.html" class="logo">
-                <img src="logo.png" alt="WalleX" />
-            </a>
-
+            <a href="dashboard.html" class="logo"><img src="logo.png" alt="WalleX" /></a>
             <ul class="nav-links" id="navLinks">
                 <li><a href="dashboard.html" class="active"><i class="fas fa-home"></i> Home</a></li>
                 <li><a href="trading.html"><i class="fas fa-chart-line"></i> Trading</a></li>
                 <li><a href="staking.html"><i class="fas fa-coins"></i> Staking</a></li>
                 <li><a href="investment.html"><i class="fas fa-wallet"></i> Investment</a></li>
             </ul>
-
             <div class="nav-right">
                 <div class="user-avatar-wrap" id="avatarWrap">
-                    <div class="user-avatar" id="userAvatar">
-                        <span id="avatarInitials">U</span>
-                    </div>
+                    <div class="user-avatar" id="userAvatar"><span id="avatarInitials">U</span></div>
                     <div class="avatar-dropdown" id="avatarDropdown">
                         <a href="profile.html" class="dropdown-item"><i class="fas fa-user"></i> Profile</a>
                         <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a>
@@ -279,9 +272,7 @@
                         <button class="dropdown-item" id="logoutAvatar"><i class="fas fa-sign-out-alt"></i> Logout</button>
                     </div>
                 </div>
-                <button class="hamburger" id="hamburger" aria-label="Menu">
-                    <span></span><span></span><span></span>
-                </button>
+                <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
             </div>
         </div>
     </nav>
@@ -327,7 +318,7 @@
                     </div>
                 </div>
 
-                <!-- Stats Slider -->
+                <!-- Stats Slider (with Bonus) -->
                 <div class="stats-slider-wrap">
                     <div class="stats-slider-track" id="statsTrack">
                         <div class="stats-slide">
@@ -360,6 +351,14 @@
                                 <div class="value" id="totalWithdrawn">$0.00</div>
                             </div>
                         </div>
+                        <!-- Bonus -->
+                        <div class="stats-slide">
+                            <div class="stat-card glass">
+                                <div class="label">🎁 Trading Bonus</div>
+                                <div class="value" id="bonusDisplay">$0.00</div>
+                                <div class="change" style="font-size:0.7rem;color:var(--amber);">Use it to trade!</div>
+                            </div>
+                        </div>
                     </div>
                     <div class="slider-controls" id="sliderDots"></div>
                 </div>
@@ -389,12 +388,8 @@
                         </div>
                         <div class="coin-table-wrap">
                             <table class="coin-table">
-                                <thead>
-                                    <tr><th>Coin</th><th>Price</th><th>24h</th></tr>
-                                </thead>
-                                <tbody id="coinTableBody">
-                                    <tr><td colspan="3" style="text-align:center;color:var(--text-muted);">Loading coins…</td></tr>
-                                </tbody>
+                                <thead><tr><th>Coin</th><th>Price</th><th>24h</th></tr></thead>
+                                <tbody id="coinTableBody"><tr><td colspan="3" style="text-align:center;color:var(--text-muted);">Loading coins…</td></tr></tbody>
                             </table>
                         </div>
                     </div>
@@ -404,7 +399,7 @@
         </main>
     </div>
 
-    <!-- Bottom Nav (mobile only) -->
+    <!-- Bottom Nav -->
     <div class="bottom-nav">
         <a href="dashboard.html" class="active"><i class="fas fa-home"></i><span>Home</span></a>
         <a href="trading.html"><i class="fas fa-chart-line"></i><span>Trading</span></a>
@@ -412,655 +407,494 @@
         <a href="investment.html"><i class="fas fa-wallet"></i><span>Investment</span></a>
     </div>
 
-    <!-- ================================================================
-    JAVASCRIPT
-    ================================================================ -->
     <script>
         (function() {
-            'use strict';
+    'use strict';
 
-            // ============================================================
-            //  0. DYNAMIC SUPABASE LOADER
-            // ============================================================
+    // ============================================================
+    //  0. DYNAMIC SUPABASE LOADER
+    // ============================================================
 
-            const loadingEl = document.getElementById('authLoading');
-            const contentEl = document.getElementById('dashboardContentInner');
+    const loadingEl = document.getElementById('authLoading');
+    const contentEl = document.getElementById('dashboardContentInner');
 
-            function loadSupabase(callback, retries) {
-                retries = retries || 0;
+    function loadSupabase(callback, retries) {
+        retries = retries || 0;
+        if (typeof supabase !== 'undefined' || typeof window.supabase !== 'undefined') {
+            callback();
+            return;
+        }
+        var script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+        script.async = true;
+        script.onload = function() {
+            setTimeout(function() {
                 if (typeof supabase !== 'undefined' || typeof window.supabase !== 'undefined') {
                     callback();
-                    return;
+                } else if (retries < 3) {
+                    loadSupabase(callback, retries + 1);
+                } else {
+                    loadingEl.innerHTML =
+                        '<p style="color:#ef4444;">⚠️ Failed to load authentication service. Please refresh.</p>';
                 }
-                var script = document.createElement('script');
-                script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
-                script.async = true;
-                script.onload = function() {
-                    setTimeout(function() {
-                        if (typeof supabase !== 'undefined' || typeof window.supabase !== 'undefined') {
-                            callback();
-                        } else if (retries < 3) {
-                            loadSupabase(callback, retries + 1);
-                        } else {
-                            loadingEl.innerHTML =
-                                '<p style="color:#ef4444;">⚠️ Failed to load authentication service. Please refresh.</p>';
-                        }
-                    }, 300);
-                };
-                script.onerror = function() {
-                    if (retries < 3) {
-                        loadSupabase(callback, retries + 1);
-                    } else {
-                        loadingEl.innerHTML =
-                            '<p style="color:#ef4444;">⚠️ Failed to load authentication. Check your internet.</p>';
-                    }
-                };
-                document.head.appendChild(script);
+            }, 300);
+        };
+        script.onerror = function() {
+            if (retries < 3) {
+                loadSupabase(callback, retries + 1);
+            } else {
+                loadingEl.innerHTML =
+                    '<p style="color:#ef4444;">⚠️ Failed to load authentication. Check your internet.</p>';
             }
+        };
+        document.head.appendChild(script);
+    }
 
-            // ============================================================
-            //  1. SUPABASE CLIENT & AUTH
-            // ============================================================
+    // ============================================================
+    //  1. SUPABASE CLIENT & AUTH
+    // ============================================================
 
-            function initSupabaseAuth() {
-                const SUPABASE_URL = 'https://agscnbiwmotspzjbosmr.supabase.co';
-                const SUPABASE_ANON_KEY =
-                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnc2NuYml3bW90c3B6amJvc21yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyODQxNzksImV4cCI6MjA5OTg2MDE3OX0.tsG16bCY-KX5fSH2JoLI9DtO0n7MOt49UdKBnLvD4e8';
+    function initSupabaseAuth() {
+        const SUPABASE_URL = 'https://agscnbiwmotspzjbosmr.supabase.co';
+        const SUPABASE_ANON_KEY =
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnc2NuYml3bW90c3B6amJvc21yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyODQxNzksImV4cCI6MjA5OTg2MDE3OX0.tsG16bCY-KX5fSH2JoLI9DtO0n7MOt49UdKBnLvD4e8';
 
-                const sb = typeof supabase !== 'undefined' ? supabase : window.supabase;
-                if (!sb) {
-                    loadingEl.innerHTML = '<p style="color:#ef4444;">⚠️ Supabase not available.</p>';
-                    return;
+        const sb = typeof supabase !== 'undefined' ? supabase : window.supabase;
+        if (!sb) {
+            loadingEl.innerHTML = '<p style="color:#ef4444;">⚠️ Supabase not available.</p>';
+            return;
+        }
+
+        const supabaseClient = sb.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const auth = {
+            async signOut() {
+                await supabaseClient.auth.signOut();
+                sessionStorage.clear();
+                window.location.href = 'login.html';
+            },
+            storeSession(user) { sessionStorage.setItem('user', JSON.stringify(user)); },
+            getSession() { const stored = sessionStorage.getItem('user'); return stored ? JSON.parse(stored) : null; },
+            async requireAuth() {
+                const session = this.getSession();
+                if (session) return session;
+                const { data } = await supabaseClient.auth.getSession();
+                if (!data.session) {
+                    window.location.href = 'login.html';
+                    return null;
                 }
+                this.storeSession(data.session.user);
+                return data.session.user;
+            },
+            get supabase() { return supabaseClient; }
+        };
 
-                const supabaseClient = sb.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        window.supabaseClient = auth;
+        console.log('✅ Supabase auth loaded');
+        initDashboard();
+    }
 
-                const auth = {
-                    async signUp(email, password, name) {
-                        try {
-                            const { data, error } = await supabaseClient.auth.signUp({
-                                email,
-                                password,
-                                options: {
-                                    data: { name },
-                                    emailRedirectTo: window.location.origin + '/login.html',
-                                },
-                            });
-                            if (error) {
-                                console.error('Signup error:', error.message);
-                                return { success: false, message: 'Unable to create account.' };
-                            }
-                            if (data.user) {
-                                await supabaseClient
-                                    .from('profiles')
-                                    .insert([{ id: data.user.id, email, name }]);
-                            }
-                            return { success: true, user: data.user };
-                        } catch (err) {
-                            console.error('Signup exception:', err);
-                            return { success: false, message: 'Unable to create account.' };
-                        }
-                    },
+    // ============================================================
+    //  2. DASHBOARD LOGIC (REAL DATA)
+    // ============================================================
 
-                    async signIn(email, password) {
-                        try {
-                            const { data, error } = await supabaseClient.auth.signInWithPassword({
-                                email,
-                                password,
-                            });
-                            if (error) {
-                                console.error('Login error:', error.message);
-                                return { success: false, message: 'Incorrect details.' };
-                            }
-                            if (data.user) {
-                                await supabaseClient
-                                    .from('profiles')
-                                    .update({ last_login_at: new Date().toISOString() })
-                                    .eq('id', data.user.id);
-                            }
-                            return { success: true, user: data.user, session: data.session };
-                        } catch (err) {
-                            console.error('Login exception:', err);
-                            return { success: false, message: 'Incorrect details.' };
-                        }
-                    },
+    async function initDashboard() {
+        loadingEl.style.display = 'none';
+        contentEl.style.display = 'block';
 
-                    async signOut() {
-                        const { error } = await supabaseClient.auth.signOut();
-                        if (error) console.error('Signout error:', error);
-                        sessionStorage.clear();
-                        window.location.href = 'login.html';
-                    },
+        const auth = window.supabaseClient;
+        const user = await auth.requireAuth();
+        if (!user) return;
 
-                    async getCurrentUser() {
-                        const { data, error } = await supabaseClient.auth.getUser();
-                        if (error || !data.user) return null;
-                        return data.user;
-                    },
+        const name = user.user_metadata?.name || user.email || 'User';
+        const userNameEl = document.getElementById('userName');
+        if (userNameEl) userNameEl.textContent = name;
 
-                    async isAuthenticated() {
-                        const { data } = await supabaseClient.auth.getSession();
-                        return !!data.session;
-                    },
+        const avatarEl = document.getElementById('avatarInitials');
+        if (avatarEl) {
+            const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            avatarEl.textContent = initials || 'U';
+        }
 
-                    storeSession(user) {
-                        sessionStorage.setItem('user', JSON.stringify(user));
-                    },
+        // ---- 1. FETCH PROFILE DATA ----
+        let profileData = null;
+        try {
+            const { data: profile, error: profileError } = await auth.supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single();
 
-                    getSession() {
-                        const stored = sessionStorage.getItem('user');
-                        return stored ? JSON.parse(stored) : null;
-                    },
-
-                    clearSession() {
-                        sessionStorage.clear();
-                    },
-
-                    async requireAuth() {
-                        const session = this.getSession();
-                        if (session) return session;
-                        const { data } = await supabaseClient.auth.getSession();
-                        if (!data.session) {
-                            window.location.href = 'login.html';
-                            return null;
-                        }
-                        this.storeSession(data.session.user);
-                        return data.session.user;
-                    },
-
-                    async sendOtp(email, purpose) {
-                        try {
-                            const code = String(Math.floor(100000 + Math.random() * 900000));
-                            const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
-                            await supabaseClient
-                                .from('otps')
-                                .insert([{ email, code, expires_at: expiresAt }]);
-                            console.log('📧 OTP for ' + email + ': ' + code);
-                            return { success: true, message: 'Verification code sent.' };
-                        } catch (err) {
-                            console.error('OTP send error:', err);
-                            return { success: false, message: 'Unable to send verification code.' };
-                        }
-                    },
-
-                    async verifyOtp(email, code) {
-                        try {
-                            const { data, error } = await supabaseClient
-                                .from('otps')
-                                .select('*')
-                                .eq('email', email)
-                                .eq('verified', false)
-                                .order('created_at', { ascending: false })
-                                .limit(1);
-                            if (error || !data || data.length === 0) {
-                                return { success: false, message: 'Invalid code.' };
-                            }
-                            const otp = data[0];
-                            if (new Date(otp.expires_at) < new Date()) {
-                                return { success: false, message: 'Code expired. Request a new one.' };
-                            }
-                            if (otp.attempts >= 5) {
-                                return { success: false, message: 'Too many attempts. Request a new code.' };
-                            }
-                            await supabaseClient
-                                .from('otps')
-                                .update({ attempts: otp.attempts + 1 })
-                                .eq('id', otp.id);
-                            if (otp.code !== code) {
-                                return { success: false, message: 'Invalid code.' };
-                            }
-                            await supabaseClient
-                                .from('otps')
-                                .update({ verified: true })
-                                .eq('id', otp.id);
-                            return { success: true };
-                        } catch (err) {
-                            console.error('OTP verify error:', err);
-                            return { success: false, message: 'Invalid code.' };
-                        }
-                    },
-
-                    async resendOtp(email) {
-                        await supabaseClient
-                            .from('otps')
-                            .update({ verified: true })
-                            .eq('email', email)
-                            .eq('verified', false);
-                        return await this.sendOtp(email);
-                    },
-
-                    get supabase() {
-                        return supabaseClient;
-                    }
-                };
-
-                window.supabaseClient = auth;
-                console.log('✅ Supabase auth module loaded');
-                initDashboard();
-            }
-
-            // ============================================================
-            //  2. DASHBOARD LOGIC (REAL DATA)
-            // ============================================================
-
-            async function initDashboard() {
-                loadingEl.style.display = 'none';
-                contentEl.style.display = 'block';
-
-                const auth = window.supabaseClient;
-                const user = await auth.requireAuth();
-                if (!user) return;
-
-                const name = user.user_metadata?.name || user.email || 'User';
-                const userNameEl = document.getElementById('userName');
-                if (userNameEl) userNameEl.textContent = name;
-
-                const avatarEl = document.getElementById('avatarInitials');
-                if (avatarEl) {
-                    const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-                    avatarEl.textContent = initials || 'U';
-                }
-
-                // ---- 1. FETCH PROFILE DATA ----
-                let profileData = null;
-                try {
-                    const { data: profile, error: profileError } = await auth.supabase
+            if (profileError && profileError.code === 'PGRST116') {
+                const { error: insertError } = await auth.supabase
+                    .from('profiles')
+                    .insert([{
+                        id: user.id,
+                        email: user.email,
+                        name: name,
+                        balance: 0,
+                        bonus_balance: 0,
+                        total_invested: 0,
+                        total_profit: 0,
+                        total_rewards: 0,
+                        total_withdrawn: 0
+                    }]);
+                if (insertError) {
+                    console.error('Failed to create profile:', insertError);
+                    profileData = { balance: 0, bonus_balance: 0, total_invested: 0, total_profit: 0,
+                        total_rewards: 0, total_withdrawn: 0 };
+                } else {
+                    const { data: newProfile } = await auth.supabase
                         .from('profiles')
                         .select('*')
                         .eq('id', user.id)
                         .single();
-
-                    if (profileError && profileError.code === 'PGRST116') {
-                        // No profile yet – create one
-                        const { error: insertError } = await auth.supabase
-                            .from('profiles')
-                            .insert([{
-                                id: user.id,
-                                email: user.email,
-                                name: name,
-                                balance: 0,
-                                total_invested: 0,
-                                total_profit: 0,
-                                total_rewards: 0,
-                                total_withdrawn: 0
-                            }]);
-                        if (insertError) {
-                            console.error('Failed to create profile:', insertError);
-                            profileData = { balance: 0, total_invested: 0, total_profit: 0, total_rewards: 0,
-                                total_withdrawn: 0 };
-                        } else {
-                            const { data: newProfile } = await auth.supabase
-                                .from('profiles')
-                                .select('*')
-                                .eq('id', user.id)
-                                .single();
-                            profileData = newProfile || { balance: 0, total_invested: 0, total_profit: 0,
-                                total_rewards: 0, total_withdrawn: 0 };
-                        }
-                    } else if (profileError) {
-                        console.error('Profile fetch error:', profileError);
-                        profileData = { balance: 0, total_invested: 0, total_profit: 0, total_rewards: 0,
-                            total_withdrawn: 0 };
-                    } else {
-                        profileData = profile;
-                    }
-                } catch (err) {
-                    console.error('Unexpected profile error:', err);
-                    profileData = { balance: 0, total_invested: 0, total_profit: 0, total_rewards: 0,
-                        total_withdrawn: 0 };
+                    profileData = newProfile || { balance: 0, bonus_balance: 0, total_invested: 0,
+                        total_profit: 0, total_rewards: 0, total_withdrawn: 0 };
                 }
-
-                // If profile is missing fields, set defaults
-                const balance = profileData?.balance || 0;
-                const invested = profileData?.total_invested || 0;
-                const profit = profileData?.total_profit || 0;
-                const rewards = profileData?.total_rewards || 0;
-                const withdrawn = profileData?.total_withdrawn || 0;
-
-                // ---- 2. UPDATE STATS ----
-                document.getElementById('balanceDisplay').textContent = '$' + balance.toFixed(2);
-                document.getElementById('totalInvestment').textContent = '$' + invested.toFixed(2);
-                document.getElementById('totalProfit').textContent = '$' + profit.toFixed(2);
-                document.getElementById('totalRewards').textContent = '$' + rewards.toFixed(2);
-                document.getElementById('totalWithdrawn').textContent = '$' + withdrawn.toFixed(2);
-
-                // ---- 3. CHART: FETCH PORTFOLIO HISTORY ----
-                const chartInfo = document.getElementById('chartInfo');
-                let chartData = null;
-
-                try {
-                    // First try to fetch from portfolio_history table
-                    const { data: history, error: historyError } = await auth.supabase
-                        .from('portfolio_history')
-                        .select('date, value')
-                        .eq('user_id', user.id)
-                        .order('date', { ascending: true });
-
-                    if (!historyError && history && history.length > 0) {
-                        chartData = history.map(h => ({ date: h.date, value: h.value }));
-                        chartInfo.textContent = `Based on ${history.length} daily snapshots.`;
-                    } else {
-                        // No history – generate from transactions
-                        chartInfo.textContent = 'Generating from transaction history…';
-                        const { data: txs, error: txError } = await auth.supabase
-                            .from('transactions')
-                            .select('amount, type, created_at')
-                            .eq('user_id', user.id)
-                            .order('created_at', { ascending: true });
-
-                        if (!txError && txs && txs.length > 0) {
-                            // Compute cumulative balance over time
-                            let cumulative = 0;
-                            const historyMap = {};
-                            txs.forEach(tx => {
-                                const date = tx.created_at.split('T')[0]; // YYYY-MM-DD
-                                let sign = 0;
-                                switch (tx.type) {
-                                    case 'deposit':
-                                    case 'investment_profit':
-                                    case 'staking_reward':
-                                        sign = 1;
-                                        break;
-                                    case 'withdraw':
-                                    case 'stake':
-                                    case 'investment':
-                                        sign = -1;
-                                        break;
-                                    // ignore other types
-                                }
-                                if (sign !== 0) {
-                                    cumulative += sign * tx.amount;
-                                    historyMap[date] = cumulative;
-                                }
-                            });
-                            // Convert to array of {date, value}
-                            const keys = Object.keys(historyMap).sort();
-                            chartData = keys.map(date => ({ date, value: historyMap[date] }));
-                            chartInfo.textContent = `Generated from ${txs.length} transactions.`;
-                        } else {
-                            // No transactions at all – show zero
-                            chartData = null;
-                            chartInfo.textContent = 'No portfolio history available yet.';
-                        }
-                    }
-                } catch (e) {
-                    console.warn('Chart data error:', e);
-                    chartInfo.textContent = 'Could not load chart data.';
-                }
-
-                // ---- 4. RENDER CHART ----
-                const ctx = document.getElementById('marketChart').getContext('2d');
-                let chart;
-
-                if (chartData && chartData.length > 0) {
-                    const labels = chartData.map(d => d.date);
-                    const values = chartData.map(d => d.value);
-                    chart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: 'Portfolio Value (USD)',
-                                data: values,
-                                borderColor: '#7C3AED',
-                                backgroundColor: 'rgba(124,58,237,0.06)',
-                                tension: 0.4,
-                                fill: true,
-                                pointRadius: 1.5,
-                                pointBackgroundColor: '#7C3AED',
-                                borderWidth: 2.5,
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: { display: false },
-                                tooltip: {
-                                    mode: 'index',
-                                    intersect: false,
-                                    callbacks: {
-                                        label: function(context) {
-                                            return '$' + context.parsed.y.toLocaleString();
-                                        }
-                                    }
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    grid: { display: false },
-                                    ticks: { color: 'var(--text-muted)', maxTicksLimit: 8 }
-                                },
-                                y: {
-                                    grid: { color: 'var(--border-subtle)', drawBorder: false },
-                                    ticks: {
-                                        color: 'var(--text-muted)',
-                                        callback: function(v) { return '$' + v.toLocaleString(); }
-                                    }
-                                }
-                            },
-                            interaction: {
-                                intersect: false,
-                                mode: 'index'
-                            }
-                        }
-                    });
-                } else {
-                    // No data – show empty chart with a message
-                    chart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: [],
-                            datasets: [{
-                                label: 'Portfolio Value',
-                                data: [],
-                                borderColor: '#7C3AED',
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: { display: false },
-                                tooltip: { enabled: false }
-                            },
-                            scales: {
-                                x: { display: false },
-                                y: { display: false }
-                            }
-                        }
-                    });
-                    chartInfo.textContent = 'No portfolio history yet. Start depositing or investing!';
-                }
-
-                // ---- 5. BUTTONS ----
-                document.getElementById('depositBtn').addEventListener('click', function() {
-                    window.location.href = 'deposit.html';
-                });
-                document.getElementById('withdrawBtn').addEventListener('click', function() {
-                    window.location.href = 'withdraw.html';
-                });
-
-                // ---- 6. THEME ----
-                const themeIcon = document.getElementById('themeIconSidebar');
-                const themeLabel = document.getElementById('themeLabelSidebar');
-                const savedTheme = localStorage.getItem('theme') || 'light';
-                document.documentElement.setAttribute('data-theme', savedTheme);
-                updateThemeUI(savedTheme);
-
-                function updateThemeUI(theme) {
-                    if (!themeIcon || !themeLabel) return;
-                    if (theme === 'dark') {
-                        themeIcon.className = 'fas fa-sun';
-                        themeLabel.textContent = 'Light Mode';
-                    } else {
-                        themeIcon.className = 'fas fa-moon';
-                        themeLabel.textContent = 'Dark Mode';
-                    }
-                }
-
-                const themeToggleSidebar = document.getElementById('themeToggleSidebar');
-                themeToggleSidebar.addEventListener('click', function() {
-                    const current = document.documentElement.getAttribute('data-theme');
-                    const next = current === 'dark' ? 'light' : 'dark';
-                    document.documentElement.setAttribute('data-theme', next);
-                    localStorage.setItem('theme', next);
-                    updateThemeUI(next);
-                });
-
-                // ---- 7. LOGOUT ----
-                function logout() { auth.signOut(); }
-                document.getElementById('logoutAvatar').addEventListener('click', logout);
-                document.getElementById('logoutSidebar').addEventListener('click', logout);
-
-                // ---- 8. AVATAR DROPDOWN ----
-                const avatarWrap = document.getElementById('avatarWrap');
-                const avatarDropdown = document.getElementById('avatarDropdown');
-                avatarWrap.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    avatarDropdown.classList.toggle('open');
-                });
-                document.addEventListener('click', function() {
-                    avatarDropdown.classList.remove('open');
-                });
-
-                // ---- 9. STATS SLIDER ----
-                const track = document.getElementById('statsTrack');
-                const dotsContainer = document.getElementById('sliderDots');
-                const slides = track.querySelectorAll('.stats-slide');
-                let currentIndex = 0;
-                const totalSlides = slides.length;
-                let autoSlideInterval;
-
-                for (let i = 0; i < totalSlides; i++) {
-                    const dot = document.createElement('button');
-                    dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
-                    dot.dataset.index = i;
-                    dot.addEventListener('click', function() {
-                        goToSlide(parseInt(this.dataset.index));
-                    });
-                    dotsContainer.appendChild(dot);
-                }
-
-                function goToSlide(index) {
-                    currentIndex = index;
-                    const slideWidth = slides[0].offsetWidth + 16;
-                    track.style.transform = 'translateX(-' + (currentIndex * slideWidth) + 'px)';
-                    document.querySelectorAll('.slider-dot').forEach(function(dot, i) {
-                        dot.classList.toggle('active', i === currentIndex);
-                    });
-                }
-
-                function nextSlide() {
-                    const next = (currentIndex + 1) % totalSlides;
-                    goToSlide(next);
-                }
-
-                function startAutoSlide() {
-                    autoSlideInterval = setInterval(nextSlide, 5000);
-                }
-
-                function stopAutoSlide() {
-                    clearInterval(autoSlideInterval);
-                }
-
-                const sliderWrap = document.querySelector('.stats-slider-wrap');
-                sliderWrap.addEventListener('mouseenter', stopAutoSlide);
-                sliderWrap.addEventListener('mouseleave', startAutoSlide);
-
-                let resizeTimeout;
-                window.addEventListener('resize', function() {
-                    clearTimeout(resizeTimeout);
-                    resizeTimeout = setTimeout(function() {
-                        goToSlide(currentIndex);
-                    }, 200);
-                });
-
-                startAutoSlide();
-
-                // ---- 10. COIN FEED ----
-                const COINGECKO_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false&price_change_percentage=24h';
-
-                async function fetchCoins() {
-                    try {
-                        const response = await fetch(COINGECKO_URL);
-                        if (!response.ok) throw new Error('Network error');
-                        const data = await response.json();
-                        renderCoinTable(data);
-                    } catch (err) {
-                        console.error('Coin fetch error:', err);
-                        const tbody = document.getElementById('coinTableBody');
-                        if (tbody) {
-                            tbody.innerHTML =
-                                '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);">Unable to load coin data. Please refresh.</td></tr>';
-                        }
-                    }
-                }
-
-                function renderCoinTable(coins) {
-                    const tbody = document.getElementById('coinTableBody');
-                    if (!tbody) return;
-                    if (!coins || coins.length === 0) {
-                        tbody.innerHTML =
-                            '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);">No coin data available.</td></tr>';
-                        return;
-                    }
-                    tbody.innerHTML = coins.map(function(c) {
-                        const change = c.price_change_percentage_24h || 0;
-                        const cls = change >= 0 ? 'price-up' : 'price-down';
-                        const sign = change >= 0 ? '+' : '';
-                        const name = c.name || 'Unknown';
-                        const symbol = c.symbol ? c.symbol.toUpperCase() : '';
-                        const imageUrl = c.image || '';
-                        return '<tr>' +
-                            '<td><div class="coin-name"><span class="coin-icon">' +
-                            (imageUrl ? '<img src="' + imageUrl + '" alt="' + symbol + '" />' : symbol.slice(0,
-                                2)) +
-                            '</span><span>' + name + ' <span class="coin-symbol">' + symbol +
-                            '</span></span></div></td>' +
-                            '<td>$' + (c.current_price ? c.current_price.toFixed(2) : '0.00') + '</td>' +
-                            '<td class="' + cls + '">' + sign + (change ? change.toFixed(2) : '0.00') + '%</td>' +
-                            '</tr>';
-                    }).join('');
-                }
-
-                fetchCoins();
-                setInterval(fetchCoins, 60000);
-
-                // ---- 11. GREETING ----
-                const hour = new Date().getHours();
-                let greeting = 'Good morning';
-                if (hour >= 12 && hour < 17) greeting = 'Good afternoon';
-                else if (hour >= 17) greeting = 'Good evening';
-                const greetingEl = document.getElementById('greetingText');
-                if (greetingEl) {
-                    greetingEl.textContent = greeting + ', ' + name + ' 👋';
-                }
-
-                // ---- 12. SIDEBAR TOGGLE (mobile) ----
-                const hamburger = document.getElementById('hamburger');
-                const sidebar = document.getElementById('sidebar');
-                const overlay = document.getElementById('sidebarOverlay');
-                if (hamburger) {
-                    hamburger.addEventListener('click', function() {
-                        sidebar.classList.toggle('open');
-                        overlay.classList.toggle('open');
-                    });
-                }
-                overlay.addEventListener('click', function() {
-                    sidebar.classList.remove('open');
-                    overlay.classList.remove('open');
-                });
-
-                console.log('✅ WalleX dashboard initialized with real data');
+            } else if (profileError) {
+                console.error('Profile fetch error:', profileError);
+                profileData = { balance: 0, bonus_balance: 0, total_invested: 0, total_profit: 0,
+                    total_rewards: 0, total_withdrawn: 0 };
+            } else {
+                profileData = profile;
             }
+        } catch (err) {
+            console.error('Unexpected profile error:', err);
+            profileData = { balance: 0, bonus_balance: 0, total_invested: 0, total_profit: 0, total_rewards: 0,
+                total_withdrawn: 0 };
+        }
 
-            // ============================================================
-            //  3. START
-            // ============================================================
-            loadSupabase(initSupabaseAuth, 0);
+        const balance = profileData?.balance || 0;
+        const bonus = profileData?.bonus_balance || 0;
+        const invested = profileData?.total_invested || 0;
+        const profit = profileData?.total_profit || 0;
+        const rewards = profileData?.total_rewards || 0;
+        const withdrawn = profileData?.total_withdrawn || 0;
 
-        })();
+        // ---- 2. UPDATE STATS ----
+        document.getElementById('balanceDisplay').textContent = '$' + balance.toFixed(2);
+        document.getElementById('totalInvestment').textContent = '$' + invested.toFixed(2);
+        document.getElementById('totalProfit').textContent = '$' + profit.toFixed(2);
+        document.getElementById('totalRewards').textContent = '$' + rewards.toFixed(2);
+        document.getElementById('totalWithdrawn').textContent = '$' + withdrawn.toFixed(2);
+        document.getElementById('bonusDisplay').textContent = '$' + bonus.toFixed(2);
+
+        // ---- 3. CHART ----
+        const chartInfo = document.getElementById('chartInfo');
+        let chartData = null;
+
+        try {
+            const { data: history, error: historyError } = await auth.supabase
+                .from('portfolio_history')
+                .select('date, value')
+                .eq('user_id', user.id)
+                .order('date', { ascending: true });
+
+            if (!historyError && history && history.length > 0) {
+                chartData = history.map(h => ({ date: h.date, value: h.value }));
+                chartInfo.textContent = 'Based on ' + history.length + ' daily snapshots.';
+            } else {
+                chartInfo.textContent = 'Generating from transaction history…';
+                const { data: txs, error: txError } = await auth.supabase
+                    .from('transactions')
+                    .select('amount, type, created_at')
+                    .eq('user_id', user.id)
+                    .order('created_at', { ascending: true });
+
+                if (!txError && txs && txs.length > 0) {
+                    let cumulative = 0;
+                    const historyMap = {};
+                    txs.forEach(tx => {
+                        const date = tx.created_at.split('T')[0];
+                        let sign = 0;
+                        switch (tx.type) {
+                            case 'deposit':
+                            case 'investment_profit':
+                            case 'staking_reward':
+                                sign = 1;
+                                break;
+                            case 'withdraw':
+                            case 'stake':
+                            case 'investment':
+                                sign = -1;
+                                break;
+                        }
+                        if (sign !== 0) {
+                            cumulative += sign * tx.amount;
+                            historyMap[date] = cumulative;
+                        }
+                    });
+                    const keys = Object.keys(historyMap).sort();
+                    if (keys.length > 0) {
+                        chartData = keys.map(date => ({ date, value: historyMap[date] }));
+                        chartInfo.textContent = 'Generated from ' + txs.length + ' transactions.';
+                    } else {
+                        chartData = null;
+                        chartInfo.textContent = 'No portfolio history yet.';
+                    }
+                } else {
+                    chartData = null;
+                    chartInfo.textContent = 'No transactions yet. Start depositing!';
+                }
+            }
+        } catch (e) {
+            console.warn('Chart data error:', e);
+            chartInfo.textContent = 'Could not load chart data.';
+        }
+
+        const ctx = document.getElementById('marketChart').getContext('2d');
+
+        if (chartData && chartData.length > 0) {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.map(d => d.date),
+                    datasets: [{
+                        label: 'Portfolio Value (USD)',
+                        data: chartData.map(d => d.value),
+                        borderColor: '#7C3AED',
+                        backgroundColor: 'rgba(124,58,237,0.06)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 1.5,
+                        pointBackgroundColor: '#7C3AED',
+                        borderWidth: 2.5,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return '$' + context.parsed.y.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: 'var(--text-muted)', maxTicksLimit: 8 }
+                        },
+                        y: {
+                            grid: { color: 'var(--border-subtle)', drawBorder: false },
+                            ticks: {
+                                color: 'var(--text-muted)',
+                                callback: function(v) { return '$' + v.toLocaleString(); }
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        } else {
+            new Chart(ctx, {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Portfolio Value', data: [], borderColor: '#7C3AED' }] },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                    scales: { x: { display: false }, y: { display: false } }
+                }
+            });
+            chartInfo.textContent = 'No portfolio history yet.';
+        }
+
+        // ---- 4. BUTTONS ----
+        document.getElementById('depositBtn').addEventListener('click', function() {
+            window.location.href = 'deposit.html';
+        });
+        document.getElementById('withdrawBtn').addEventListener('click', function() {
+            window.location.href = 'withdraw.html';
+        });
+
+        // ---- 5. THEME ----
+        const themeIcon = document.getElementById('themeIconSidebar');
+        const themeLabel = document.getElementById('themeLabelSidebar');
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeUI(savedTheme);
+
+        function updateThemeUI(theme) {
+            if (!themeIcon || !themeLabel) return;
+            if (theme === 'dark') {
+                themeIcon.className = 'fas fa-sun';
+                themeLabel.textContent = 'Light Mode';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+                themeLabel.textContent = 'Dark Mode';
+            }
+        }
+
+        document.getElementById('themeToggleSidebar').addEventListener('click', function() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            updateThemeUI(next);
+        });
+
+        // ---- 6. LOGOUT ----
+        function logout() { auth.signOut(); }
+        document.getElementById('logoutAvatar').addEventListener('click', logout);
+        document.getElementById('logoutSidebar').addEventListener('click', logout);
+
+        // ---- 7. AVATAR DROPDOWN ----
+        const avatarWrap = document.getElementById('avatarWrap');
+        const avatarDropdown = document.getElementById('avatarDropdown');
+        avatarWrap.addEventListener('click', function(e) {
+            e.stopPropagation();
+            avatarDropdown.classList.toggle('open');
+        });
+        document.addEventListener('click', function() {
+            avatarDropdown.classList.remove('open');
+        });
+
+        // ---- 8. STATS SLIDER ----
+        const track = document.getElementById('statsTrack');
+        const dotsContainer = document.getElementById('sliderDots');
+        const slides = track.querySelectorAll('.stats-slide');
+        let currentIndex = 0;
+        const totalSlides = slides.length;
+        let autoSlideInterval;
+
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('button');
+            dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
+            dot.dataset.index = i;
+            dot.addEventListener('click', function() {
+                goToSlide(parseInt(this.dataset.index));
+            });
+            dotsContainer.appendChild(dot);
+        }
+
+        function goToSlide(index) {
+            currentIndex = index;
+            const slideWidth = slides[0].offsetWidth + 16;
+            track.style.transform = 'translateX(-' + (currentIndex * slideWidth) + 'px)';
+            document.querySelectorAll('.slider-dot').forEach(function(dot, i) {
+                dot.classList.toggle('active', i === currentIndex);
+            });
+        }
+
+        function nextSlide() {
+            const next = (currentIndex + 1) % totalSlides;
+            goToSlide(next);
+        }
+
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(nextSlide, 5000);
+        }
+
+        function stopAutoSlide() {
+            clearInterval(autoSlideInterval);
+        }
+
+        const sliderWrap = document.querySelector('.stats-slider-wrap');
+        sliderWrap.addEventListener('mouseenter', stopAutoSlide);
+        sliderWrap.addEventListener('mouseleave', startAutoSlide);
+
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function() {
+                goToSlide(currentIndex);
+            }, 200);
+        });
+
+        startAutoSlide();
+
+        // ---- 9. COIN FEED ----
+        const COINGECKO_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false&price_change_percentage=24h';
+
+        async function fetchCoins() {
+            try {
+                const response = await fetch(COINGECKO_URL);
+                if (!response.ok) throw new Error('Network error');
+                const data = await response.json();
+                renderCoinTable(data);
+            } catch (err) {
+                console.error('Coin fetch error:', err);
+                const tbody = document.getElementById('coinTableBody');
+                if (tbody) {
+                    tbody.innerHTML =
+                        '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);">Unable to load coin data. Please refresh.</td></tr>';
+                }
+            }
+        }
+
+        function renderCoinTable(coins) {
+            const tbody = document.getElementById('coinTableBody');
+            if (!tbody) return;
+            if (!coins || coins.length === 0) {
+                tbody.innerHTML =
+                    '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);">No coin data available.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = coins.map(function(c) {
+                const change = c.price_change_percentage_24h || 0;
+                const cls = change >= 0 ? 'price-up' : 'price-down';
+                const sign = change >= 0 ? '+' : '';
+                const name = c.name || 'Unknown';
+                const symbol = c.symbol ? c.symbol.toUpperCase() : '';
+                const imageUrl = c.image || '';
+                return '<tr>' +
+                    '<td><div class="coin-name"><span class="coin-icon">' +
+                    (imageUrl ? '<img src="' + imageUrl + '" alt="' + symbol + '" />' : symbol.slice(0, 2)) +
+                    '</span><span>' + name + ' <span class="coin-symbol">' + symbol +
+                    '</span></span></div></td>' +
+                    '<td>$' + (c.current_price ? c.current_price.toFixed(2) : '0.00') + '</td>' +
+                    '<td class="' + cls + '">' + sign + (change ? change.toFixed(2) : '0.00') + '%</td>' +
+                    '</tr>';
+            }).join('');
+        }
+
+        fetchCoins();
+        setInterval(fetchCoins, 60000);
+
+        // ---- 10. GREETING ----
+        const hour = new Date().getHours();
+        let greeting = 'Good morning';
+        if (hour >= 12 && hour < 17) greeting = 'Good afternoon';
+        else if (hour >= 17) greeting = 'Good evening';
+        const greetingEl = document.getElementById('greetingText');
+        if (greetingEl) {
+            greetingEl.textContent = greeting + ', ' + name + ' 👋';
+        }
+
+        // ---- 11. SIDEBAR TOGGLE ----
+        const hamburger = document.getElementById('hamburger');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        if (hamburger) {
+            hamburger.addEventListener('click', function() {
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('open');
+            });
+        }
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+        });
+
+        console.log('✅ WalleX dashboard initialized with bonus balance');
+    }
+
+    // ============================================================
+    //  3. START
+    // ============================================================
+    loadSupabase(initSupabaseAuth, 0);
+})();
     </script>
 
 </body>

@@ -125,9 +125,7 @@
             padding:12px 0;
             background: var(--bg-glass);
             backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
             border-bottom: 1px solid var(--border-subtle);
-            transition: var(--transition);
         }
         .navbar .container { display:flex; justify-content:space-between; align-items:center; }
         .nav-links {
@@ -179,7 +177,6 @@
             border:none; background:none; width:100%; text-align:left;
         }
         .avatar-dropdown .dropdown-item:hover { background:rgba(124,58,237,0.06); color:var(--purple); }
-        .avatar-dropdown .dropdown-item i { width:18px; text-align:center; }
         .avatar-dropdown .dropdown-divider { height:1px; background:var(--border-subtle); margin:4px 12px; }
 
         .hamburger {
@@ -225,16 +222,12 @@
         }
 
         .dashboard-main { flex:1; padding:24px 16px 100px; overflow-y:auto; }
-        /* Mobile padding fix */
-        @media (max-width:480px) {
-            .dashboard-main { padding:16px 12px 90px; }
-        }
+        @media (max-width:480px) { .dashboard-main { padding:16px 12px 90px; } }
 
         .page-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:28px; }
         .page-header h1 { font-size:1.6rem; font-weight:700; }
         .page-header .sub { color:var(--text-secondary); font-size:0.9rem; }
 
-        /* Withdraw */
         .withdraw-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -269,26 +262,38 @@
         .withdraw-form-card .form-group select:focus { border-color: var(--purple); }
         .withdraw-form-card .form-group input:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        .withdraw-form-card .balance-display {
+        /* Balance displays (updated) */
+        .balance-display {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 12px 16px;
             background: var(--bg-glass);
             border-radius: 10px;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             border: 1px solid var(--border-subtle);
         }
-        .withdraw-form-card .balance-display .label {
+        .balance-display .label {
             color: var(--text-secondary);
             font-size: 0.9rem;
         }
-        .withdraw-form-card .balance-display .value {
+        .balance-display .value {
             font-weight: 700;
             font-size: 1.2rem;
             color: var(--purple);
         }
-        .withdraw-form-card .daily-limit {
+        .balance-display.bonus {
+            background: rgba(245,158,11,0.08);
+            border-color: var(--amber);
+        }
+        .balance-display.bonus .value {
+            color: var(--amber);
+        }
+        .balance-display.withdrawable {
+            border-color: var(--border-subtle);
+        }
+
+        .daily-limit {
             font-size: 0.8rem;
             color: var(--text-secondary);
             margin-bottom: 16px;
@@ -297,7 +302,7 @@
             border-radius: 8px;
             border: 1px solid var(--border-subtle);
         }
-        .withdraw-form-card .daily-limit .remaining {
+        .daily-limit .remaining {
             font-weight: 600;
             color: var(--purple);
         }
@@ -586,10 +591,21 @@
 
                     <!-- Form -->
                     <div class="withdraw-form-card glass">
+
+                        <!-- Balance Displays (updated) -->
                         <div class="balance-display">
                             <span class="label">Available Balance</span>
                             <span class="value" id="availableBalance">$0.00</span>
                         </div>
+                        <div class="balance-display bonus">
+                            <span class="label">🎁 Trading Bonus (non‑withdrawable)</span>
+                            <span class="value" id="bonusBalance">$0.00</span>
+                        </div>
+                        <div class="balance-display withdrawable">
+                            <span class="label">💵 Withdrawable</span>
+                            <span class="value" id="withdrawableBalance">$0.00</span>
+                        </div>
+
                         <div class="daily-limit">
                             <i class="fas fa-clock"></i> Daily Limit Remaining: <span class="remaining" id="dailyRemaining">$100.00</span>
                         </div>
@@ -705,7 +721,7 @@
     <div class="toast" id="toast"></div>
 
     <!-- ================================================================
-    JAVASCRIPT (Withdrawal Logic)
+    JAVASCRIPT (Withdraw with Bonus)
     ================================================================ -->
     <script>
         (function() {
@@ -719,6 +735,8 @@
             const loadingEl = document.getElementById('authLoading');
             const contentEl = document.getElementById('withdrawContentInner');
             const availableBalanceEl = document.getElementById('availableBalance');
+            const bonusBalanceEl = document.getElementById('bonusBalance');
+            const withdrawableBalanceEl = document.getElementById('withdrawableBalance');
             const dailyRemainingEl = document.getElementById('dailyRemaining');
             const withdrawAmount = document.getElementById('withdrawAmount');
             const withdrawBtn = document.getElementById('withdrawBtn');
@@ -741,6 +759,7 @@
 
             let currentUser = null;
             let userBalance = 0;
+            let userBonus = 0;
             let withdrawHistory = [];
             let feePercent = 0;
             let feeFixed = 0;
@@ -853,17 +872,18 @@
             }
 
             // ===== Data Functions =====
+            // Updated to return both balance and bonus
             async function fetchBalance(userId) {
                 const { data, error } = await window.supabaseClient.supabase
                     .from('profiles')
-                    .select('balance')
+                    .select('balance, bonus_balance')
                     .eq('id', userId)
                     .single();
                 if (error) {
                     console.error('Fetch balance error:', error);
-                    return 0;
+                    return { balance: 0, bonus: 0 };
                 }
-                return data?.balance || 0;
+                return { balance: data?.balance || 0, bonus: data?.bonus_balance || 0 };
             }
 
             async function fetchSettings() {
@@ -943,8 +963,12 @@
                 }).join('');
             }
 
-            function updateUI(balance, history, dailyUsed) {
+            // Updated UI function
+            function updateUI(balance, bonus, history, dailyUsed) {
                 availableBalanceEl.textContent = '$' + balance.toFixed(2);
+                bonusBalanceEl.textContent = '$' + bonus.toFixed(2);
+                const withdrawable = balance - bonus;
+                withdrawableBalanceEl.textContent = '$' + withdrawable.toFixed(2);
                 const remaining = Math.max(0, DAILY_LIMIT - dailyUsed);
                 dailyRemainingEl.textContent = '$' + remaining.toFixed(2);
                 maxAmountDisplay.textContent = remaining.toFixed(2);
@@ -966,6 +990,24 @@
                 return { fee, net };
             }
 
+            // ===== Refresh Data =====
+            async function refreshData() {
+                if (!currentUser) return;
+                try {
+                    const { balance, bonus } = await fetchBalance(currentUser.id);
+                    userBalance = balance;
+                    userBonus = bonus;
+                    const history = await fetchWithdrawHistory(currentUser.id);
+                    withdrawHistory = history;
+                    const dailyUsed = await getDailyWithdrawn(currentUser.id);
+                    updateUI(balance, bonus, history, dailyUsed);
+                    hideStatus();
+                } catch (err) {
+                    console.error('Refresh error:', err);
+                    showStatus('Failed to refresh data.', 'error', err.message);
+                }
+            }
+
             // ===== Handle Withdraw =====
             async function handleWithdraw() {
                 hideStatus();
@@ -978,8 +1020,11 @@
                     showStatus('Minimum withdrawal is $' + MIN_WITHDRAW, 'error');
                     return;
                 }
-                if (amount > userBalance) {
-                    showStatus('Insufficient balance. You have $' + userBalance.toFixed(2), 'error');
+
+                // Check that the user is not trying to withdraw the bonus
+                const withdrawable = userBalance - userBonus;
+                if (amount > withdrawable) {
+                    showStatus('❌ You can only withdraw $' + withdrawable.toFixed(2) + ' – the bonus cannot be withdrawn.', 'error');
                     return;
                 }
 
@@ -1042,6 +1087,8 @@
                 withdrawBtn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;"></span> Processing...';
 
                 try {
+                    // Deduct only the withdrawable amount – but we deduct the whole amount from balance
+                    // The bonus part stays untouched.
                     const newBalance = userBalance - amount;
                     await window.supabaseClient.supabase
                         .from('profiles')
@@ -1065,23 +1112,6 @@
                 } finally {
                     withdrawBtn.disabled = false;
                     withdrawBtn.innerHTML = '<i class="fas fa-arrow-up"></i> Withdraw Now';
-                }
-            }
-
-            // ===== Refresh Data =====
-            async function refreshData() {
-                if (!currentUser) return;
-                try {
-                    const balance = await fetchBalance(currentUser.id);
-                    userBalance = balance;
-                    const history = await fetchWithdrawHistory(currentUser.id);
-                    withdrawHistory = history;
-                    const dailyUsed = await getDailyWithdrawn(currentUser.id);
-                    updateUI(balance, history, dailyUsed);
-                    hideStatus();
-                } catch (err) {
-                    console.error('Refresh error:', err);
-                    showStatus('Failed to refresh data.', 'error', err.message);
                 }
             }
 
@@ -1241,7 +1271,7 @@
 
                 toggleMethod('crypto');
 
-                console.log('✅ Withdraw page initialized');
+                console.log('✅ Withdraw page initialized with bonus handling');
             }
 
             // ===== Start =====
